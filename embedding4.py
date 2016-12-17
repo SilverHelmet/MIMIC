@@ -32,7 +32,7 @@ def sample_generator(events, labels, batch_size):
                 output[idx][0] = 1
             for j in range(length):
                 for k in range(j*em, j*em + em):
-                    event_em[idx][j][int(event[i][k])] = 1
+                    event_em[idx][j][int(events[i][k])] = 1
         
         yield(event_em, output)
         st = ed
