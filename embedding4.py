@@ -127,18 +127,18 @@ for t in range(30):
     #     if i % 1000 == 0:
 	# 	print "\t iter = %d, sample = %d", %(t+1, i)
 
-    # for i in range(8909):    #8909
-    #     test_event_em = np.zeros([1, length, 3391])   #8909
-    #     for j in range(length):
-    #         for k in range(j*em, j*em + em):
-    #             if (k < 1000):
-    #                 test_event_em[0][j][int(test_event[i][k])] = 1
-    #     classes = model.predict(test_event_em)
+    for i in range(8909):    #8909
+        test_event_em = np.zeros([1, length, 3391])   #8909
+        for j in range(length):
+            for k in range(j*em, j*em + em):
+                if (k < 1000):
+                    test_event_em[0][j][int(test_event[i][k])] = 1
+        classes = model.predict(test_event_em)
       
-    #     pre[i][0]=classes[0][0]
-    #     if (i % 1000 == 908):
-    #         print i
-    # print "AUC =", roc_auc_score(test_label, pre)
+        pre[i][0]=classes[0][0]
+        if (i % 1000 == 908):
+            print i
+    print "old AUC =", roc_auc_score(test_label, pre)
     predictions = model.predict_generator(generator = sample_generator(test_event, test_label, batch_size), 
         val_samples = test_label.size)
     print "prediction shape = ", predictions.shape
