@@ -68,10 +68,9 @@ pre = np.zeros([8909,1])
 model = Sequential()
 #model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
 model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
-    input_length = None, output_dim = hidden_size,
-    W_regularizer = l2(0.01), b_regularizer = l2(0.01) ))
+    input_length = None, output_dim = hidden_size ))
 #return_sequences=True,
-model.add(Dropout(0.5))
+# model.add(Dropout(0.5))
 #model.add(TimeDistributedDense(1))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
@@ -128,20 +127,29 @@ for t in range(30):
     #     if i % 1000 == 0:
 	# 	print "\t iter = %d, sample = %d", %(t+1, i)
 
-    for i in range(8909):    #8909
-        test_event_em = np.zeros([1, length, 3391])   #8909
-        for j in range(length):
-            for k in range(j*em, j*em + em):
-                if (k < 1000):
-                    test_event_em[0][j][int(test_event[i][k])] = 1
-        classes = model.predict(test_event_em)
-        pre[i][0]=classes[0][0]
-        if (i % 1000 == 908):
-            print i
+    # for i in range(8909):    #8909
+    #     test_event_em = np.zeros([1, length, 3391])   #8909
+    #     for j in range(length):
+    #         for k in range(j*em, j*em + em):
+    #             if (k < 1000):
+    #                 test_event_em[0][j][int(test_event[i][k])] = 1
+    #     classes = model.predict(test_event_em)
+      
+    #     pre[i][0]=classes[0][0]
+    #     if (i % 1000 == 908):
+    #         print i
+    predictions = model.predict_generator(generator = sample_generator(test_event, test_label, batch_size), 
+        val_samples = test_label.size)
+    print "prediction shape = ", predictions.shape
+    print "test label shape = ", test_label.shape
 
-    # print pre
-    auc = roc_auc_score(label, pre)
-    print 'AUC:',auc
+    auc = roc_auc_score(test_label, pre)
+    print 'AUC =',auc
+
+    predictions[predictions >= 0.5] = 1
+    predictions[predictions < 0.5] = 0
+    acc = np.mean(test_label == predictions)
+    print "ACU =", acc
 
 
 
