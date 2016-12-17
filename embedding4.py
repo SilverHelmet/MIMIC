@@ -24,17 +24,17 @@ def sample_generator(events, labels, batch_size):
     while st < nb_samples:
         ed = min(st + batch_size, nb_samples)
         nb = ed - st
-        train_output = np.zeros([nb, 1])
-        train_event_em = np.zeros([nb, length, 3391])
+        output = np.zeros([nb, 1])
+        event_em = np.zeros([nb, length, 3391])
         for i in range(st, ed):
             idx = i - st
             if(labels[i][0] == 1):
-                train_output[idx][0] = 1
+                output[idx][0] = 1
             for j in range(length):
                 for k in range(j*em, j*em + em):
-                    train_event_em[idx][j][int(train_event[i][k])] = 1
+                    event_em[idx][j][int(event[i][k])] = 1
         
-        yield(train_event_em, train_output)
+        yield(event_em, output)
         st = ed
         if st == nb_samples:
             st = 0
