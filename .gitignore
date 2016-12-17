@@ -1,0 +1,17 @@
+# python
+*.py[cod]
+test
+data
+event
+stat
+result
+data_bk
+event_stat
+ICU_exper/
+exper/
+backup/
+event_seq_stat/
+graph/
+log/
+
+
