@@ -1,0 +1,3389 @@
+2 admissions.disch flag
+3 admissions.admit elective
+4 admissions.admit emergency
+5 admissions.admit newborn
+6 admissions.admit urgent
+7 icustays 
+8 labevents.51221 
+9 labevents.51221 abnormal
+10 labevents.51221 delta
+11 labevents.51265 
+12 labevents.51265 abnormal
+13 labevents.51265 delta
+14 labevents.51301 
+15 labevents.51301 abnormal
+16 labevents.51301 delta
+17 labevents.51222 
+18 labevents.51222 abnormal
+19 labevents.51222 delta
+20 labevents.51250 
+21 labevents.51250 abnormal
+22 labevents.51250 delta
+23 labevents.51249 
+24 labevents.51249 abnormal
+25 labevents.51249 delta
+26 labevents.51248 
+27 labevents.51248 abnormal
+28 labevents.51248 delta
+29 labevents.51279 
+30 labevents.51279 abnormal
+31 labevents.51279 delta
+32 labevents.51277 
+33 labevents.51277 abnormal
+34 labevents.50902 
+35 labevents.50902 abnormal
+36 labevents.50971 
+37 labevents.50971 abnormal
+38 labevents.50882 
+39 labevents.50882 abnormal
+40 labevents.50983 
+41 labevents.50983 abnormal
+42 labevents.50868 
+43 labevents.50868 abnormal
+44 labevents.50912 
+45 labevents.50912 abnormal
+46 labevents.50912 delta
+47 labevents.51006 
+48 labevents.51006 abnormal
+49 labevents.50931 
+50 labevents.50931 abnormal
+51 labevents.50960 
+52 labevents.50960 abnormal
+53 labevents.50893 
+54 labevents.50893 abnormal
+55 labevents.50970 
+56 labevents.50970 abnormal
+57 labevents.50970 delta
+58 labevents.51237 
+59 labevents.51237 abnormal
+60 labevents.51274 
+61 labevents.51274 abnormal
+62 labevents.51275 
+63 labevents.51275 abnormal
+64 labevents.51146 
+65 labevents.51146 abnormal
+66 labevents.51200 
+67 labevents.51200 abnormal
+68 labevents.51244 
+69 labevents.51244 abnormal
+70 labevents.51254 
+71 labevents.51254 abnormal
+72 labevents.51256 
+73 labevents.51256 abnormal
+74 labevents.50885 
+75 labevents.50885 abnormal
+76 labevents.50885 delta
+77 labevents.50820 
+78 labevents.50820 abnormal
+79 labevents.51491 
+80 labevents.51491 abnormal
+81 labevents.50818 
+82 labevents.50818 abnormal
+83 labevents.50804 
+84 labevents.50804 abnormal
+85 labevents.50802 
+86 labevents.50821 
+87 labevents.50821 abnormal
+88 labevents.51498 
+89 labevents.51498 abnormal
+90 labevents.50861 
+91 labevents.50861 abnormal
+92 chartevents.617 apneic
+93 chartevents.617 cheyne-stokes
+94 chartevents.617 discoordinate
+95 chartevents.617 irregular
+96 chartevents.617 kussmaul
+97 chartevents.617 other/remarks
+98 chartevents.617 regular
+99 chartevents.617 tachypneic
+100 labevents.50878 
+101 labevents.50878 abnormal
+102 chartevents.618 
+103 labevents.50863 
+104 labevents.50863 abnormal
+105 chartevents.31 active
+106 chartevents.31 ambulate
+107 chartevents.31 bed as chair
+108 chartevents.31 bedrest
+109 chartevents.31 chair
+110 chartevents.31 comment
+111 chartevents.31 commode
+112 chartevents.31 dangle
+113 chartevents.31 jittery
+114 chartevents.31 lethargic
+115 chartevents.31 other/remarks
+116 chartevents.31 unassessable
+117 chartevents.637 1 rail up
+118 chartevents.637 2 rails up
+119 chartevents.637 3 rails up
+120 chartevents.637 all rails up
+121 chartevents.637 lower rails down
+122 chartevents.637 other/remarks
+123 chartevents.637 side rails down
+124 chartevents.637 side rails up
+125 chartevents.211 
+126 labevents.50813 
+127 labevents.50813 abnormal
+128 labevents.50862 
+129 labevents.50862 abnormal
+130 labevents.51487 
+131 labevents.51487 computer network failure. test not resulted.
+132 labevents.51487 error
+133 labevents.51487 error disregard previous result of neg
+134 labevents.51487 n
+135 labevents.51487 neg
+136 labevents.51487 negative
+137 labevents.51487 pos
+138 labevents.51487 unable to report
+139 labevents.51506 
+140 labevents.51506 cl
+141 labevents.51506 cldy
+142 labevents.51506 clear
+143 labevents.51506 clo
+144 labevents.51506 clou
+145 labevents.51506 cloudy
+146 labevents.51506 computer network failure. test not resulted.
+147 labevents.51506 error
+148 labevents.51506 error disregard previous result of hazy
+149 labevents.51506 h
+150 labevents.51506 ha
+151 labevents.51506 hazy
+152 labevents.51506 pink
+153 labevents.51506 s
+154 labevents.51506 sl
+155 labevents.51506 slcldy
+156 labevents.51506 slcloudy
+157 labevents.51506 slhazy
+158 labevents.51506 slightly cloudy
+159 labevents.51506 turbid
+160 labevents.51466 
+161 labevents.51466 computer network failure. test not resulted.
+162 labevents.51466 error
+163 labevents.51466 error disregard previous result of neg
+164 labevents.51466 lg
+165 labevents.51466 lge
+166 labevents.51466 mod
+167 labevents.51466 n
+168 labevents.51466 neg
+169 labevents.51466 negative
+170 labevents.51466 sep-19-02
+171 labevents.51466 sm
+172 labevents.51466 small
+173 labevents.51466 tr
+174 labevents.51466 unable to report
+175 labevents.51464 
+176 labevents.51464 beh
+177 labevents.51464 computer network failure. test not resulted.
+178 labevents.51464 error
+179 labevents.51464 error disregard previous result of neg
+180 labevents.51464 lg
+181 labevents.51464 mod
+182 labevents.51464 n
+183 labevents.51464 neg
+184 labevents.51464 sm
+185 labevents.51464 specimen
+186 labevents.51464 unable to report
+187 labevents.51486 
+188 labevents.51486 computer network failure. test not resulted.
+189 labevents.51486 error
+190 labevents.51486 error disregard prvious result of neg
+191 labevents.51486 lg
+192 labevents.51486 mod
+193 labevents.51486 n
+194 labevents.51486 neg
+195 labevents.51486 sm
+196 labevents.51486 tr
+197 labevents.51486 trace
+198 labevents.51486 unable to report
+199 chartevents.926 + 0
+200 chartevents.926 bap
+201 chartevents.926 baptist
+202 chartevents.926 bud
+203 chartevents.926 catholic
+204 chartevents.926 csc
+205 chartevents.926 epi
+206 chartevents.926 gor
+207 chartevents.926 hbr
+208 chartevents.926 hin
+209 chartevents.926 jew
+210 chartevents.926 jewish
+211 chartevents.926 jsw
+212 chartevents.926 lut
+213 chartevents.926 met
+214 chartevents.926 mus
+215 chartevents.926 nsp
+216 chartevents.926 otr
+217 chartevents.926 pro
+218 chartevents.926 prot
+219 chartevents.926 prot.
+220 chartevents.926 rca
+221 chartevents.926 ror
+222 chartevents.926 sda
+223 chartevents.926 u
+224 chartevents.926 uni
+225 chartevents.80 absent
+226 chartevents.80 active
+227 chartevents.80 hyperactive
+228 chartevents.80 hypoactive
+229 chartevents.80 not audible
+230 chartevents.80 other/remarks
+231 chartevents.80 present
+232 outputevents.40055 
+233 labevents.51519 
+234 labevents.51519 0
+235 labevents.51519 error
+236 labevents.51519 f
+237 labevents.51519 few
+238 labevents.51519 few hyphae yeast
+239 labevents.51519 loaded
+240 labevents.51519 many
+241 labevents.51519 mod
+242 labevents.51519 n
+243 labevents.51519 none
+244 labevents.51519 notdone
+245 labevents.51519 occ
+246 labevents.51519 rare
+247 labevents.51519 unable to report
+248 chartevents.621 4 point rest.
+249 chartevents.621 both arms
+250 chartevents.621 both arms+l leg
+251 chartevents.621 both arms+r leg
+252 chartevents.621 both legs
+253 chartevents.621 l arm + l leg
+254 chartevents.621 l arm + r leg
+255 chartevents.621 left arm
+256 chartevents.621 left leg
+257 chartevents.621 none
+258 chartevents.621 other/remarks
+259 chartevents.621 r arm + l leg
+260 chartevents.621 r arm + r leg
+261 chartevents.621 right arm
+262 chartevents.621 right leg
+263 chartevents.621 waist only
+264 chartevents.621 waist+both arms
+265 chartevents.621 waist+both legs
+266 chartevents.621 waist+left arm
+267 chartevents.621 waist+right arm
+268 chartevents.621 waist+right leg
+269 inputevents_cv.30013 
+270 labevents.50822 
+271 labevents.50822 abnormal
+272 labevents.50808 
+273 labevents.50808 abnormal
+274 labevents.50910 
+275 labevents.50910 abnormal
+276 labevents.50800 art
+277 labevents.50800 central venous
+278 labevents.50800 mix
+279 labevents.50800 ven
+280 chartevents.8480 clear
+281 chartevents.8480 clots
+282 chartevents.8480 cloudy
+283 chartevents.8480 other/remarks
+284 chartevents.8480 sediment
+285 chartevents.8480 sludge
+286 chartevents.8381 absent
+287 chartevents.8381 diff to palpate
+288 chartevents.8381 doppler
+289 chartevents.8381 easily palpable
+290 chartevents.8381 not applicable
+291 chartevents.8381 other/remarks
+292 chartevents.8381 strong/palpable
+293 chartevents.8381 weak palpable
+294 chartevents.467 aerosol-cool
+295 chartevents.467 bipap mask
+296 chartevents.467 cannula
+297 chartevents.467 cpap mask
+298 chartevents.467 face tent
+299 chartevents.467 heated neb
+300 chartevents.467 hi flow neb
+301 chartevents.467 hood
+302 chartevents.467 hut
+303 chartevents.467 medium conc mask
+304 chartevents.467 nasal cannula
+305 chartevents.467 non-rebreather
+306 chartevents.467 none
+307 chartevents.467 other/remarks
+308 chartevents.467 t-piece
+309 chartevents.467 trach mask
+310 chartevents.467 transtrachealcat
+311 chartevents.467 vapotherm
+312 chartevents.467 venti mask
+313 chartevents.467 ventilator
+314 labevents.50809 
+315 labevents.50809 abnormal
+316 inputevents_cv.30056 
+317 chartevents.8441 
+318 chartevents.432 alert
+319 chartevents.432 arouse to pain
+320 chartevents.432 arouse to stimul
+321 chartevents.432 arouse to voice
+322 chartevents.432 confused
+323 chartevents.432 dozing intermit
+324 chartevents.432 lethargic
+325 chartevents.432 other/remarks
+326 chartevents.432 paralytic med
+327 chartevents.432 sedated
+328 chartevents.432 sleeping
+329 chartevents.432 unresponsive
+330 chartevents.8456 absent
+331 chartevents.8456 diff to palpate
+332 chartevents.8456 doppler
+333 chartevents.8456 easily palpable
+334 chartevents.8456 not applicable
+335 chartevents.8456 other/remarks
+336 chartevents.8456 strong/palpable
+337 chartevents.8456 weak palpable
+338 chartevents.454 1 no response
+339 chartevents.454 2 abnorm extensn
+340 chartevents.454 3 abnorm flexion
+341 chartevents.454 4 flex-withdraws
+342 chartevents.454 5 localizes pain
+343 chartevents.454 6 obeys commands
+344 chartevents.479 3
+345 chartevents.479 4
+346 chartevents.479 5
+347 chartevents.479 ?
+348 chartevents.479 disoriented
+349 chartevents.479 oriented x 1
+350 chartevents.479 oriented x 2
+351 chartevents.479 oriented x 3
+352 chartevents.479 other/remarks
+353 chartevents.479 unable to assess
+354 chartevents.8400 14 gauge
+355 chartevents.8400 16 gauge
+356 chartevents.8400 18 gauge
+357 chartevents.8400 20 gauge
+358 chartevents.8400 22 gauge
+359 chartevents.8400 other/remarks
+360 chartevents.593 absent
+361 chartevents.593 bronchial
+362 chartevents.593 clear
+363 chartevents.593 coarse
+364 chartevents.593 crackles
+365 chartevents.593 diminished
+366 chartevents.593 exp wheeze
+367 chartevents.593 ins/exp wheeze
+368 chartevents.593 insp wheeze
+369 chartevents.593 other/remarks
+370 chartevents.593 pleural friction
+371 chartevents.593 rhonchi
+372 chartevents.599 absent
+373 chartevents.599 bronchial
+374 chartevents.599 clear
+375 chartevents.599 coarse
+376 chartevents.599 crackles
+377 chartevents.599 diminished
+378 chartevents.599 exp wheeze
+379 chartevents.599 ins/exp wheeze
+380 chartevents.599 insp wheeze
+381 chartevents.599 other/remarks
+382 chartevents.599 pleural friction
+383 chartevents.599 rhonchi
+384 chartevents.425 absent
+385 chartevents.425 bronchial
+386 chartevents.425 clear
+387 chartevents.425 coarse
+388 chartevents.425 crackles
+389 chartevents.425 diminished
+390 chartevents.425 exp wheeze
+391 chartevents.425 ins/exp wheeze
+392 chartevents.425 insp wheeze
+393 chartevents.425 other/remarks
+394 chartevents.425 pleural friction
+395 chartevents.425 rhonchi
+396 chartevents.428 absent
+397 chartevents.428 bronchial
+398 chartevents.428 clear
+399 chartevents.428 coarse
+400 chartevents.428 crackles
+401 chartevents.428 diminished
+402 chartevents.428 exp wheeze
+403 chartevents.428 ins/exp wheeze
+404 chartevents.428 insp wheeze
+405 chartevents.428 other/remarks
+406 chartevents.428 pleural friction
+407 chartevents.428 rhonchi
+408 chartevents.478 bleeding gum
+409 chartevents.478 dentures
+410 chartevents.478 loose teeth
+411 chartevents.478 oral ulcers
+412 chartevents.478 other/remarks
+413 chartevents.478 packed
+414 chartevents.478 teeth/tissue wnl
+415 chartevents.478 thrush
+416 chartevents.478 wired
+417 chartevents.161 a quadrigeminy
+418 chartevents.161 atrial bigeminy
+419 chartevents.161 atrial trigeminy
+420 chartevents.161 fusion beats
+421 chartevents.161 nod/junc escape
+422 chartevents.161 nodal bigeminy
+423 chartevents.161 nodal trigeminy
+424 chartevents.161 none
+425 chartevents.161 pac's
+426 chartevents.161 pnc's
+427 chartevents.161 pvc's
+428 chartevents.161 v quadrigeminy
+429 chartevents.161 vent. bigeminy
+430 chartevents.161 vent. escape
+431 chartevents.161 vent. trigeminy
+432 chartevents.742 
+433 chartevents.184 1 no response
+434 chartevents.184 2 to pain
+435 chartevents.184 3 to speech
+436 chartevents.184 4 spontaneously
+437 chartevents.198 
+438 chartevents.159 frequent
+439 chartevents.159 none
+440 chartevents.159 occasional
+441 chartevents.159 rare
+442 chartevents.159 runs vtach
+443 chartevents.27 ascites
+444 chartevents.27 firm
+445 chartevents.27 firm distended
+446 chartevents.27 obese
+447 chartevents.27 open
+448 chartevents.27 other/remarks
+449 chartevents.27 rebound tender
+450 chartevents.27 soft
+451 chartevents.27 soft distended
+452 chartevents.27 tender
+453 chartevents.550 airborne/resp
+454 chartevents.550 asp
+455 chartevents.550 contact
+456 chartevents.550 droplet
+457 chartevents.550 localzosshingles
+458 chartevents.550 neutropenic
+459 chartevents.550 universal
+460 chartevents.550 varicella
+461 labevents.51463 
+462 labevents.51463 0
+463 labevents.51463 1
+464 labevents.51463 2
+465 labevents.51463 3
+466 labevents.51463 7i
+467 labevents.51463 error
+468 labevents.51463 f
+469 labevents.51463 f'
+470 labevents.51463 few
+471 labevents.51463 lrg
+472 labevents.51463 m
+473 labevents.51463 many
+474 labevents.51463 mo
+475 labevents.51463 mod
+476 labevents.51463 mod-
+477 labevents.51463 moderate
+478 labevents.51463 neg
+479 labevents.51463 none
+480 labevents.51463 notdone
+481 labevents.51463 o
+482 labevents.51463 o9
+483 labevents.51463 occ
+484 labevents.51463 r
+485 labevents.51463 rare
+486 labevents.51463 unable to report due to cloudy specimen
+487 chartevents.54 1 person assist
+488 chartevents.54 2 person assist
+489 chartevents.54 cane
+490 chartevents.54 extremity brace
+491 chartevents.54 hoyer
+492 chartevents.54 independent
+493 chartevents.54 other/remarks
+494 chartevents.54 prosthesis
+495 chartevents.54 slide board
+496 chartevents.54 supervised
+497 chartevents.54 tlso brace
+498 chartevents.54 total lift
+499 chartevents.54 trapeze
+500 chartevents.54 walker
+501 chartevents.54 wheelchair
+502 chartevents.547 left side
+503 chartevents.547 prone
+504 chartevents.547 right side
+505 chartevents.547 supine
+506 chartevents.32 fair
+507 chartevents.32 good
+508 chartevents.32 other/remarks
+509 chartevents.32 poor
+510 chartevents.32 tolerated well
+511 chartevents.128 comfort measures
+512 chartevents.128 cpr not indicate
+513 chartevents.128 do not intubate
+514 chartevents.128 do not resuscita
+515 chartevents.128 full code
+516 chartevents.128 other/remarks
+517 chartevents.456 
+518 chartevents.156 absent
+519 chartevents.156 diff to palpate
+520 chartevents.156 doppler
+521 chartevents.156 easily palpable
+522 chartevents.156 not applicable
+523 chartevents.156 other/remarks
+524 chartevents.156 strong/palpable
+525 chartevents.156 weak palpable
+526 chartevents.829 
+527 chartevents.811 
+528 chartevents.82 bedfast
+529 chartevents.82 chairfast
+530 chartevents.82 walks frequently
+531 chartevents.82 walks occasional
+532 chartevents.1046 no
+533 chartevents.1046 other/remarks
+534 chartevents.1046 yes
+535 chartevents.84 comp. immobile
+536 chartevents.84 no limitations
+537 chartevents.84 sl. limited
+538 chartevents.84 very limited
+539 chartevents.85 consist. moist
+540 chartevents.85 moist
+541 chartevents.85 occ. moist
+542 chartevents.85 rarely moist
+543 chartevents.83 no apparent prob
+544 chartevents.83 potential prob
+545 chartevents.83 problem
+546 chartevents.646 
+547 chartevents.86 adequate
+548 chartevents.86 excellent
+549 chartevents.86 prob. inadequate
+550 chartevents.86 very poor
+551 chartevents.88 comp. limited
+552 chartevents.88 no impairment
+553 chartevents.88 sl. limited
+554 chartevents.88 very limited
+555 chartevents.212 1st deg av block
+556 chartevents.212 2nd avb mobitz 2
+557 chartevents.212 2nd avb/mobitz i
+558 chartevents.212 a paced
+559 chartevents.212 asystole
+560 chartevents.212 atrial fib
+561 chartevents.212 atrial flutter
+562 chartevents.212 av paced
+563 chartevents.212 comp heart block
+564 chartevents.212 idioventricular
+565 chartevents.212 junctional
+566 chartevents.212 multfocalatrtach
+567 chartevents.212 normal sinus
+568 chartevents.212 other/remarks
+569 chartevents.212 paced
+570 chartevents.212 parox atr tachy
+571 chartevents.212 sinus arrhythmia
+572 chartevents.212 sinus brady
+573 chartevents.212 sinus tachy
+574 chartevents.212 supravent tachy
+575 chartevents.212 v paced
+576 chartevents.212 vent. tachy
+577 chartevents.212 ventricular fib
+578 chartevents.212 wand.atrial pace
+579 chartevents.212 wenckebach
+580 chartevents.212 zoll paced
+581 chartevents.723 1 no response
+582 chartevents.723 1.0 et/trach
+583 chartevents.723 2 incomp sounds
+584 chartevents.723 3 inapprop words
+585 chartevents.723 4 confused
+586 chartevents.723 5 oriented
+587 chartevents.813 
+588 chartevents.706 amber
+589 chartevents.706 brown
+590 chartevents.706 green
+591 chartevents.706 icteric
+592 chartevents.706 light yellow
+593 chartevents.706 orange
+594 chartevents.706 other/remarks
+595 chartevents.706 pink
+596 chartevents.706 red
+597 chartevents.706 yellow
+598 chartevents.674 axillary
+599 chartevents.674 blood
+600 chartevents.674 foley
+601 chartevents.674 oral
+602 chartevents.674 rectal
+603 chartevents.674 tympanic
+604 chartevents.707 3way foley
+605 chartevents.707 condom catheter
+606 chartevents.707 ileoconduit
+607 chartevents.707 indwelling cath
+608 chartevents.707 nephrostomy
+609 chartevents.707 other/remarks
+610 chartevents.707 retr penis pouch
+611 chartevents.707 straight cath
+612 chartevents.707 suprapubic
+613 chartevents.707 urethral stent
+614 chartevents.707 voids
+615 chartevents.87 
+616 chartevents.704 back
+617 chartevents.704 left side
+618 chartevents.704 logroll
+619 chartevents.704 logroll x4assist
+620 chartevents.704 proned
+621 chartevents.704 right side
+622 chartevents.704 side to side
+623 chartevents.704 turns by self
+624 chartevents.837 
+625 chartevents.644 absent
+626 chartevents.644 impaired
+627 chartevents.644 intact
+628 chartevents.644 other/remarks
+629 chartevents.324 bleeding
+630 chartevents.324 drainage
+631 chartevents.324 ecchymotic
+632 chartevents.324 erythematous
+633 chartevents.324 infiltrated
+634 chartevents.324 other/remarks
+635 chartevents.324 pain
+636 chartevents.324 redness
+637 chartevents.324 swelling
+638 chartevents.324 wnl
+639 chartevents.210 15 degrees
+640 chartevents.210 30 degrees
+641 chartevents.210 45 degrees
+642 chartevents.210 90 degrees
+643 chartevents.210 flat in bed
+644 chartevents.210 other/remarks
+645 chartevents.210 reverse t-berg
+646 chartevents.210 trendelenberg
+647 chartevents.781 
+648 chartevents.791 
+649 chartevents.828 
+650 chartevents.525 abdominal
+651 chartevents.525 back
+652 chartevents.525 both legs
+653 chartevents.525 chest pain
+654 chartevents.525 headache
+655 chartevents.525 incisional
+656 chartevents.525 jaw
+657 chartevents.525 left arm
+658 chartevents.525 left chest
+659 chartevents.525 left elbow
+660 chartevents.525 left flank
+661 chartevents.525 left foot
+662 chartevents.525 left leg
+663 chartevents.525 left lower quad
+664 chartevents.525 left shoulder
+665 chartevents.525 left upper quad
+666 chartevents.525 mediastinal
+667 chartevents.525 midscapular
+668 chartevents.525 neck
+669 chartevents.525 not indicated
+670 chartevents.525 other/remarks
+671 chartevents.525 periumbilical
+672 chartevents.525 right arm
+673 chartevents.525 right chest
+674 chartevents.525 right elbow
+675 chartevents.525 right flank
+676 chartevents.525 right foot
+677 chartevents.525 right leg
+678 chartevents.525 right lower quad
+679 chartevents.525 right shoulder
+680 chartevents.525 right upper quad
+681 chartevents.787 
+682 chartevents.788 
+683 chartevents.814 
+684 chartevents.861 
+685 labevents.51144 
+686 labevents.51144 abnormal
+687 inputevents_mv.225158 
+688 chartevents.833 
+689 inputevents_cv.30018 
+690 chartevents.678 
+691 chartevents.677 
+692 chartevents.1125 ccu
+693 chartevents.1125 csicu
+694 chartevents.1125 csru
+695 chartevents.1125 micu
+696 chartevents.1125 msicu
+697 chartevents.1125 nsicu
+698 chartevents.821 
+699 outputevents.226559 
+700 labevents.50954 
+701 labevents.50954 abnormal
+702 chartevents.77 agitated
+703 chartevents.77 anesthetized
+704 chartevents.77 angry
+705 chartevents.77 anxious
+706 chartevents.77 apathy
+707 chartevents.77 apprehensive
+708 chartevents.77 appropriate
+709 chartevents.77 calm
+710 chartevents.77 combative
+711 chartevents.77 confused
+712 chartevents.77 cooperative
+713 chartevents.77 crying
+714 chartevents.77 delirium
+715 chartevents.77 denial
+716 chartevents.77 depressed
+717 chartevents.77 hallucinations
+718 chartevents.77 hostile
+719 chartevents.77 inappropriate
+720 chartevents.77 irritable
+721 chartevents.77 labile
+722 chartevents.77 other/remarks
+723 chartevents.77 questioning
+724 chartevents.77 restless
+725 chartevents.77 sedated
+726 chartevents.77 sleeping
+727 chartevents.77 talkative
+728 chartevents.77 uncomfortable
+729 chartevents.77 uncooperative
+730 chartevents.77 unresponsive
+731 chartevents.77 withdrawn
+732 chartevents.919 ccu
+733 chartevents.919 ccu/ep
+734 chartevents.919 ce
+735 chartevents.919 cme
+736 chartevents.919 cmed
+737 chartevents.919 csru
+738 chartevents.919 csu
+739 chartevents.919 csurg
+740 chartevents.919 den
+741 chartevents.919 ent
+742 chartevents.919 g.i.
+743 chartevents.919 gu
+744 chartevents.919 gyn
+745 chartevents.919 m
+746 chartevents.919 med
+747 chartevents.919 med            8
+748 chartevents.919 medicine
+749 chartevents.919 micu
+750 chartevents.919 n/surg
+751 chartevents.919 nme
+752 chartevents.919 nmed
+753 chartevents.919 nsicu
+754 chartevents.919 nsu
+755 chartevents.919 obs
+756 chartevents.919 ome
+757 chartevents.919 ort
+758 chartevents.919 pcp
+759 chartevents.919 psu
+760 chartevents.919 scru
+761 chartevents.919 sur
+762 chartevents.919 surg
+763 chartevents.919 surgery
+764 chartevents.919 tra
+765 chartevents.919 transplant
+766 chartevents.919 trauma
+767 chartevents.919 tsu
+768 chartevents.919 v surg
+769 chartevents.919 vsu
+770 chartevents.919 vsurg
+771 chartevents.919 vu
+772 chartevents.455 
+773 chartevents.663 children
+774 chartevents.663 friend
+775 chartevents.663 many supports
+776 chartevents.663 none
+777 chartevents.663 other/remarks
+778 chartevents.663 relative
+779 chartevents.663 significnt other
+780 chartevents.663 social services
+781 chartevents.663 spiritual
+782 chartevents.663 spouse
+783 chartevents.294 left antecub
+784 chartevents.294 left foot
+785 chartevents.294 left hand
+786 chartevents.294 left wrist
+787 chartevents.294 ll ant forearm
+788 chartevents.294 ll post forearm
+789 chartevents.294 lu ant forearm
+790 chartevents.294 lu post forearm
+791 chartevents.294 other/remarks
+792 chartevents.294 right antecub
+793 chartevents.294 right foot
+794 chartevents.294 right hand
+795 chartevents.294 right wrist
+796 chartevents.294 rl ant forearm
+797 chartevents.294 rl post forearm
+798 chartevents.294 ru ant forearm
+799 chartevents.294 ru post forearm
+800 chartevents.1127 
+801 chartevents.549 absent
+802 chartevents.549 diff to palpate
+803 chartevents.549 doppler
+804 chartevents.549 easily palpable
+805 chartevents.549 not applicable
+806 chartevents.549 other/remarks
+807 chartevents.549 strong/palpable
+808 chartevents.549 weak palpable
+809 labevents.50811 
+810 labevents.50811 abnormal
+811 labevents.50810 
+812 labevents.50824 
+813 labevents.50824 abnormal
+814 labevents.50812 intubated
+815 labevents.50812 not intubated
+816 chartevents.1337 agitated
+817 chartevents.1337 calm/cooperative
+818 chartevents.1337 danger agitation
+819 chartevents.1337 sedated
+820 chartevents.1337 unarousable
+821 chartevents.1337 very agitated
+822 chartevents.1337 very sedated
+823 chartevents.220210 
+824 chartevents.220277 
+825 chartevents.220545 
+826 chartevents.227442 
+827 chartevents.220602 
+828 chartevents.225624 
+829 chartevents.227443 
+830 chartevents.220645 
+831 chartevents.220615 
+832 chartevents.1087 change in vitals
+833 chartevents.1087 grimace scale
+834 chartevents.1087 non-verbal cues
+835 chartevents.1087 other
+836 chartevents.1087 pt verbalized
+837 labevents.50817 
+838 chartevents.8401 14 gauge
+839 chartevents.8401 16 gauge
+840 chartevents.8401 18 gauge
+841 chartevents.8401 20 gauge
+842 chartevents.8401 22 gauge
+843 chartevents.8401 other/remarks
+844 chartevents.227073 
+845 chartevents.227457 
+846 chartevents.220228 
+847 chartevents.220546 
+848 chartevents.220621 
+849 chartevents.154 clear liquid
+850 chartevents.154 diabetic
+851 chartevents.154 full liquid
+852 chartevents.154 house
+853 chartevents.154 lipids
+854 chartevents.154 nas/low cholest
+855 chartevents.154 npo
+856 chartevents.154 other/remarks
+857 chartevents.154 ppn
+858 chartevents.154 renal
+859 chartevents.154 soft solid
+860 chartevents.154 tpn
+861 chartevents.154 tube feeding
+862 chartevents.223761 
+863 chartevents.827 
+864 chartevents.220179 
+865 chartevents.220180 
+866 chartevents.220181 
+867 chartevents.5815 
+868 chartevents.187 fam talked to md
+869 chartevents.187 fam talked to rn
+870 chartevents.187 family called
+871 chartevents.187 family conferenc
+872 chartevents.187 family visited
+873 chartevents.187 other/remarks
+874 chartevents.187 socserv involved
+875 chartevents.223770 
+876 chartevents.5820 
+877 chartevents.223769 
+878 chartevents.786 
+879 chartevents.224162 
+880 chartevents.224161 
+881 chartevents.470 
+882 chartevents.226253 
+883 chartevents.220635 
+884 chartevents.5819 
+885 chartevents.815 
+886 chartevents.824 
+887 chartevents.825 
+888 chartevents.8392 left antecub
+889 chartevents.8392 left axilla
+890 chartevents.8392 left brachial
+891 chartevents.8392 left femoral
+892 chartevents.8392 left foot
+893 chartevents.8392 left ij
+894 chartevents.8392 left radial
+895 chartevents.8392 left side head
+896 chartevents.8392 left subclavian
+897 chartevents.8392 left ulnar
+898 chartevents.8392 left upper arm
+899 chartevents.8392 other/remarks
+900 chartevents.8392 right antecub
+901 chartevents.8392 right axilla
+902 chartevents.8392 right brachial
+903 chartevents.8392 right femoral
+904 chartevents.8392 right foot
+905 chartevents.8392 right ij
+906 chartevents.8392 right radial
+907 chartevents.8392 right side head
+908 chartevents.8392 right subclavian
+909 chartevents.8392 right ulnar
+910 chartevents.8392 right upper arm
+911 chartevents.8392 transthoracic
+912 inputevents_mv.220949 
+913 chartevents.224641 
+914 chartevents.224168 
+915 chartevents.325 bleeding
+916 chartevents.325 drainage
+917 chartevents.325 ecchymotic
+918 chartevents.325 erythematous
+919 chartevents.325 infiltrated
+920 chartevents.325 other/remarks
+921 chartevents.325 pain
+922 chartevents.325 redness
+923 chartevents.325 swelling
+924 chartevents.325 wnl
+925 labevents.51233 1+
+926 labevents.51233 2
+927 labevents.51233 2+
+928 labevents.51233 3+
+929 labevents.51233 normal
+930 labevents.51233 occasional
+931 chartevents.225625 
+932 chartevents.225677 
+933 chartevents.527 aching
+934 chartevents.527 annoying
+935 chartevents.527 bloated
+936 chartevents.527 boring
+937 chartevents.527 burning
+938 chartevents.527 constant
+939 chartevents.527 cramping
+940 chartevents.527 dull
+941 chartevents.527 electric
+942 chartevents.527 gassy
+943 chartevents.527 gnawing
+944 chartevents.527 intermittent
+945 chartevents.527 nagging
+946 chartevents.527 none
+947 chartevents.527 other/remarks
+948 chartevents.527 prickling
+949 chartevents.527 radiating
+950 chartevents.527 sharp
+951 chartevents.527 shooting
+952 chartevents.527 stabbing
+953 chartevents.527 throbbing
+954 chartevents.223752 
+955 chartevents.223751 
+956 chartevents.925 "
+957 chartevents.925 a
+958 chartevents.925 d
+959 chartevents.925 m
+960 chartevents.925 n
+961 chartevents.925 s
+962 chartevents.925 w
+963 chartevents.925 y
+964 labevents.51246 1+
+965 labevents.51246 2+
+966 labevents.51246 3+
+967 labevents.51246 normal
+968 labevents.51246 occasional
+969 labevents.51137 1
+970 labevents.51137 1+
+971 labevents.51137 2+
+972 labevents.51137 3+
+973 labevents.51137 normal
+974 labevents.51137 occasional
+975 chartevents.623 behavior conts
+976 chartevents.623 behaviorreturned
+977 chartevents.623 behaviorsubsided
+978 chartevents.623 other/remarks
+979 chartevents.623 restraint dc'd
+980 chartevents.623 restraint dec'd
+981 chartevents.623 restraintreapply
+982 labevents.51252 1+
+983 labevents.51252 2+
+984 labevents.51252 3+
+985 labevents.51252 normal
+986 labevents.51252 occasional
+987 inputevents_mv.226452 
+988 chartevents.642 aquaphor
+989 chartevents.642 bath
+990 chartevents.642 cord care done
+991 chartevents.642 criticaid
+992 chartevents.642 desitin applied
+993 chartevents.642 done
+994 chartevents.642 not done
+995 chartevents.642 open to air
+996 chartevents.642 other
+997 chartevents.642 tegaderm barrier
+998 chartevents.642 washed water
+999 chartevents.622 belt restraint
+1000 chartevents.622 geriatric chair
+1001 chartevents.622 hand mitts
+1002 chartevents.622 leathers
+1003 chartevents.622 limb + belt
+1004 chartevents.622 non violent
+1005 chartevents.622 other/remarks
+1006 chartevents.622 soft limb
+1007 chartevents.622 violent
+1008 chartevents.622 violent/seclusio
+1009 labevents.51143 
+1010 labevents.51143 abnormal
+1011 chartevents.5817 
+1012 labevents.51255 
+1013 labevents.51255 abnormal
+1014 labevents.51251 
+1015 labevents.51251 abnormal
+1016 labevents.51267 1+
+1017 labevents.51267 2+
+1018 labevents.51267 3+
+1019 labevents.51267 normal
+1020 labevents.51267 occasional
+1021 chartevents.615 
+1022 labevents.50956 
+1023 labevents.50956 abnormal
+1024 chartevents.297 left antecub
+1025 chartevents.297 left foot
+1026 chartevents.297 left hand
+1027 chartevents.297 left wrist
+1028 chartevents.297 ll ant forearm
+1029 chartevents.297 ll post forearm
+1030 chartevents.297 lu ant forearm
+1031 chartevents.297 lu post forearm
+1032 chartevents.297 other/remarks
+1033 chartevents.297 right antecub
+1034 chartevents.297 right foot
+1035 chartevents.297 right hand
+1036 chartevents.297 right wrist
+1037 chartevents.297 rl ant forearm
+1038 chartevents.297 rl post forearm
+1039 chartevents.297 ru ant forearm
+1040 chartevents.297 ru post forearm
+1041 chartevents.631 
+1042 chartevents.477 done
+1043 chartevents.477 not done
+1044 chartevents.477 other
+1045 labevents.50816 
+1046 chartevents.49 ace wrap
+1047 chartevents.49 compress sleeves
+1048 chartevents.49 elastic stocking
+1049 chartevents.49 none/remarks
+1050 labevents.50867 
+1051 labevents.50867 abnormal
+1052 chartevents.1529 
+1053 chartevents.1535 
+1054 chartevents.1425 active isch/arth
+1055 chartevents.1425 agitated
+1056 chartevents.1425 cmo
+1057 chartevents.1425 discontinued
+1058 chartevents.1425 elevated icp
+1059 chartevents.1425 hemodyn instabil
+1060 chartevents.1425 neuromusc block
+1061 chartevents.1425 no
+1062 chartevents.1425 no/hemodyn issue
+1063 chartevents.1425 no/icp issues
+1064 chartevents.1425 no/immobil issue
+1065 chartevents.1425 no/not sedated
+1066 chartevents.1425 no/o2 issues
+1067 chartevents.1425 no/other remarks
+1068 chartevents.1425 not applicable
+1069 chartevents.1425 or/procedure
+1070 chartevents.1425 other/remarks
+1071 chartevents.1425 unstable airway
+1072 chartevents.1425 unstable spine
+1073 chartevents.1425 unstbl vent stat
+1074 chartevents.1425 yes
+1075 chartevents.72 done
+1076 chartevents.72 not done
+1077 chartevents.72 other
+1078 procedureevents_mv.224275 
+1079 chartevents.581 
+1080 chartevents.1536 
+1081 labevents.50806 
+1082 labevents.50806 abnormal
+1083 datetimeevents.225754 flag
+1084 chartevents.1525 
+1085 chartevents.1162 
+1086 chartevents.227467 
+1087 chartevents.227465 
+1088 chartevents.1523 
+1089 chartevents.1622 off
+1090 chartevents.1622 on
+1091 chartevents.1622 other/remarks
+1092 chartevents.8367 off
+1093 chartevents.8367 on
+1094 chartevents.8367 other/remarks
+1095 chartevents.1623 no
+1096 chartevents.1623 yes
+1097 chartevents.619 
+1098 chartevents.614 
+1099 chartevents.227466 
+1100 chartevents.1542 
+1101 chartevents.220045 
+1102 labevents.50825 
+1103 chartevents.1532 
+1104 chartevents.1534 
+1105 chartevents.8549 
+1106 chartevents.8554 
+1107 chartevents.220047 
+1108 chartevents.220046 
+1109 chartevents.8368 
+1110 chartevents.232 bleeding
+1111 chartevents.232 drainage
+1112 chartevents.232 ecchymotic
+1113 chartevents.232 erythematous
+1114 chartevents.232 infiltrated
+1115 chartevents.232 other/remarks
+1116 chartevents.232 pain
+1117 chartevents.232 redness
+1118 chartevents.232 swelling
+1119 chartevents.232 wnl
+1120 chartevents.8553 
+1121 labevents.51268 1+
+1122 labevents.51268 2+
+1123 labevents.51268 3+
+1124 labevents.51268 normal
+1125 labevents.51268 occasional
+1126 chartevents.220739 none
+1127 chartevents.220739 spontaneously
+1128 chartevents.220739 to pain
+1129 chartevents.220739 to speech
+1130 chartevents.223901 abnormal extension
+1131 chartevents.223901 abnormal flexion
+1132 chartevents.223901 flex-withdraws
+1133 chartevents.223901 localizes pain
+1134 chartevents.223901 no response
+1135 chartevents.223901 obeys commands
+1136 chartevents.223900 confused
+1137 chartevents.223900 inappropriate words
+1138 chartevents.223900 incomprehensible sounds
+1139 chartevents.223900 no response
+1140 chartevents.223900 no response-ett
+1141 chartevents.223900 oriented
+1142 chartevents.1484 other/remarks
+1143 chartevents.1484 yes
+1144 chartevents.526 backrub
+1145 chartevents.526 cool cloth
+1146 chartevents.526 emotional suppor
+1147 chartevents.526 epidural
+1148 chartevents.526 heat pack
+1149 chartevents.526 ice pack
+1150 chartevents.526 im inject
+1151 chartevents.526 im/sc medication
+1152 chartevents.526 iv drip
+1153 chartevents.526 iv gtt
+1154 chartevents.526 iv push
+1155 chartevents.526 other/remarks
+1156 chartevents.526 oxygen
+1157 chartevents.526 pca
+1158 chartevents.526 po med
+1159 chartevents.526 po medication
+1160 chartevents.526 repositioned
+1161 chartevents.526 sc inject
+1162 chartevents.226512 
+1163 chartevents.834 
+1164 chartevents.807 
+1165 chartevents.680 airbed/kinair
+1166 chartevents.680 airmatt/1st step
+1167 chartevents.680 atmosair mattres
+1168 chartevents.680 bariair
+1169 chartevents.680 big boy bed
+1170 chartevents.680 biodyne
+1171 chartevents.680 other/remarks
+1172 chartevents.680 rotoprone therap
+1173 chartevents.680 rotorest
+1174 chartevents.680 theradyne
+1175 chartevents.227688 
+1176 chartevents.223834 
+1177 chartevents.1522 
+1178 chartevents.762 
+1179 labevents.51087 12
+1180 labevents.51087 14
+1181 labevents.51087 2
+1182 labevents.51087 22
+1183 labevents.51087 24
+1184 labevents.51087 4
+1185 labevents.51087 6
+1186 labevents.51087 8
+1187 labevents.51087 9
+1188 labevents.51087 name missing from specimen
+1189 labevents.51087 random
+1190 labevents.51087 specimen received unlabeled
+1191 labevents.51087 unknown
+1192 chartevents.780 
+1193 chartevents.1533 
+1194 chartevents.777 
+1195 chartevents.778 
+1196 chartevents.225664 
+1197 chartevents.1286 
+1198 chartevents.1530 
+1199 chartevents.779 
+1200 chartevents.226531 
+1201 chartevents.522 activity
+1202 chartevents.522 at rest
+1203 chartevents.522 cough/deepbreath
+1204 chartevents.522 incisional
+1205 chartevents.522 injury
+1206 chartevents.522 movement/turning
+1207 chartevents.522 other/remarks
+1208 chartevents.522 procedural
+1209 chartevents.522 sitting up
+1210 chartevents.522 situational
+1211 chartevents.522 unknown
+1212 chartevents.522 wound
+1213 inputevents_mv.225943 
+1214 chartevents.763 
+1215 procedureevents_mv.224277 
+1216 chartevents.640 cardiac arrest
+1217 chartevents.640 cardioversion
+1218 chartevents.640 chest opened
+1219 chartevents.640 chest pain
+1220 chartevents.640 defibrillation
+1221 chartevents.640 dysrhythmia
+1222 chartevents.640 extubated
+1223 chartevents.640 fluid bolus
+1224 chartevents.640 intubated
+1225 chartevents.640 neuroacutechange
+1226 chartevents.640 or received
+1227 chartevents.640 or sent
+1228 chartevents.640 other/remarks
+1229 chartevents.640 pacer external
+1230 chartevents.640 pneumothorax
+1231 chartevents.640 resp arrest
+1232 chartevents.640 resp distress
+1233 chartevents.640 retroper bleed
+1234 chartevents.640 self extubation
+1235 chartevents.640 tamponade
+1236 chartevents.640 trach changed
+1237 datetimeevents.225755 flag
+1238 chartevents.1089 discontinued
+1239 chartevents.1089 no
+1240 chartevents.1089 not applicable
+1241 chartevents.1089 other/remarks
+1242 chartevents.1089 yes
+1243 chartevents.229 a-line
+1244 chartevents.229 camino bolt
+1245 chartevents.229 cco pa line
+1246 chartevents.229 dialysis line
+1247 chartevents.229 hickman
+1248 chartevents.229 iabp
+1249 chartevents.229 introducer
+1250 chartevents.229 lumbar drain
+1251 chartevents.229 midline
+1252 chartevents.229 multi-lumen
+1253 chartevents.229 other/remarks
+1254 chartevents.229 pa line
+1255 chartevents.229 pacerintroducer
+1256 chartevents.229 permacath
+1257 chartevents.229 picc line
+1258 chartevents.229 portacath
+1259 chartevents.229 pre-sep catheter
+1260 chartevents.229 ric
+1261 chartevents.229 trauma line
+1262 chartevents.229 tripleintroducer
+1263 chartevents.229 venous access
+1264 chartevents.229 ventriculostomy
+1265 chartevents.51 
+1266 chartevents.52 
+1267 chartevents.8551 
+1268 chartevents.171 activity
+1269 chartevents.171 blood transfusio
+1270 chartevents.171 cardiac cath
+1271 chartevents.171 cardioversion
+1272 chartevents.171 coping
+1273 chartevents.171 cough/deepbreath
+1274 chartevents.171 diabetic
+1275 chartevents.171 dischge instruct
+1276 chartevents.171 disease process
+1277 chartevents.171 echocardiogram
+1278 chartevents.171 endoscopy
+1279 chartevents.171 equipmentmonitor
+1280 chartevents.171 heart attack
+1281 chartevents.171 home vent
+1282 chartevents.171 hypertension
+1283 chartevents.171 icu environment
+1284 chartevents.171 incent spiromete
+1285 chartevents.171 invasive lines
+1286 chartevents.171 iv therapy
+1287 chartevents.171 medications
+1288 chartevents.171 mri
+1289 chartevents.171 nuclear medicine
+1290 chartevents.171 ostomy
+1291 chartevents.171 other/remarks
+1292 chartevents.171 pacemaker
+1293 chartevents.171 pain scale
+1294 chartevents.171 pca/pain manage
+1295 chartevents.171 peg
+1296 chartevents.171 plan of care
+1297 chartevents.171 post-op
+1298 chartevents.171 pre-op
+1299 chartevents.171 procedures
+1300 chartevents.171 rehabilitation
+1301 chartevents.171 smoking
+1302 chartevents.171 suctioning
+1303 chartevents.776 
+1304 chartevents.524 0-none
+1305 chartevents.524 1-none to mild
+1306 chartevents.524 10-worst
+1307 chartevents.524 2-mild
+1308 chartevents.524 3-mild to mod
+1309 chartevents.524 4-mild to mod
+1310 chartevents.524 5-moderate
+1311 chartevents.524 6-mod to severe
+1312 chartevents.524 7-mod to severe
+1313 chartevents.524 8-severe
+1314 chartevents.524 9-severe-worst
+1315 chartevents.524 unable to score
+1316 chartevents.225187 
+1317 chartevents.225185 
+1318 chartevents.1044 0-none
+1319 chartevents.1044 1-none to mild
+1320 chartevents.1044 10-worst
+1321 chartevents.1044 2-mild
+1322 chartevents.1044 3-mild to mod
+1323 chartevents.1044 4-mild to mod
+1324 chartevents.1044 5-moderate
+1325 chartevents.1044 6-mod to severe
+1326 chartevents.1044 7-mod to severe
+1327 chartevents.1044 8-severe
+1328 chartevents.1044 9-severe-worst
+1329 chartevents.1044 unable to score
+1330 chartevents.8467 2 mm
+1331 chartevents.8467 3 mm
+1332 chartevents.8467 4 mm
+1333 chartevents.8467 5 mm
+1334 chartevents.8467 6 mm
+1335 chartevents.8467 7 mm
+1336 chartevents.8467 fully dilated
+1337 chartevents.8467 pinpoint
+1338 chartevents.1126 
+1339 labevents.51266 high
+1340 labevents.51266 low
+1341 labevents.51266 normal
+1342 labevents.51266 rare
+1343 labevents.51266 unable to estimate due to platelet clumps
+1344 labevents.51266 very high
+1345 labevents.51266 very low
+1346 chartevents.8466 brisk
+1347 chartevents.8466 nonreactive
+1348 chartevents.8466 other/remarks
+1349 chartevents.8466 sluggish
+1350 labevents.51214 
+1351 labevents.51214 abnormal
+1352 labevents.51214 delta
+1353 labevents.50920 see comments
+1354 chartevents.580 
+1355 chartevents.167 other/remarks
+1356 chartevents.167 patient
+1357 chartevents.167 patient/family
+1358 chartevents.167 patient/sig othr
+1359 chartevents.167 sig othr/family
+1360 chartevents.604 abdominal xray
+1361 chartevents.604 cervical spine
+1362 chartevents.604 chest xray
+1363 chartevents.604 ct scan
+1364 chartevents.604 other/remarks
+1365 chartevents.604 pelvis
+1366 chartevents.604 thoraclumbarsac
+1367 chartevents.604 xray
+1368 chartevents.190 
+1369 chartevents.169 no
+1370 chartevents.169 yes
+1371 chartevents.168 deferred
+1372 chartevents.168 demonstration
+1373 chartevents.168 explanation
+1374 chartevents.168 other/remarks
+1375 chartevents.168 refused
+1376 chartevents.168 video/tv
+1377 chartevents.283 dampened
+1378 chartevents.283 fling
+1379 chartevents.283 not applicable
+1380 chartevents.283 other/remarks
+1381 chartevents.283 overshoot
+1382 chartevents.283 sharp
+1383 chartevents.283 unable to wedge
+1384 chartevents.225103 
+1385 chartevents.1427 antacid
+1386 chartevents.1427 carafate
+1387 chartevents.1427 h2 blocker
+1388 chartevents.1427 other/remarks
+1389 chartevents.1427 proton/pump/inhi
+1390 inputevents_cv.30026 
+1391 chartevents.170 no understanding
+1392 chartevents.170 other/remarks
+1393 chartevents.170 refused
+1394 chartevents.170 reinforced
+1395 chartevents.170 understands
+1396 chartevents.8393 left antecub
+1397 chartevents.8393 left axilla
+1398 chartevents.8393 left brachial
+1399 chartevents.8393 left femoral
+1400 chartevents.8393 left foot
+1401 chartevents.8393 left ij
+1402 chartevents.8393 left radial
+1403 chartevents.8393 left side head
+1404 chartevents.8393 left subclavian
+1405 chartevents.8393 left ulnar
+1406 chartevents.8393 left upper arm
+1407 chartevents.8393 other/remarks
+1408 chartevents.8393 right antecub
+1409 chartevents.8393 right axilla
+1410 chartevents.8393 right brachial
+1411 chartevents.8393 right femoral
+1412 chartevents.8393 right foot
+1413 chartevents.8393 right ij
+1414 chartevents.8393 right radial
+1415 chartevents.8393 right side head
+1416 chartevents.8393 right subclavian
+1417 chartevents.8393 right ulnar
+1418 chartevents.8393 right upper arm
+1419 chartevents.8393 transthoracic
+1420 chartevents.548 done
+1421 chartevents.548 not done
+1422 chartevents.548 other
+1423 chartevents.605 agitated
+1424 chartevents.605 ext/txinterfere
+1425 chartevents.605 occurance assaul
+1426 chartevents.605 other/remarks
+1427 chartevents.605 risk for falling
+1428 chartevents.605 threat of assaul
+1429 chartevents.605 violent/self des
+1430 chartevents.605 wandering
+1431 chartevents.8382 gum
+1432 chartevents.8382 l nare
+1433 chartevents.8382 lip
+1434 chartevents.8382 other/remarks
+1435 chartevents.8382 right nare
+1436 chartevents.8382 teeth
+1437 chartevents.127 circulation adeq
+1438 chartevents.127 other/remarks
+1439 chartevents.127 redness
+1440 chartevents.127 skin breakdown
+1441 chartevents.127 swelling
+1442 chartevents.165 altered loc
+1443 chartevents.165 anxiety
+1444 chartevents.165 commun barrier
+1445 chartevents.165 dexterity
+1446 chartevents.165 hearing impaired
+1447 chartevents.165 language barrier
+1448 chartevents.165 listening impair
+1449 chartevents.165 medicated
+1450 chartevents.165 none
+1451 chartevents.165 other/remarks
+1452 chartevents.165 unable to read
+1453 chartevents.165 vision impaired
+1454 labevents.50828 controlled
+1455 labevents.50828 imv
+1456 labevents.50828 spontaneous
+1457 chartevents.660 negative
+1458 chartevents.660 not applicable
+1459 chartevents.660 other/remarks
+1460 chartevents.660 positive
+1461 chartevents.506 
+1462 chartevents.610 done
+1463 chartevents.610 not done
+1464 chartevents.610 other
+1465 chartevents.450 
+1466 labevents.50826 
+1467 chartevents.230 discontinued
+1468 chartevents.230 no
+1469 chartevents.230 not applicable
+1470 chartevents.230 other/remarks
+1471 chartevents.230 yes
+1472 inputevents_cv.30131 
+1473 chartevents.434 
+1474 chartevents.8388 abdomen
+1475 chartevents.8388 left nare
+1476 chartevents.8388 oral
+1477 chartevents.8388 other/remarks
+1478 chartevents.8388 right nare
+1479 chartevents.444 
+1480 chartevents.40 double lumen ett
+1481 chartevents.40 endotracheal
+1482 chartevents.40 nasal trumpet
+1483 chartevents.40 nasotracheal
+1484 chartevents.40 none
+1485 chartevents.40 oral airway
+1486 chartevents.40 other/remarks
+1487 chartevents.40 tracheostomy
+1488 chartevents.8477 copious
+1489 chartevents.8477 moderate
+1490 chartevents.8477 none
+1491 chartevents.8477 other/remarks
+1492 chartevents.8477 scant
+1493 chartevents.8477 small
+1494 chartevents.166 given
+1495 chartevents.166 not applicable
+1496 chartevents.166 not given
+1497 chartevents.166 other/remarks
+1498 chartevents.166 refused
+1499 chartevents.227368 
+1500 chartevents.226138 
+1501 labevents.50993 
+1502 labevents.50993 abnormal
+1503 chartevents.1047 done
+1504 chartevents.1047 not done
+1505 chartevents.1047 other
+1506 chartevents.225184 
+1507 chartevents.585 2 mm
+1508 chartevents.585 3 mm
+1509 chartevents.585 4 mm
+1510 chartevents.585 5 mm
+1511 chartevents.585 6 mm
+1512 chartevents.585 7 mm
+1513 chartevents.585 fully dilated
+1514 chartevents.585 pinpoint
+1515 chartevents.816 
+1516 procedureevents_mv.225459 
+1517 chartevents.722 7200a
+1518 chartevents.722 drager
+1519 chartevents.722 other/remarks
+1520 chartevents.722 servo 900c
+1521 chartevents.720 assist control
+1522 chartevents.720 cmv
+1523 chartevents.720 cpap
+1524 chartevents.720 cpap+ps
+1525 chartevents.720 other/remarks
+1526 chartevents.720 pressure control
+1527 chartevents.720 pressure support
+1528 chartevents.720 simv
+1529 chartevents.720 simv+ps
+1530 chartevents.720 tcpcv
+1531 chartevents.584 brisk
+1532 chartevents.584 nonreactive
+1533 chartevents.584 other/remarks
+1534 chartevents.584 sluggish
+1535 chartevents.39 10.0 mm
+1536 chartevents.39 6.0 mm
+1537 chartevents.39 6.5 mm
+1538 chartevents.39 7.0 mm
+1539 chartevents.39 7.5 mm
+1540 chartevents.39 8.0 mm
+1541 chartevents.39 8.5 mm
+1542 chartevents.39 9.0 mm
+1543 chartevents.39 9.5 mm
+1544 chartevents.39 other/remarks
+1545 chartevents.218 
+1546 chartevents.157 18cm
+1547 chartevents.157 19cm
+1548 chartevents.157 20cm
+1549 chartevents.157 21cm
+1550 chartevents.157 22cm
+1551 chartevents.157 23cm
+1552 chartevents.157 24cm
+1553 chartevents.157 25cm
+1554 chartevents.157 26cm
+1555 chartevents.157 27cm
+1556 chartevents.157 other/remarks
+1557 inputevents_mv.222011 
+1558 chartevents.8476 frothy
+1559 chartevents.8476 other/remarks
+1560 chartevents.8476 plug
+1561 chartevents.8476 tenacious
+1562 chartevents.8476 thick
+1563 chartevents.8476 thin
+1564 chartevents.578 
+1565 inputevents_mv.225166 
+1566 chartevents.535 
+1567 chartevents.172 activity
+1568 chartevents.172 blood transfusio
+1569 chartevents.172 cardiac cath
+1570 chartevents.172 cardioversion
+1571 chartevents.172 coping
+1572 chartevents.172 cough/deepbreath
+1573 chartevents.172 diabetic
+1574 chartevents.172 dischge instruct
+1575 chartevents.172 disease process
+1576 chartevents.172 echocardiogram
+1577 chartevents.172 endoscopy
+1578 chartevents.172 equipmentmonitor
+1579 chartevents.172 heart attack
+1580 chartevents.172 home vent
+1581 chartevents.172 hypertension
+1582 chartevents.172 icu environment
+1583 chartevents.172 incent spiromete
+1584 chartevents.172 invasive lines
+1585 chartevents.172 iv therapy
+1586 chartevents.172 medications
+1587 chartevents.172 mri
+1588 chartevents.172 nuclear medicine
+1589 chartevents.172 ostomy
+1590 chartevents.172 other/remarks
+1591 chartevents.172 pacemaker
+1592 chartevents.172 pain scale
+1593 chartevents.172 pca/pain manage
+1594 chartevents.172 peg
+1595 chartevents.172 plan of care
+1596 chartevents.172 post-op
+1597 chartevents.172 pre-op
+1598 chartevents.172 procedures
+1599 chartevents.172 rehabilitation
+1600 chartevents.172 smoking
+1601 chartevents.172 suctioning
+1602 labevents.50819 
+1603 labevents.51082 
+1604 chartevents.200 andersen
+1605 chartevents.200 blakemore
+1606 chartevents.200 feeding/peditube
+1607 chartevents.200 gastric
+1608 chartevents.200 jejunostomy
+1609 chartevents.200 other/remarks
+1610 chartevents.200 peg
+1611 chartevents.200 pej
+1612 chartevents.200 salem sump
+1613 datetimeevents.5684 flag
+1614 chartevents.131 
+1615 chartevents.657 expectorated
+1616 chartevents.657 nasotracheal sxn
+1617 chartevents.657 other/remarks
+1618 chartevents.657 suctioned
+1619 chartevents.223830 
+1620 chartevents.203 clamped
+1621 chartevents.203 feeding
+1622 chartevents.203 gravity
+1623 chartevents.203 low cont suction
+1624 chartevents.203 low intermittent
+1625 chartevents.203 other/remarks
+1626 chartevents.220224 
+1627 chartevents.220235 
+1628 chartevents.224828 
+1629 chartevents.225698 
+1630 chartevents.682 
+1631 labevents.50883 
+1632 labevents.50883 abnormal
+1633 chartevents.223758 comfort measures
+1634 chartevents.223758 cpr not indicated
+1635 chartevents.223758 do not intubate
+1636 chartevents.223758 do not resuscitate
+1637 chartevents.223758 full code
+1638 chartevents.683 
+1639 chartevents.223835 
+1640 chartevents.732 other/remarks
+1641 chartevents.732 ramp
+1642 chartevents.732 sine
+1643 chartevents.732 square
+1644 chartevents.238 bleeding
+1645 chartevents.238 drainage
+1646 chartevents.238 ecchymotic
+1647 chartevents.238 erythematous
+1648 chartevents.238 infiltrated
+1649 chartevents.238 other/remarks
+1650 chartevents.238 pain
+1651 chartevents.238 redness
+1652 chartevents.238 swelling
+1653 chartevents.238 wnl
+1654 chartevents.8390 bilious
+1655 chartevents.8390 bright red blood
+1656 chartevents.8390 brown
+1657 chartevents.8390 clear
+1658 chartevents.8390 clots
+1659 chartevents.8390 coffee ground
+1660 chartevents.8390 dark red blood
+1661 chartevents.8390 fecal
+1662 chartevents.8390 nausea/no emesis
+1663 chartevents.8390 other/remarks
+1664 chartevents.8390 pink tinged
+1665 chartevents.8390 undigested food
+1666 chartevents.8390 yellow
+1667 procedureevents_mv.225752 
+1668 inputevents_mv.225975 
+1669 labevents.50933 discarded
+1670 labevents.50933 done
+1671 labevents.50933 hold
+1672 chartevents.219 
+1673 datetimeevents.224288 flag
+1674 chartevents.543 
+1675 chartevents.225313 
+1676 chartevents.225668 
+1677 chartevents.225092 
+1678 labevents.50884 
+1679 chartevents.656 blood tinged
+1680 chartevents.656 bloody
+1681 chartevents.656 brown
+1682 chartevents.656 clear
+1683 chartevents.656 green
+1684 chartevents.656 other/remarks
+1685 chartevents.656 rusty
+1686 chartevents.656 tan
+1687 chartevents.656 white
+1688 chartevents.656 yellow
+1689 labevents.51000 
+1690 labevents.51000 abnormal
+1691 chartevents.227367 
+1692 chartevents.225094 
+1693 chartevents.226137 
+1694 chartevents.733 
+1695 chartevents.5813 
+1696 chartevents.818 
+1697 chartevents.113 
+1698 chartevents.183 done
+1699 chartevents.183 erythromycin oin
+1700 chartevents.183 not done
+1701 chartevents.183 other
+1702 chartevents.183 other/remark
+1703 chartevents.183 sterile water
+1704 chartevents.183 warm soaks
+1705 datetimeevents.224290 flag
+1706 datetimeevents.224287 flag
+1707 procedureevents_mv.225792 
+1708 chartevents.235 a-line
+1709 chartevents.235 camino bolt
+1710 chartevents.235 cco pa line
+1711 chartevents.235 dialysis line
+1712 chartevents.235 hickman
+1713 chartevents.235 iabp
+1714 chartevents.235 introducer
+1715 chartevents.235 lumbar drain
+1716 chartevents.235 midline
+1717 chartevents.235 multi-lumen
+1718 chartevents.235 other/remarks
+1719 chartevents.235 pa line
+1720 chartevents.235 pacerintroducer
+1721 chartevents.235 permacath
+1722 chartevents.235 picc line
+1723 chartevents.235 portacath
+1724 chartevents.235 pre-sep catheter
+1725 chartevents.235 ric
+1726 chartevents.235 trauma line
+1727 chartevents.235 tripleintroducer
+1728 chartevents.235 venous access
+1729 chartevents.235 ventriculostomy
+1730 chartevents.227349 
+1731 chartevents.8454 backrub
+1732 chartevents.8454 cool cloth
+1733 chartevents.8454 emotional suppor
+1734 chartevents.8454 epidural
+1735 chartevents.8454 heat pack
+1736 chartevents.8454 ice pack
+1737 chartevents.8454 im inject
+1738 chartevents.8454 iv gtt
+1739 chartevents.8454 iv push
+1740 chartevents.8454 other/remarks
+1741 chartevents.8454 oxygen
+1742 chartevents.8454 pca
+1743 chartevents.8454 po med
+1744 chartevents.8454 repositioned
+1745 chartevents.8454 sc inject
+1746 inputevents_mv.223258 
+1747 labevents.50979 discarded
+1748 labevents.50979 done
+1749 labevents.50979 done-nc
+1750 labevents.50979 hold
+1751 chartevents.784 
+1752 chartevents.4171 
+1753 chartevents.284 dampened
+1754 chartevents.284 fling
+1755 chartevents.284 not applicable
+1756 chartevents.284 other/remarks
+1757 chartevents.284 overshoot
+1758 chartevents.284 sharp
+1759 chartevents.284 unable to wedge
+1760 chartevents.1538 
+1761 procedureevents_mv.225402 
+1762 inputevents_cv.30021 
+1763 chartevents.225106 
+1764 chartevents.684 
+1765 chartevents.6208 
+1766 chartevents.8428 changed
+1767 chartevents.8428 intact
+1768 chartevents.8428 reinforced
+1769 labevents.50887 done
+1770 labevents.50887 hold
+1771 datetimeevents.224284 flag
+1772 chartevents.225118 
+1773 chartevents.220339 
+1774 chartevents.225087 
+1775 chartevents.8402 14 gauge
+1776 chartevents.8402 16 gauge
+1777 chartevents.8402 18 gauge
+1778 chartevents.8402 20 gauge
+1779 chartevents.8402 22 gauge
+1780 chartevents.8402 other/remarks
+1781 labevents.51009 
+1782 labevents.51009 abnormal
+1783 chartevents.224687 
+1784 chartevents.920 
+1785 chartevents.224697 
+1786 chartevents.224685 
+1787 chartevents.224639 
+1788 chartevents.226179 
+1789 chartevents.225667 
+1790 chartevents.223876 
+1791 chartevents.220293 
+1792 chartevents.223873 
+1793 chartevents.220292 
+1794 chartevents.224695 
+1795 chartevents.770 
+1796 chartevents.769 
+1797 chartevents.69 
+1798 inputevents_mv.225798 
+1799 chartevents.223874 
+1800 chartevents.236 discontinued
+1801 chartevents.236 no
+1802 chartevents.236 not applicable
+1803 chartevents.236 other/remarks
+1804 chartevents.236 yes
+1805 chartevents.224689 
+1806 chartevents.225126 
+1807 inputevents_mv.227523 
+1808 chartevents.773 
+1809 chartevents.223875 
+1810 inputevents_mv.222168 
+1811 inputevents_cv.30101 
+1812 chartevents.225113 
+1813 chartevents.1045 0-none
+1814 chartevents.1045 1-none to mild
+1815 chartevents.1045 10-worst
+1816 chartevents.1045 2-mild
+1817 chartevents.1045 3-mild to mod
+1818 chartevents.1045 4-mild to mod
+1819 chartevents.1045 5-moderate
+1820 chartevents.1045 6-mod to severe
+1821 chartevents.1045 7-mod to severe
+1822 chartevents.1045 8-severe
+1823 chartevents.1045 9-severe-worst
+1824 chartevents.1045 unable to score
+1825 chartevents.8547 
+1826 chartevents.224690 
+1827 chartevents.6206 
+1828 chartevents.225067 
+1829 chartevents.6207 
+1830 chartevents.772 
+1831 chartevents.398 ace wrap
+1832 chartevents.398 angio seal
+1833 chartevents.398 dermabond
+1834 chartevents.398 dry sterile dsg
+1835 chartevents.398 none
+1836 chartevents.398 other/remarks
+1837 chartevents.398 packing
+1838 chartevents.398 transparent
+1839 chartevents.398 vac black foam
+1840 chartevents.398 vac dressing
+1841 chartevents.398 wet to dry
+1842 labevents.50952 
+1843 labevents.50952 abnormal
+1844 chartevents.220644 
+1845 chartevents.1043 bed alarm
+1846 chartevents.1043 distraction
+1847 chartevents.1043 family at bedsid
+1848 chartevents.1043 hand mitts
+1849 chartevents.1043 incr visibility
+1850 chartevents.1043 medicated
+1851 chartevents.1043 orientation
+1852 chartevents.220587 
+1853 chartevents.1531 
+1854 chartevents.225690 
+1855 labevents.50907 
+1856 labevents.50907 abnormal
+1857 chartevents.224738 
+1858 chartevents.225612 
+1859 chartevents.1703 info provided
+1860 chartevents.1703 no
+1861 chartevents.1703 other/remarks
+1862 chartevents.1703 unable
+1863 chartevents.1703 yes
+1864 chartevents.392 brown
+1865 chartevents.392 green
+1866 chartevents.392 none
+1867 chartevents.392 other/remarks
+1868 chartevents.392 purulent
+1869 chartevents.392 sanguinous
+1870 chartevents.392 serosanguinous
+1871 chartevents.392 serous
+1872 chartevents.392 yellow
+1873 chartevents.848 
+1874 labevents.50998 
+1875 labevents.50998 abnormal
+1876 chartevents.227292 
+1877 outputevents.226560 
+1878 inputevents_mv.225828 
+1879 datetimeevents.6704 flag
+1880 labevents.50953 
+1881 labevents.50953 abnormal
+1882 chartevents.226707 
+1883 chartevents.225110 
+1884 chartevents.197 consistently
+1885 chartevents.197 inconsistently
+1886 chartevents.197 no
+1887 chartevents.197 other/remarks
+1888 chartevents.226730 
+1889 chartevents.224688 
+1890 chartevents.224684 
+1891 chartevents.226107 
+1892 procedureevents_mv.227194 
+1893 chartevents.50 
+1894 chartevents.225122 
+1895 inputevents_mv.226089 
+1896 chartevents.8492 abdomen
+1897 chartevents.8492 left nare
+1898 chartevents.8492 oral
+1899 chartevents.8492 other/remarks
+1900 chartevents.8492 right nare
+1901 chartevents.300 left antecub
+1902 chartevents.300 left foot
+1903 chartevents.300 left hand
+1904 chartevents.300 left wrist
+1905 chartevents.300 ll ant forearm
+1906 chartevents.300 ll post forearm
+1907 chartevents.300 lu ant forearm
+1908 chartevents.300 lu post forearm
+1909 chartevents.300 other/remarks
+1910 chartevents.300 right antecub
+1911 chartevents.300 right foot
+1912 chartevents.300 right hand
+1913 chartevents.300 right wrist
+1914 chartevents.300 rl ant forearm
+1915 chartevents.300 rl post forearm
+1916 chartevents.300 ru ant forearm
+1917 chartevents.300 ru post forearm
+1918 chartevents.326 bleeding
+1919 chartevents.326 drainage
+1920 chartevents.326 ecchymotic
+1921 chartevents.326 erythematous
+1922 chartevents.326 infiltrated
+1923 chartevents.326 other/remarks
+1924 chartevents.326 pain
+1925 chartevents.326 redness
+1926 chartevents.326 swelling
+1927 chartevents.326 wnl
+1928 chartevents.226871 
+1929 chartevents.226873 
+1930 labevents.50904 
+1931 labevents.51093 
+1932 labevents.50903 
+1933 chartevents.225124 
+1934 chartevents.225210 
+1935 datetimeevents.6703 flag
+1936 inputevents_mv.225154 
+1937 chartevents.225074 
+1938 outputevents.40069 
+1939 chartevents.114 
+1940 chartevents.225078 
+1941 inputevents_mv.221794 
+1942 labevents.50852 
+1943 labevents.50852 abnormal
+1944 labevents.50852 delta
+1945 inputevents_mv.221456 
+1946 chartevents.3761 
+1947 chartevents.620 nail bed
+1948 chartevents.620 other/remarks
+1949 chartevents.620 sternal rub
+1950 chartevents.620 trapezius
+1951 chartevents.620 verbal
+1952 datetimeevents.5685 flag
+1953 chartevents.220052 
+1954 chartevents.3759 
+1955 chartevents.3799 
+1956 labevents.50823 
+1957 labevents.50801 
+1958 chartevents.220050 
+1959 chartevents.220051 
+1960 chartevents.224701 
+1961 chartevents.225634 
+1962 chartevents.3789 
+1963 labevents.50905 
+1964 labevents.50905 abnormal
+1965 chartevents.202 done
+1966 chartevents.202 not done
+1967 chartevents.202 other
+1968 chartevents.224686 
+1969 chartevents.797 
+1970 chartevents.796 
+1971 chartevents.799 
+1972 chartevents.798 
+1973 chartevents.800 
+1974 chartevents.220056 
+1975 chartevents.220058 
+1976 chartevents.4197 
+1977 chartevents.225640 
+1978 chartevents.225639 
+1979 chartevents.225641 
+1980 chartevents.225642 
+1981 chartevents.225643 
+1982 chartevents.228100 
+1983 chartevents.227566 
+1984 chartevents.224696 
+1985 chartevents.227565 
+1986 chartevents.220734 
+1987 chartevents.5814 
+1988 chartevents.226180 
+1989 chartevents.227429 
+1990 inputevents_cv.30045 
+1991 labevents.51512 
+1992 labevents.51512 1
+1993 labevents.51512 few
+1994 labevents.51512 few]
+1995 labevents.51512 many
+1996 labevents.51512 mod
+1997 labevents.51512 none
+1998 labevents.51512 occ
+1999 labevents.51512 rare
+2000 chartevents.227471 
+2001 chartevents.226169 
+2002 chartevents.226537 
+2003 chartevents.227456 
+2004 admissions.death flag
+2005 chartevents.626 
+2006 chartevents.225076 
+2007 inputevents_cv.30128 
+2008 chartevents.3834 
+2009 chartevents.3603 
+2010 chartevents.785 
+2011 chartevents.655 none
+2012 chartevents.655 nonpurposeful
+2013 chartevents.655 other/remarks
+2014 chartevents.655 purposeful
+2015 inputevents_mv.227522 
+2016 chartevents.227464 
+2017 chartevents.1517 no
+2018 chartevents.1517 yes
+2019 chartevents.627 
+2020 labevents.51257 
+2021 labevents.51257 abnormal
+2022 chartevents.1521 
+2023 chartevents.8416 clean and dry
+2024 chartevents.8416 ecchymotic
+2025 chartevents.8416 erythema
+2026 chartevents.8416 granulating
+2027 chartevents.8416 necrotic
+2028 chartevents.8416 other/remarks
+2029 chartevents.8416 pink
+2030 labevents.51010 
+2031 labevents.51010 abnormal
+2032 chartevents.817 
+2033 chartevents.4200 
+2034 procedureevents_mv.224263 
+2035 chartevents.225188 
+2036 chartevents.625 
+2037 labevents.50880 error
+2038 labevents.50880 neg
+2039 labevents.50880 negative
+2040 labevents.50880 negative - level less than 10 miu/ml
+2041 labevents.50880 pos
+2042 labevents.50879 error
+2043 labevents.50879 neg
+2044 labevents.50879 negative
+2045 labevents.50879 pos
+2046 labevents.50999 error
+2047 labevents.50999 neg
+2048 labevents.50999 negative
+2049 labevents.50999 pos
+2050 inputevents_mv.225910 
+2051 datetimeevents.224280 flag
+2052 chartevents.3312 
+2053 chartevents.590 lifts and holds
+2054 chartevents.590 lifts/falls back
+2055 chartevents.590 moves on bed
+2056 chartevents.590 no movement
+2057 chartevents.590 normal strength
+2058 chartevents.590 other/remarks
+2059 chartevents.590 posturing
+2060 chartevents.8502 
+2061 chartevents.423 lifts and holds
+2062 chartevents.423 lifts/falls back
+2063 chartevents.423 moves on bed
+2064 chartevents.423 no movement
+2065 chartevents.423 normal strength
+2066 chartevents.423 other/remarks
+2067 chartevents.423 posturing
+2068 chartevents.596 lifts and holds
+2069 chartevents.596 lifts/falls back
+2070 chartevents.596 moves on bed
+2071 chartevents.596 no movement
+2072 chartevents.596 normal strength
+2073 chartevents.596 other/remarks
+2074 chartevents.596 posturing
+2075 chartevents.426 lifts and holds
+2076 chartevents.426 lifts/falls back
+2077 chartevents.426 moves on bed
+2078 chartevents.426 no movement
+2079 chartevents.426 normal strength
+2080 chartevents.426 other/remarks
+2081 chartevents.426 posturing
+2082 chartevents.344 abrasion
+2083 chartevents.344 arterial ulcer
+2084 chartevents.344 blister
+2085 chartevents.344 burn
+2086 chartevents.344 contusion
+2087 chartevents.344 degloving injury
+2088 chartevents.344 edema/swelling
+2089 chartevents.344 exfoliating rash
+2090 chartevents.344 fasciotomy
+2091 chartevents.344 hematoma
+2092 chartevents.344 laceration
+2093 chartevents.344 neoplastic ulcer
+2094 chartevents.344 neuropathic ulce
+2095 chartevents.344 other/remarks
+2096 chartevents.344 petechiae
+2097 chartevents.344 radiation reacti
+2098 chartevents.344 rash
+2099 chartevents.344 skin tear
+2100 chartevents.344 subq emphysema
+2101 chartevents.344 venous ulcer
+2102 inputevents_mv.225799 
+2103 chartevents.220632 
+2104 inputevents_mv.221744 
+2105 datetimeevents.224279 flag
+2106 chartevents.3353 absent
+2107 chartevents.3353 comment
+2108 chartevents.3353 present
+2109 chartevents.356 accuzyme
+2110 chartevents.356 ace wrap
+2111 chartevents.356 adaptic
+2112 chartevents.356 alginate/kalstat
+2113 chartevents.356 allevyn
+2114 chartevents.356 allevyn trach
+2115 chartevents.356 antifungal oint
+2116 chartevents.356 antifungal powde
+2117 chartevents.356 aquacel
+2118 chartevents.356 aquacel ag
+2119 chartevents.356 aquaphor
+2120 chartevents.356 collagenase
+2121 chartevents.356 dermagran
+2122 chartevents.356 dry sterile dsg
+2123 chartevents.356 duoderm
+2124 chartevents.356 hydrogel/vigilon
+2125 chartevents.356 leech therapy
+2126 chartevents.356 open to air
+2127 chartevents.356 other/remarks
+2128 chartevents.356 transparent
+2129 chartevents.356 wet to dry
+2130 chartevents.356 wnd gel/allevyn
+2131 chartevents.356 wound gel
+2132 chartevents.356 wound gel/adapti
+2133 inputevents_mv.226364 
+2134 chartevents.3754 
+2135 chartevents.3768 
+2136 chartevents.3771 
+2137 chartevents.3780 
+2138 chartevents.8474 extension
+2139 chartevents.8474 flexion
+2140 chartevents.8474 localizes
+2141 chartevents.8474 no response
+2142 chartevents.8474 other/remarks
+2143 chartevents.8474 withdraws
+2144 inputevents_mv.225168 
+2145 labevents.51523 done
+2146 labevents.51523 hold
+2147 chartevents.228099 
+2148 chartevents.3734 
+2149 procedureevents_mv.225966 
+2150 chartevents.70 
+2151 labevents.51104 
+2152 chartevents.71 
+2153 chartevents.1698 andersen
+2154 chartevents.1698 blakemore
+2155 chartevents.1698 feeding/peditube
+2156 chartevents.1698 gastric
+2157 chartevents.1698 jejunostomy
+2158 chartevents.1698 other/remarks
+2159 chartevents.1698 peg
+2160 chartevents.1698 pej
+2161 chartevents.1698 red rubber
+2162 chartevents.1698 salem sump
+2163 chartevents.227445 
+2164 chartevents.8548 
+2165 chartevents.783 71
+2166 chartevents.783 bld cx
+2167 chartevents.783 n
+2168 chartevents.783 sent
+2169 chartevents.783 y
+2170 chartevents.139 done
+2171 chartevents.139 not done
+2172 chartevents.139 other
+2173 datetimeevents.224261 flag
+2174 chartevents.220074 
+2175 chartevents.3742 
+2176 chartevents.3770 
+2177 chartevents.3779 
+2178 chartevents.3791 
+2179 chartevents.3373 achrocyanotic
+2180 chartevents.3373 comment
+2181 chartevents.3373 cyanotic
+2182 chartevents.3373 dusky
+2183 chartevents.3373 jaundice
+2184 chartevents.3373 mottled
+2185 chartevents.3373 pale
+2186 chartevents.3373 pink
+2187 chartevents.3373 ruddy
+2188 chartevents.3373 slight jaundice
+2189 chartevents.3738 
+2190 chartevents.386 approximated
+2191 chartevents.386 dehisced
+2192 chartevents.386 healed
+2193 chartevents.386 open
+2194 chartevents.386 other/remarks
+2195 chartevents.386 steri-strip
+2196 chartevents.386 suture/staples
+2197 inputevents_mv.226361 
+2198 outputevents.40059 
+2199 chartevents.3313 
+2200 chartevents.8448 
+2201 datetimeevents.224282 flag
+2202 chartevents.1479 clotted off
+2203 chartevents.1479 infiltrated
+2204 chartevents.1479 other/remarks
+2205 chartevents.1479 phlebitis
+2206 chartevents.1479 routine change
+2207 chartevents.1479 treatment dc'd
+2208 datetimeevents.6706 flag
+2209 procedureevents_mv.221214 
+2210 chartevents.224564 
+2211 chartevents.220227 
+2212 chartevents.8429 changed
+2213 chartevents.8429 intact
+2214 chartevents.8429 reinforced
+2215 labevents.50908 
+2216 labevents.50908 abnormal
+2217 chartevents.8394 left antecub
+2218 chartevents.8394 left axilla
+2219 chartevents.8394 left brachial
+2220 chartevents.8394 left femoral
+2221 chartevents.8394 left foot
+2222 chartevents.8394 left ij
+2223 chartevents.8394 left radial
+2224 chartevents.8394 left side head
+2225 chartevents.8394 left subclavian
+2226 chartevents.8394 left ulnar
+2227 chartevents.8394 left upper arm
+2228 chartevents.8394 other/remarks
+2229 chartevents.8394 right antecub
+2230 chartevents.8394 right axilla
+2231 chartevents.8394 right brachial
+2232 chartevents.8394 right femoral
+2233 chartevents.8394 right foot
+2234 chartevents.8394 right ij
+2235 chartevents.8394 right radial
+2236 chartevents.8394 right side head
+2237 chartevents.8394 right subclavian
+2238 chartevents.8394 right ulnar
+2239 chartevents.8394 right upper arm
+2240 chartevents.8394 transthoracic
+2241 chartevents.3723 
+2242 chartevents.8422 copious
+2243 chartevents.8422 heavy
+2244 chartevents.8422 large
+2245 chartevents.8422 moderate
+2246 chartevents.8422 other/remarks
+2247 chartevents.8422 scant
+2248 chartevents.8422 small
+2249 outputevents.226627 
+2250 chartevents.8373 negative
+2251 chartevents.8373 not applicable
+2252 chartevents.8373 other/remarks
+2253 chartevents.8373 positive
+2254 chartevents.775 
+2255 labevents.51260 1+
+2256 labevents.51260 2+
+2257 labevents.51260 3+
+2258 labevents.51260 normal
+2259 labevents.51260 occasional
+2260 chartevents.228236 
+2261 datetimeevents.6705 flag
+2262 chartevents.545 no
+2263 chartevents.545 not applicable
+2264 chartevents.545 other/remarks
+2265 chartevents.545 yes
+2266 chartevents.8478 formed
+2267 chartevents.8478 hard
+2268 chartevents.8478 liquid
+2269 chartevents.8478 loose
+2270 chartevents.8478 mucoid
+2271 chartevents.8478 other/remarks
+2272 chartevents.8478 soft
+2273 chartevents.595 
+2274 chartevents.225070 
+2275 labevents.50815 
+2276 chartevents.651 
+2277 chartevents.652 
+2278 labevents.50803 
+2279 labevents.50803 abnormal
+2280 inputevents_mv.221749 
+2281 outputevents.40076 
+2282 chartevents.224417 
+2283 chartevents.224700 
+2284 chartevents.3654 
+2285 inputevents_mv.225907 
+2286 chartevents.410 done
+2287 chartevents.410 not done
+2288 chartevents.410 other
+2289 chartevents.3348 brisk
+2290 chartevents.3348 comment
+2291 chartevents.3348 delayed
+2292 inputevents_mv.225974 
+2293 inputevents_cv.30054 
+2294 chartevents.3568 absent
+2295 chartevents.3568 bounding
+2296 chartevents.3568 full
+2297 chartevents.3568 normal
+2298 chartevents.362 black
+2299 chartevents.362 other/remarks
+2300 chartevents.362 pink
+2301 chartevents.362 purple
+2302 chartevents.362 red
+2303 chartevents.362 red/purple
+2304 chartevents.362 yellow
+2305 chartevents.1397 
+2306 chartevents.96 negative
+2307 chartevents.96 not applicable
+2308 chartevents.96 other/remarks
+2309 chartevents.96 positive
+2310 chartevents.228305 
+2311 labevents.50976 
+2312 labevents.50976 abnormal
+2313 chartevents.806 
+2314 procedureevents_mv.225469 
+2315 inputevents_cv.30025 
+2316 chartevents.659 black
+2317 chartevents.659 bright red blood
+2318 chartevents.659 brown
+2319 chartevents.659 clay
+2320 chartevents.659 clear
+2321 chartevents.659 golden
+2322 chartevents.659 green
+2323 chartevents.659 maroon
+2324 chartevents.659 melena
+2325 chartevents.659 other/remarks
+2326 chartevents.116 
+2327 chartevents.95 changed
+2328 chartevents.95 dry and intact
+2329 chartevents.95 other/remarks
+2330 chartevents.95 reinforced
+2331 labevents.51079 neg
+2332 labevents.51079 negative
+2333 labevents.51079 pos
+2334 chartevents.492 
+2335 chartevents.94 bilious
+2336 chartevents.94 clear
+2337 chartevents.94 none
+2338 chartevents.94 other/remarks
+2339 chartevents.94 purulent
+2340 chartevents.94 sanguinous
+2341 chartevents.94 serosanguinous
+2342 chartevents.94 serous
+2343 chartevents.94 straw
+2344 datetimeevents.225756 flag
+2345 chartevents.97 15 cm
+2346 chartevents.97 20 cm
+2347 chartevents.97 25 cm
+2348 chartevents.97 h2o seal
+2349 chartevents.97 other/remarks
+2350 labevents.51075 neg
+2351 labevents.51075 negative
+2352 labevents.51075 pos
+2353 labevents.51075 positive
+2354 labevents.51092 neg
+2355 labevents.51092 negative
+2356 labevents.51092 pos
+2357 labevents.51092 positive
+2358 labevents.51071 neg
+2359 labevents.51071 negative
+2360 labevents.51071 pos
+2361 labevents.51071 positive
+2362 labevents.51074 neg
+2363 labevents.51074 negative
+2364 labevents.51074 pos
+2365 procedureevents_mv.224276 
+2366 chartevents.226534 
+2367 labevents.51090 neg
+2368 labevents.51090 negative
+2369 labevents.51090 pos
+2370 labevents.51090 positive
+2371 chartevents.122 left anterior
+2372 chartevents.122 left posterior
+2373 chartevents.122 mediastinal
+2374 chartevents.122 other/remarks
+2375 chartevents.122 right anterior
+2376 chartevents.122 right posterior
+2377 chartevents.399 ace wrap
+2378 chartevents.399 angio seal
+2379 chartevents.399 dermabond
+2380 chartevents.399 dry sterile dsg
+2381 chartevents.399 none
+2382 chartevents.399 other/remarks
+2383 chartevents.399 packing
+2384 chartevents.399 transparent
+2385 chartevents.399 vac black foam
+2386 chartevents.399 vac dressing
+2387 chartevents.399 wet to dry
+2388 chartevents.227293 
+2389 labevents.51097 
+2390 chartevents.3412 applied
+2391 chartevents.3412 comment
+2392 chartevents.3412 given
+2393 chartevents.3412 held
+2394 chartevents.3685 comment
+2395 chartevents.3685 given
+2396 chartevents.3338 absent
+2397 chartevents.3338 clear
+2398 chartevents.3338 coarse
+2399 chartevents.3338 comment
+2400 chartevents.3338 diminished
+2401 chartevents.3338 rales
+2402 chartevents.3338 stridorous
+2403 chartevents.3338 wheeze
+2404 chartevents.3339 absent
+2405 chartevents.3339 clear
+2406 chartevents.3339 coarse
+2407 chartevents.3339 comment
+2408 chartevents.3339 diminished
+2409 chartevents.3339 rales
+2410 chartevents.3339 stridorous
+2411 chartevents.3339 wheeze
+2412 labevents.51283 
+2413 labevents.51283 abnormal
+2414 chartevents.795 
+2415 chartevents.225280 
+2416 chartevents.3607 ic/subcostal
+2417 chartevents.3607 inter/subc/subs
+2418 chartevents.3607 intercostal
+2419 chartevents.3607 none
+2420 chartevents.3607 subcostal
+2421 chartevents.3607 subcostal/stern
+2422 chartevents.3607 substernal
+2423 chartevents.228096 +1 anxious, apprehensive, but not aggressive
+2424 chartevents.228096 +2 frequent nonpurposeful movement, fights ventilator
+2425 chartevents.228096 +3 pulls or removes tube(s) or catheter(s); aggressive
+2426 chartevents.228096 +4 combative, violent, danger to staff
+2427 chartevents.228096 -1 awakens to voice (eye opening/contact) > 10 sec
+2428 chartevents.228096 -2 light sedation, briefly awakens to voice (eye opening/contact) < 10 sec
+2429 chartevents.228096 -3 moderate sedation, movement or eye opening; no eye contact
+2430 chartevents.228096 -4 deep sedation, no response to voice, but movement or eye opening to physical stimulation
+2431 chartevents.228096 -5 unarousable, no response to voice or physical stimulation
+2432 chartevents.228096 0  alert and calm
+2433 procedureevents_mv.224274 
+2434 chartevents.226113 
+2435 procedureevents_mv.225401 
+2436 inputevents_cv.30095 
+2437 chartevents.8518 
+2438 chartevents.393 brown
+2439 chartevents.393 green
+2440 chartevents.393 none
+2441 chartevents.393 other/remarks
+2442 chartevents.393 purulent
+2443 chartevents.393 sanguinous
+2444 chartevents.393 serosanguinous
+2445 chartevents.393 serous
+2446 chartevents.393 yellow
+2447 chartevents.8537 
+2448 chartevents.3652 
+2449 chartevents.679 
+2450 chartevents.676 
+2451 outputevents.40060 
+2452 chartevents.225117 
+2453 inputevents_mv.221668 
+2454 datetimeevents.225753 flag
+2455 chartevents.8499 bulging
+2456 chartevents.8499 depressed
+2457 chartevents.8499 flat
+2458 chartevents.3291 comment
+2459 chartevents.3291 distended
+2460 chartevents.3291 flat
+2461 chartevents.3291 full
+2462 chartevents.3291 round
+2463 chartevents.3291 scaphoid
+2464 chartevents.3694 comment
+2465 chartevents.3694 flaring
+2466 chartevents.3694 flaring/retract
+2467 chartevents.3694 grunt/flare/retr
+2468 chartevents.3694 grunting
+2469 chartevents.3694 grunting/flaring
+2470 chartevents.3694 grunting/retract
+2471 chartevents.3694 none
+2472 chartevents.3694 normal
+2473 chartevents.3694 retractions
+2474 chartevents.594 active
+2475 chartevents.594 comment
+2476 chartevents.594 full rom
+2477 chartevents.594 partial rom
+2478 chartevents.594 passive
+2479 chartevents.8529 bulging
+2480 chartevents.8529 depressed
+2481 chartevents.8529 flat
+2482 chartevents.3293 comment
+2483 chartevents.3293 firm
+2484 chartevents.3293 nontender
+2485 chartevents.3293 soft
+2486 chartevents.421 
+2487 chartevents.430 
+2488 chartevents.90 
+2489 chartevents.3656 isolette
+2490 chartevents.3656 warmer
+2491 outputevents.40054 
+2492 chartevents.431 
+2493 chartevents.422 
+2494 chartevents.3669 abnormal/remark
+2495 chartevents.3669 normal
+2496 chartevents.3669 poor rebound
+2497 chartevents.244 bleeding
+2498 chartevents.244 drainage
+2499 chartevents.244 ecchymotic
+2500 chartevents.244 erythematous
+2501 chartevents.244 infiltrated
+2502 chartevents.244 other/remarks
+2503 chartevents.244 pain
+2504 chartevents.244 redness
+2505 chartevents.244 swelling
+2506 chartevents.244 wnl
+2507 chartevents.3627 alert
+2508 chartevents.3627 asleep
+2509 chartevents.3627 drowsy
+2510 chartevents.3627 irritable
+2511 chartevents.3519 asymmetrical
+2512 chartevents.3519 comment
+2513 chartevents.3519 hypertonic
+2514 chartevents.3519 hypotonic
+2515 chartevents.3519 left > right
+2516 chartevents.3519 lower>upper
+2517 chartevents.3519 right > left
+2518 chartevents.3519 symmetrical
+2519 chartevents.3519 unassessable
+2520 chartevents.3519 upper>lower
+2521 inputevents_cv.30121 
+2522 chartevents.8532 
+2523 chartevents.3476 180 rotation
+2524 chartevents.3476 car seat
+2525 chartevents.3476 held
+2526 chartevents.3476 prone
+2527 chartevents.3476 sidelying l
+2528 chartevents.3476 sidelying r
+2529 chartevents.3476 supine
+2530 chartevents.3476 swing
+2531 chartevents.662 
+2532 chartevents.8485 off
+2533 chartevents.8485 on
+2534 chartevents.8485 other/remarks
+2535 chartevents.3686 no void
+2536 chartevents.3686 voiding qs
+2537 chartevents.226540 
+2538 chartevents.225133 
+2539 outputevents.226633 
+2540 chartevents.7915 no
+2541 chartevents.7915 not applicable
+2542 chartevents.7915 other/remarks
+2543 chartevents.7915 yes
+2544 inputevents_mv.226453 
+2545 labevents.50919 done
+2546 labevents.50919 hold
+2547 outputevents.40065 
+2548 chartevents.731 bair hugger
+2549 chartevents.731 blanket
+2550 chartevents.731 hot line
+2551 chartevents.731 level one
+2552 chartevents.731 other/remarks
+2553 chartevents.731 therapeutic bed
+2554 chartevents.7914 off guideline
+2555 chartevents.7914 on guideline
+2556 chartevents.3408 covered isolette
+2557 chartevents.3408 isolette
+2558 chartevents.3408 open crib
+2559 chartevents.3408 warmer
+2560 chartevents.1480 clotted off
+2561 chartevents.1480 infiltrated
+2562 chartevents.1480 other/remarks
+2563 chartevents.1480 phlebitis
+2564 chartevents.1480 routine change
+2565 chartevents.1480 treatment dc'd
+2566 datetimeevents.227790 flag
+2567 chartevents.4187 
+2568 chartevents.4188 
+2569 chartevents.1191 
+2570 labevents.51078 
+2571 chartevents.3559 comment
+2572 chartevents.3559 managed well
+2573 chartevents.3559 none
+2574 chartevents.3559 present
+2575 chartevents.3634 comment
+2576 chartevents.3634 managed well
+2577 chartevents.3634 none
+2578 chartevents.3634 present
+2579 chartevents.3386 
+2580 chartevents.352 brown
+2581 chartevents.352 green
+2582 chartevents.352 none
+2583 chartevents.352 other/remarks
+2584 chartevents.352 purulent
+2585 chartevents.352 sanguinous
+2586 chartevents.352 serosanguinous
+2587 chartevents.352 serous
+2588 chartevents.352 yellow
+2589 chartevents.8488 antacid
+2590 chartevents.8488 carafate
+2591 chartevents.8488 h2 blocker
+2592 chartevents.8488 other/remarks
+2593 chartevents.8488 proton/pump/inhi
+2594 chartevents.3450 
+2595 inputevents_cv.30144 
+2596 chartevents.3335 comment
+2597 chartevents.3335 nested
+2598 chartevents.3335 none
+2599 chartevents.3335 swaddled
+2600 labevents.51151 1+
+2601 labevents.51151 2+
+2602 labevents.51151 3+
+2603 labevents.51151 normal
+2604 labevents.51151 occasional
+2605 chartevents.3572 stable
+2606 chartevents.3572 unstab-activity
+2607 chartevents.3572 unstable
+2608 chartevents.1528 
+2609 chartevents.226536 
+2610 chartevents.3304 firm
+2611 chartevents.3304 full
+2612 chartevents.3304 soft
+2613 chartevents.241 a-line
+2614 chartevents.241 camino bolt
+2615 chartevents.241 cco pa line
+2616 chartevents.241 dialysis line
+2617 chartevents.241 hickman
+2618 chartevents.241 iabp
+2619 chartevents.241 introducer
+2620 chartevents.241 lumbar drain
+2621 chartevents.241 midline
+2622 chartevents.241 multi-lumen
+2623 chartevents.241 other/remarks
+2624 chartevents.241 pa line
+2625 chartevents.241 pacerintroducer
+2626 chartevents.241 permacath
+2627 chartevents.241 picc line
+2628 chartevents.241 portacath
+2629 chartevents.241 pre-sep catheter
+2630 chartevents.241 ric
+2631 chartevents.241 trauma line
+2632 chartevents.241 tripleintroducer
+2633 chartevents.241 venous access
+2634 chartevents.241 ventriculostomy
+2635 chartevents.220073 
+2636 chartevents.3577 firm
+2637 chartevents.3577 full
+2638 chartevents.3577 soft
+2639 chartevents.220072 
+2640 chartevents.338 commer cleanser
+2641 chartevents.338 irrigation
+2642 chartevents.338 normal saline
+2643 chartevents.338 other/remarks
+2644 chartevents.338 soap & h20
+2645 chartevents.338 wound cleanser
+2646 chartevents.3632 large
+2647 chartevents.3632 medium
+2648 chartevents.3632 none
+2649 chartevents.3632 small
+2650 chartevents.3632 trace
+2651 chartevents.225129 
+2652 chartevents.208 absent
+2653 chartevents.208 impaired
+2654 chartevents.208 intact
+2655 chartevents.208 other/remarks
+2656 chartevents.208 present
+2657 chartevents.137 absent
+2658 chartevents.137 impaired
+2659 chartevents.137 intact
+2660 chartevents.137 other/remarks
+2661 chartevents.224422 
+2662 chartevents.225091 
+2663 chartevents.3655 
+2664 chartevents.224421 
+2665 procedureevents_mv.225454 
+2666 labevents.50909 
+2667 labevents.50909 abnormal
+2668 chartevents.3487 comment
+2669 chartevents.3487 milia/remark
+2670 chartevents.3487 mongolian spot
+2671 chartevents.3487 monilia rash/rem
+2672 chartevents.3487 none
+2673 chartevents.3487 petecchiae
+2674 chartevents.3487 straw hemangioma
+2675 chartevents.3487 trans pust mel
+2676 chartevents.8535 black
+2677 chartevents.8535 brown
+2678 chartevents.8535 comment
+2679 chartevents.8535 frank blood
+2680 chartevents.8535 green
+2681 chartevents.8535 meconium
+2682 chartevents.8535 mucous
+2683 chartevents.8535 seedy
+2684 chartevents.8535 transitional
+2685 chartevents.8535 yellow
+2686 chartevents.227468 
+2687 chartevents.516 epicardial wires
+2688 chartevents.516 permanent
+2689 chartevents.516 transcutaneous
+2690 chartevents.516 transvenous
+2691 chartevents.648 aphasic
+2692 chartevents.648 garbled
+2693 chartevents.648 intubated/trach
+2694 chartevents.648 mute
+2695 chartevents.648 none
+2696 chartevents.648 normal
+2697 chartevents.648 other/remarks
+2698 chartevents.648 slurred
+2699 chartevents.3340 no
+2700 chartevents.3340 yes
+2701 chartevents.3609 
+2702 chartevents.515 atrial asynchron
+2703 chartevents.515 atrial demand
+2704 chartevents.515 av asynchronous
+2705 chartevents.515 dual demand
+2706 chartevents.515 other/remarks
+2707 chartevents.515 pacer turned off
+2708 chartevents.515 vent asynchron
+2709 chartevents.515 vent demand
+2710 labevents.51287 1+
+2711 labevents.51287 2+
+2712 labevents.51287 3+
+2713 labevents.51287 normal
+2714 labevents.51287 occasional
+2715 chartevents.3616 clavicle
+2716 chartevents.3616 comment
+2717 chartevents.3616 extremities
+2718 chartevents.3616 none
+2719 chartevents.130 gesturing
+2720 chartevents.130 mouthing words
+2721 chartevents.130 nodding
+2722 chartevents.130 none
+2723 chartevents.130 other/remarks
+2724 chartevents.130 symbol/abc board
+2725 chartevents.130 translator
+2726 chartevents.130 verbal
+2727 chartevents.130 write
+2728 inputevents_mv.223262 
+2729 chartevents.3520 atrophy
+2730 chartevents.3520 comment
+2731 chartevents.3520 contractures
+2732 chartevents.3520 none
+2733 chartevents.803 
+2734 chartevents.3735 
+2735 labevents.50964 
+2736 labevents.50964 abnormal
+2737 chartevents.3580 
+2738 chartevents.3581 
+2739 chartevents.3582 
+2740 outputevents.43175 
+2741 procedureevents_mv.225432 
+2742 chartevents.225189 
+2743 chartevents.3513 0 unassessable
+2744 chartevents.3513 1 normal
+2745 chartevents.3513 2 hyperactive
+2746 chartevents.3513 3 markedly hyper
+2747 chartevents.3451 
+2748 inputevents_cv.30120 
+2749 chartevents.8475 clammy
+2750 chartevents.8475 diaphoretic
+2751 chartevents.8475 dry
+2752 chartevents.8475 other/remarks
+2753 chartevents.518 attached-pacer
+2754 chartevents.518 other/remarks
+2755 chartevents.518 protect & secure
+2756 chartevents.518 wires dc'd
+2757 inputevents_cv.30005 
+2758 inputevents_mv.221833 
+2759 chartevents.3512 comment
+2760 chartevents.3512 no
+2761 chartevents.3512 yes
+2762 chartevents.3385 comment
+2763 chartevents.3385 no
+2764 chartevents.3385 yes
+2765 chartevents.3642 approximated
+2766 chartevents.3642 comment
+2767 chartevents.3642 moveable
+2768 chartevents.3642 overriding
+2769 chartevents.3642 smooth
+2770 chartevents.3642 spread
+2771 labevents.51462 
+2772 labevents.51462 error
+2773 labevents.51462 few
+2774 labevents.51462 loaded
+2775 labevents.51462 many
+2776 labevents.51462 mod
+2777 labevents.51462 none
+2778 labevents.51462 occ
+2779 labevents.51462 rare
+2780 chartevents.3765 
+2781 chartevents.225086 
+2782 chartevents.225175 
+2783 chartevents.8437 albuterol
+2784 chartevents.8437 atrovent
+2785 chartevents.8437 combivent
+2786 chartevents.8437 flovent
+2787 chartevents.8437 other
+2788 chartevents.8437 serevent
+2789 chartevents.8437 vanceril
+2790 chartevents.823 
+2791 chartevents.226185 
+2792 chartevents.8430 changed
+2793 chartevents.8430 intact
+2794 chartevents.8430 reinforced
+2795 chartevents.5818 
+2796 outputevents.226588 
+2797 procedureevents_mv.224385 
+2798 chartevents.417 
+2799 chartevents.158 done
+2800 chartevents.158 not done
+2801 chartevents.158 other
+2802 chartevents.227366 
+2803 inputevents_cv.30015 
+2804 chartevents.5911 comment
+2805 chartevents.5911 no
+2806 chartevents.5911 yes
+2807 inputevents_mv.225850 
+2808 chartevents.226136 
+2809 chartevents.228137 
+2810 chartevents.517 
+2811 chartevents.519 
+2812 chartevents.227369 
+2813 chartevents.521 
+2814 inputevents_mv.225823 
+2815 chartevents.1483 agitated
+2816 chartevents.1483 cmo
+2817 chartevents.1483 elevated icp
+2818 chartevents.1483 exempt per md
+2819 chartevents.1483 exempt per order
+2820 chartevents.1483 fio2> 60%
+2821 chartevents.1483 hemodyn instabil
+2822 chartevents.1483 icp instability
+2823 chartevents.1483 isch/arrhythmia
+2824 chartevents.1483 neuromusc block
+2825 chartevents.1483 niv
+2826 chartevents.1483 no spon resp
+2827 chartevents.1483 or/procedure
+2828 chartevents.1483 other/remarks
+2829 chartevents.1483 paralyzed
+2830 chartevents.1483 peep >10
+2831 chartevents.1483 rr > 35
+2832 chartevents.1483 sao2 < 90%
+2833 chartevents.1483 unstable airway
+2834 chartevents.1483 unstable spine
+2835 chartevents.1483 vent dependant
+2836 chartevents.8521 infusion
+2837 chartevents.8521 prn adapter
+2838 chartevents.225206 
+2839 chartevents.860 
+2840 chartevents.3615 comment
+2841 chartevents.3615 no
+2842 chartevents.3615 yes
+2843 chartevents.226139 
+2844 chartevents.413 abdominal
+2845 chartevents.413 arm, l lower
+2846 chartevents.413 arm, l upper
+2847 chartevents.413 arm, r lower
+2848 chartevents.413 arm, r upper
+2849 chartevents.413 axilla, left
+2850 chartevents.413 axilla, right
+2851 chartevents.413 back
+2852 chartevents.413 breast
+2853 chartevents.413 buttocks
+2854 chartevents.413 facial
+2855 chartevents.413 femoral, left
+2856 chartevents.413 femoral, right
+2857 chartevents.413 foot, left
+2858 chartevents.413 foot, right
+2859 chartevents.413 groin, left
+2860 chartevents.413 groin, right
+2861 chartevents.413 head
+2862 chartevents.413 heel, left
+2863 chartevents.413 hip, left
+2864 chartevents.413 hip, right
+2865 chartevents.413 left leg
+2866 chartevents.413 left lower quad
+2867 chartevents.413 left upper quad
+2868 chartevents.413 leg, l lower
+2869 chartevents.413 leg, l upper
+2870 chartevents.413 leg, r lower
+2871 chartevents.413 leg, r upper
+2872 chartevents.413 mediastinal
+2873 chartevents.413 neck
+2874 chartevents.413 neck, left
+2875 chartevents.413 neck, right
+2876 chartevents.413 other/remarks
+2877 chartevents.413 other2/remarks
+2878 chartevents.413 right leg
+2879 chartevents.413 right lower quad
+2880 chartevents.413 right upper quad
+2881 chartevents.413 sternum
+2882 chartevents.413 thoracotomy, l
+2883 chartevents.413 thoracotomy, r
+2884 outputevents.40052 
+2885 chartevents.643 ashen
+2886 chartevents.643 bronze
+2887 chartevents.643 cyanotic
+2888 chartevents.643 dusky
+2889 chartevents.643 flushed
+2890 chartevents.643 jaundiced
+2891 chartevents.643 mottled
+2892 chartevents.643 normal for race
+2893 chartevents.643 other/remarks
+2894 chartevents.643 pale
+2895 chartevents.466 acute pain serv
+2896 chartevents.466 c surg rn
+2897 chartevents.466 cardiacconsultrn
+2898 chartevents.466 chaplain
+2899 chartevents.466 diabetic cns
+2900 chartevents.466 dialysis rn
+2901 chartevents.466 dietician
+2902 chartevents.466 enterostomal rn
+2903 chartevents.466 hemonc rn
+2904 chartevents.466 home care
+2905 chartevents.466 hospice
+2906 chartevents.466 iv rn
+2907 chartevents.466 neuro rehab
+2908 chartevents.466 neuro surg cns
+2909 chartevents.466 nurse case mgr
+2910 chartevents.466 ob/gyn rn
+2911 chartevents.466 occupationtherap
+2912 chartevents.466 ortho tech
+2913 chartevents.466 other/remarks
+2914 chartevents.466 pharmacy
+2915 chartevents.466 physiatrist
+2916 chartevents.466 physical therapy
+2917 chartevents.466 psych liason
+2918 chartevents.466 rehab/skin cns
+2919 chartevents.466 resp therapy
+2920 chartevents.466 social services
+2921 chartevents.466 speech/swallowrn
+2922 chartevents.466 stroke cns
+2923 chartevents.466 trauma cns
+2924 chartevents.5909 comment
+2925 chartevents.5909 no
+2926 chartevents.5909 yes
+2927 chartevents.5912 comment
+2928 chartevents.5912 no
+2929 chartevents.5912 yes
+2930 chartevents.5907 comment
+2931 chartevents.5907 no
+2932 chartevents.5907 yes
+2933 inputevents_cv.30118 
+2934 inputevents_mv.221385 
+2935 chartevents.3341 1210
+2936 chartevents.3341 72
+2937 chartevents.3341 bili
+2938 chartevents.3341 clotted
+2939 chartevents.3341 d
+2940 chartevents.3341 don
+2941 chartevents.3341 donc
+2942 chartevents.3341 done
+2943 chartevents.3341 donr
+2944 chartevents.3341 drawn
+2945 chartevents.3341 given
+2946 chartevents.3341 hct
+2947 chartevents.3341 nt sent
+2948 chartevents.3341 repeat
+2949 chartevents.3341 resent
+2950 chartevents.3341 sebt
+2951 chartevents.3341 sent
+2952 chartevents.3341 sent.
+2953 chartevents.3341 sentr
+2954 chartevents.3341 snet
+2955 chartevents.3341 ssent
+2956 chartevents.3341 type/co
+2957 chartevents.3341 yes
+2958 procedureevents_mv.221217 
+2959 labevents.50995 
+2960 labevents.50995 abnormal
+2961 outputevents.40061 
+2962 chartevents.705 activity change
+2963 chartevents.705 constipation
+2964 chartevents.705 hypotension
+2965 chartevents.705 loss of appetite
+2966 chartevents.705 nausea
+2967 chartevents.705 none
+2968 chartevents.705 other/remarks
+2969 chartevents.705 pruritis
+2970 chartevents.705 sleep disturb
+2971 chartevents.705 vomiting
+2972 chartevents.645 cold
+2973 chartevents.645 cool
+2974 chartevents.645 hot
+2975 chartevents.645 other/remarks
+2976 chartevents.645 warm
+2977 chartevents.3292 blue
+2978 chartevents.3292 comment
+2979 chartevents.3292 dusky
+2980 chartevents.3292 mottled
+2981 chartevents.3292 pink
+2982 outputevents.40064 
+2983 procedureevents_mv.224264 
+2984 chartevents.285 dampened
+2985 chartevents.285 fling
+2986 chartevents.285 not applicable
+2987 chartevents.285 other/remarks
+2988 chartevents.285 overshoot
+2989 chartevents.285 sharp
+2990 chartevents.285 unable to wedge
+2991 chartevents.3583 
+2992 chartevents.3692 
+2993 chartevents.3333 1210
+2994 chartevents.3333 central
+2995 chartevents.3333 doen
+2996 chartevents.3333 done
+2997 chartevents.3333 done x1
+2998 chartevents.3333 done'
+2999 chartevents.3333 drawn
+3000 chartevents.3333 given
+3001 chartevents.3333 held
+3002 chartevents.3333 neg.
+3003 chartevents.3333 resent
+3004 chartevents.3333 se4nt
+3005 chartevents.3333 sent
+3006 chartevents.3333 sent'
+3007 chartevents.3333 seny
+3008 chartevents.3333 yes
+3009 inputevents_cv.30187 
+3010 labevents.51288 
+3011 labevents.51288 abnormal
+3012 labevents.50930 
+3013 labevents.50930 abnormal
+3014 chartevents.5905 comment
+3015 chartevents.5905 done
+3016 datetimeevents.5686 flag
+3017 inputevents_cv.30102 
+3018 chartevents.123 left anterior
+3019 chartevents.123 left posterior
+3020 chartevents.123 mediastinal
+3021 chartevents.123 other/remarks
+3022 chartevents.123 right anterior
+3023 chartevents.123 right posterior
+3024 chartevents.3295 comment
+3025 chartevents.3295 firm
+3026 chartevents.3295 fixed
+3027 chartevents.3295 none
+3028 chartevents.3295 persistent
+3029 chartevents.3295 soft
+3030 chartevents.3295 transient
+3031 inputevents_mv.225152 
+3032 chartevents.616 agonal
+3033 chartevents.616 apneic
+3034 chartevents.616 dyspneic
+3035 chartevents.616 labored
+3036 chartevents.616 normal
+3037 chartevents.616 other/remarks
+3038 chartevents.616 shallow
+3039 chartevents.616 splinting
+3040 labevents.51007 
+3041 labevents.51007 abnormal
+3042 datetimeevents.224186 flag
+3043 chartevents.3565 comment
+3044 chartevents.3565 no
+3045 chartevents.3565 yes
+3046 labevents.51296 1+
+3047 labevents.51296 2+
+3048 labevents.51296 3+
+3049 labevents.51296 normal
+3050 labevents.51296 occasional
+3051 inputevents_mv.223260 
+3052 inputevents_mv.221906 
+3053 chartevents.8369 discontinued
+3054 chartevents.8369 no
+3055 chartevents.8369 not applicable
+3056 chartevents.8369 other/remarks
+3057 chartevents.8369 yes
+3058 chartevents.400 ace wrap
+3059 chartevents.400 angio seal
+3060 chartevents.400 dermabond
+3061 chartevents.400 dry sterile dsg
+3062 chartevents.400 none
+3063 chartevents.400 other/remarks
+3064 chartevents.400 packing
+3065 chartevents.400 transparent
+3066 chartevents.400 vac black foam
+3067 chartevents.400 vac dressing
+3068 chartevents.400 wet to dry
+3069 chartevents.439 
+3070 labevents.50963 
+3071 labevents.50963 abnormal
+3072 chartevents.8552 
+3073 chartevents.56 discontinued
+3074 chartevents.56 no
+3075 chartevents.56 not applicable
+3076 chartevents.56 other/remarks
+3077 chartevents.56 yes
+3078 chartevents.3465 broviac
+3079 chartevents.3465 comment
+3080 chartevents.3465 double lumen uv1
+3081 chartevents.3465 double lumen uv2
+3082 chartevents.3465 double lumen uvc
+3083 chartevents.3465 left arm
+3084 chartevents.3465 left foot
+3085 chartevents.3465 left hand
+3086 chartevents.3465 left leg
+3087 chartevents.3465 percutaneous ivc
+3088 chartevents.3465 periph arterial
+3089 chartevents.3465 right arm
+3090 chartevents.3465 right foot
+3091 chartevents.3465 right hand
+3092 chartevents.3465 right leg
+3093 chartevents.3465 scalp
+3094 chartevents.3465 uac
+3095 chartevents.3465 uvc
+3096 labevents.50967 
+3097 labevents.50967 abnormal
+3098 inputevents_mv.225893 
+3099 outputevents.226576 
+3100 chartevents.225112 
+3101 inputevents_cv.30001 
+3102 chartevents.8371 
+3103 chartevents.320 infiltrate
+3104 chartevents.320 infusing well
+3105 chartevents.320 phlebitic
+3106 chartevents.320 puffy
+3107 chartevents.320 red
+3108 chartevents.320 soft
+3109 chartevents.394 brown
+3110 chartevents.394 green
+3111 chartevents.394 none
+3112 chartevents.394 other/remarks
+3113 chartevents.394 purulent
+3114 chartevents.394 sanguinous
+3115 chartevents.394 serosanguinous
+3116 chartevents.394 serous
+3117 chartevents.394 yellow
+3118 inputevents_cv.30020 
+3119 chartevents.468 aerosol-cool
+3120 chartevents.468 bipap mask
+3121 chartevents.468 cpap mask
+3122 chartevents.468 face tent
+3123 chartevents.468 heated neb
+3124 chartevents.468 hi flow neb
+3125 chartevents.468 medium conc mask
+3126 chartevents.468 nasal cannula
+3127 chartevents.468 non-rebreather
+3128 chartevents.468 none
+3129 chartevents.468 other/remarks
+3130 chartevents.468 t-piece
+3131 chartevents.468 trach mask
+3132 chartevents.468 venti mask
+3133 datetimeevents.224184 flag
+3134 outputevents.226626 
+3135 chartevents.220274 
+3136 chartevents.225672 
+3137 chartevents.242 discontinued
+3138 chartevents.242 no
+3139 chartevents.242 not applicable
+3140 chartevents.242 other/remarks
+3141 chartevents.242 yes
+3142 chartevents.47 l brachial
+3143 chartevents.47 l femoral
+3144 chartevents.47 r brachial
+3145 chartevents.47 r femoral
+3146 chartevents.3810 
+3147 chartevents.855 
+3148 chartevents.629 focal
+3149 chartevents.629 general
+3150 chartevents.629 none
+3151 chartevents.629 other/remarks
+3152 chartevents.629 status
+3153 datetimeevents.224183 flag
+3154 chartevents.3803 
+3155 chartevents.3511 comment
+3156 chartevents.3511 no
+3157 chartevents.3511 yes
+3158 chartevents.225105 
+3159 chartevents.3747 
+3160 chartevents.3792 
+3161 inputevents_mv.221828 
+3162 inputevents_mv.221828 10.0000008
+3163 inputevents_mv.221828 40.0000032
+3164 inputevents_mv.221828 50.0000046
+3165 chartevents.465 double vision
+3166 chartevents.465 headache
+3167 chartevents.465 not indicated
+3168 chartevents.465 other/remarks
+3169 chartevents.465 tremors
+3170 chartevents.465 vertigo
+3171 chartevents.465 vomiting
+3172 chartevents.3563 comment
+3173 chartevents.3563 no
+3174 chartevents.3563 yes
+3175 chartevents.345 abrasion
+3176 chartevents.345 arterial ulcer
+3177 chartevents.345 blister
+3178 chartevents.345 burn
+3179 chartevents.345 contusion
+3180 chartevents.345 degloving injury
+3181 chartevents.345 edema/swelling
+3182 chartevents.345 exfoliating rash
+3183 chartevents.345 fasciotomy
+3184 chartevents.345 hematoma
+3185 chartevents.345 laceration
+3186 chartevents.345 neuropathic ulce
+3187 chartevents.345 other/remarks
+3188 chartevents.345 petechiae
+3189 chartevents.345 radiation reacti
+3190 chartevents.345 rash
+3191 chartevents.345 skin tear
+3192 chartevents.345 subq emphysema
+3193 chartevents.345 venous ulcer
+3194 chartevents.58 
+3195 chartevents.43 clean and dry
+3196 chartevents.43 ecchymotic
+3197 chartevents.43 hematoma
+3198 chartevents.43 oozing
+3199 chartevents.43 other/remarks
+3200 chartevents.3732 
+3201 chartevents.45 ace wrap
+3202 chartevents.45 dry sterile dsg
+3203 chartevents.45 none
+3204 chartevents.45 other/remarks
+3205 chartevents.45 packing
+3206 chartevents.45 pressure
+3207 chartevents.45 transparent
+3208 chartevents.45 wet to dry
+3209 chartevents.3690 comment
+3210 chartevents.3690 no
+3211 chartevents.3690 yes
+3212 chartevents.3445 comment
+3213 chartevents.3445 given
+3214 chartevents.3445 held
+3215 chartevents.357 accuzyme
+3216 chartevents.357 ace wrap
+3217 chartevents.357 adaptic
+3218 chartevents.357 alginate/kalstat
+3219 chartevents.357 allevyn
+3220 chartevents.357 antifungal oint
+3221 chartevents.357 antifungal powde
+3222 chartevents.357 aquacel
+3223 chartevents.357 aquacel ag
+3224 chartevents.357 aquaphor
+3225 chartevents.357 collagenase
+3226 chartevents.357 dermagran
+3227 chartevents.357 dry sterile dsg
+3228 chartevents.357 duoderm
+3229 chartevents.357 hydrogel/vigilon
+3230 chartevents.357 leech therapy
+3231 chartevents.357 open to air
+3232 chartevents.357 other/remarks
+3233 chartevents.357 transparent
+3234 chartevents.357 wet to dry
+3235 chartevents.357 wound gel
+3236 chartevents.357 wound gel/adapti
+3237 chartevents.89 
+3238 chartevents.471 
+3239 chartevents.3303 comment
+3240 chartevents.3303 given
+3241 chartevents.3303 held
+3242 chartevents.661 colostomy
+3243 chartevents.661 diaper
+3244 chartevents.661 fecal incont bag
+3245 chartevents.661 ileostomy
+3246 chartevents.661 mushroom cath
+3247 chartevents.661 other/remarks
+3248 chartevents.661 rectal foley
+3249 chartevents.661 rectal tube
+3250 inputevents_mv.225944 
+3251 inputevents_mv.225834 
+3252 chartevents.472 
+3253 chartevents.3626 large
+3254 chartevents.3626 medium
+3255 chartevents.3626 none
+3256 chartevents.3626 small
+3257 chartevents.8417 clean and dry
+3258 chartevents.8417 ecchymotic
+3259 chartevents.8417 erythema
+3260 chartevents.8417 granulating
+3261 chartevents.8417 necrotic
+3262 chartevents.8417 other/remarks
+3263 chartevents.8417 pink
+3264 chartevents.473 
+3265 chartevents.717 discontinued
+3266 chartevents.717 no
+3267 chartevents.717 not applicable
+3268 chartevents.717 other/remarks
+3269 chartevents.717 yes
+3270 chartevents.3294 
+3271 chartevents.224923 
+3272 inputevents_mv.225884 
+3273 inputevents_mv.222056 
+3274 chartevents.8403 14 gauge
+3275 chartevents.8403 16 gauge
+3276 chartevents.8403 18 gauge
+3277 chartevents.8403 20 gauge
+3278 chartevents.8403 22 gauge
+3279 chartevents.8403 other/remarks
+3280 inputevents_mv.225942 
+3281 chartevents.223872 
+3282 chartevents.225638 
+3283 chartevents.227287 
+3284 chartevents.8482 discontinued
+3285 chartevents.8482 no
+3286 chartevents.8482 not applicable
+3287 chartevents.8482 other/remarks
+3288 chartevents.8482 yes
+3289 datetimeevents.224187 flag
+3290 chartevents.8468 ashen
+3291 chartevents.8468 cyanotic
+3292 chartevents.8468 dusky
+3293 chartevents.8468 flushed
+3294 chartevents.8468 mottled
+3295 chartevents.8468 normal
+3296 chartevents.8468 other/remarks
+3297 chartevents.8468 pale
+3298 chartevents.8468 pink
+3299 chartevents.1704 
+3300 chartevents.1391 
+3301 chartevents.8510 back
+3302 chartevents.8510 extremity
+3303 chartevents.8510 head
+3304 chartevents.8510 trunk
+3305 datetimeevents.224296 flag
+3306 chartevents.8406 copious
+3307 chartevents.8406 heavy
+3308 chartevents.8406 large
+3309 chartevents.8406 moderate
+3310 chartevents.8406 other/remarks
+3311 chartevents.8406 scant
+3312 chartevents.8406 small
+3313 procedureevents_mv.224267 
+3314 labevents.50889 
+3315 labevents.50889 abnormal
+3316 datetimeevents.224295 flag
+3317 chartevents.3745 
+3318 outputevents.227510 
+3319 chartevents.327 bleeding
+3320 chartevents.327 drainage
+3321 chartevents.327 ecchymotic
+3322 chartevents.327 erythematous
+3323 chartevents.327 infiltrated
+3324 chartevents.327 other/remarks
+3325 chartevents.327 pain
+3326 chartevents.327 redness
+3327 chartevents.327 swelling
+3328 chartevents.327 wnl
+3329 chartevents.3631 comment
+3330 chartevents.3631 negative
+3331 chartevents.3631 positive
+3332 chartevents.220581 
+3333 inputevents_mv.225851 
+3334 chartevents.387 approximated
+3335 chartevents.387 dehisced
+3336 chartevents.387 healed
+3337 chartevents.387 open
+3338 chartevents.387 other/remarks
+3339 chartevents.387 steri-strip
+3340 chartevents.387 suture/staples
+3341 chartevents.227358 
+3342 chartevents.136 none
+3343 chartevents.136 other/remarks
+3344 chartevents.136 strong
+3345 chartevents.136 weak
+3346 chartevents.363 black
+3347 chartevents.363 other/remarks
+3348 chartevents.363 pink
+3349 chartevents.363 purple
+3350 chartevents.363 red
+3351 chartevents.363 red/purple
+3352 chartevents.363 yellow
+3353 inputevents_mv.225859 
+3354 chartevents.8365 clean and dry
+3355 chartevents.8365 ecchymotic
+3356 chartevents.8365 hematoma
+3357 chartevents.8365 oozing
+3358 chartevents.8365 other/remarks
+3359 chartevents.226115 
+3360 chartevents.8378 done
+3361 chartevents.8378 not applicable
+3362 chartevents.8378 not done
+3363 chartevents.8378 other/remarks
+3364 inputevents_mv.220864 
+3365 chartevents.303 left antecub
+3366 chartevents.303 left foot
+3367 chartevents.303 left hand
+3368 chartevents.303 left wrist
+3369 chartevents.303 ll ant forearm
+3370 chartevents.303 ll post forearm
+3371 chartevents.303 lu ant forearm
+3372 chartevents.303 lu post forearm
+3373 chartevents.303 other/remarks
+3374 chartevents.303 right antecub
+3375 chartevents.303 right foot
+3376 chartevents.303 right hand
+3377 chartevents.303 right wrist
+3378 chartevents.303 rl ant forearm
+3379 chartevents.303 rl post forearm
+3380 chartevents.303 ru ant forearm
+3381 chartevents.303 ru post forearm
+3382 labevents.50955 done
+3383 labevents.50955 hold
+3384 datetimeevents.224298 flag
+3385 datetimeevents.224292 flag
+3386 labevents.51294 1+
+3387 labevents.51294 2+
+3388 labevents.51294 3+
+3389 labevents.51294 normal
+3390 labevents.51294 occasional

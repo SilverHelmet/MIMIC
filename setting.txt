@@ -1,0 +1,25 @@
+# model
+segment=True
+disturbance=True
+lr_hiden=False
+flat_event=False
+
+# model learning 
+lr=0.3
+batch_size=128
+
+# dataset
+train_dataset=ICU_exper/ICUIn_train_300.h5
+test_dataset=ICU_exper/ICUIn_test_300.h5
+
+# segment
+aggregation=sum
+seg_mode=custom
+train_seg_file=gmm/gmm_train.h5
+test_seg_file=gmm/gmm_test.h5
+
+# embedding 
+embedding_in=ICU_exper/embeddings/fixChunk#length.emd.npy
+embedding_out=ICU_exper/embeddings/fixChunk#length.emd2
+
+
