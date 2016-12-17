@@ -138,9 +138,12 @@ for t in range(30):
         pre[i][0]=classes[0][0]
         if (i % 1000 == 908):
             print i
+    print "old AUC =", roc_auc_score(label, pre)
     print "old AUC =", roc_auc_score(test_label, pre)
+    print pre[:33]
     predictions = model.predict_generator(generator = sample_generator(test_event, test_label, batch_size), 
         val_samples = test_label.size)
+    print predictions[:33]
     print "prediction shape = ", predictions.shape
     print "test label shape = ", test_label.shape
 
