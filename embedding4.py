@@ -138,18 +138,19 @@ for t in range(30):
     #     pre[i][0]=classes[0][0]
     #     if (i % 1000 == 908):
     #         print i
+    # print "AUC =", roc_auc_score(test_label, pre)
     predictions = model.predict_generator(generator = sample_generator(test_event, test_label, batch_size), 
         val_samples = test_label.size)
     print "prediction shape = ", predictions.shape
     print "test label shape = ", test_label.shape
 
-    auc = roc_auc_score(test_label, pre)
+    auc = roc_auc_score(test_label, predictions)
     print 'AUC =',auc
 
     predictions[predictions >= 0.5] = 1
     predictions[predictions < 0.5] = 0
     acc = np.mean(test_label == predictions)
-    print "ACU =", acc
+    print "ACC =", acc
 
 
 
