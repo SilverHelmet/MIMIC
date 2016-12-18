@@ -1,0 +1,13 @@
+# embedding input
+emd=ICU_exper/embeddings/fixLength25_r2_noinput.emd.npy
+
+# dataset input
+train_dataset=ICU_exper/ICUIn_train_300.h5
+test_dataset=ICU_exper/ICUIn_test_300.h5
+
+# segs IO
+aggre_mode=sum
+train_segs=ICU_exper/segs/gmm_train_300_fixLength_r1.h5
+train_segs_out=ICU_exper/segs/gmm_train_300_fixLength_r2.h5
+test_segs_out=ICU_exper/segs/gmm_test_300_fixLength_r2.h5
+
