@@ -68,7 +68,8 @@ pre = np.zeros([8909,1])
 model = Sequential()
 #model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
 model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
-    input_length = None, output_dim = hidden_size ))
+    input_length = None, output_dim = hidden_size,
+    W_regularizer = l2(0.001), b_regularizer = l2(0.001) ))
 #return_sequences=True,
 # model.add(Dropout(0.5))
 #model.add(TimeDistributedDense(1))
