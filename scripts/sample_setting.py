@@ -130,6 +130,11 @@ class Sample:
         for event_str in obj['events']:
             sample.events.append(Event.load_from_line(event_str))
         return sample
+
+    @staticmethod
+    def load_label(obj):
+        sample_setting = SampleSetting.load_from_json(obj['sample_setting'])
+        return sample_setting.label
         
         
 

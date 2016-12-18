@@ -139,6 +139,11 @@ def norm_to_prob(X):
 def load_numpy_array(filepath):
     return np.load(filepath)
 
+def now():
+    return datetime.datetime.now().strftime('%m-%d %H:%M:%S')
+
+    
+
 
 def load_setting(filepath):
     setting = {}

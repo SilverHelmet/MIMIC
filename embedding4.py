@@ -58,15 +58,15 @@ event = file['event'][:]
 test_label = np.array([label], dtype = 'int32').T
 test_event = np.array(event, dtype = 'float64')
 
-hidden_size = 128    #
+hidden_size = 128    
 embedding_dim = 128
 #layers = 1
 test_result = np.zeros([8909, 1])
 print "finish"
 w_reg = None
 b_reg = None
-w_reg = l2(0.001)
-b_reg = l2(0.001)
+w_reg = l2(0.0001)
+b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
 #model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
