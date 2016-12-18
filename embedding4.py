@@ -11,7 +11,7 @@ import numpy as np
 from  keras.layers.core import RepeatVector, TimeDistributedDense, Activation, Dropout, Dense
 from keras.layers import Embedding
 from keras.optimizers import Adam, SGD
-from keras.regularizers import l2
+from keras.regularizers import l2, l1l2, l1
 from sklearn.metrics import roc_auc_score
 import h5py
 #np.random.seed(0)
