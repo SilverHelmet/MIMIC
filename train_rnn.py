@@ -79,7 +79,7 @@ def define_simple_sequential_rnn():
     b_reg = l2(0.0001)
     model.add(Masking(mask_value=0., input_shape = (max_segs, event_dim)))
     model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
-        input_length = None, output_dim = hidden_size,
+        input_length = None, output_dim = hiden_dim,
         W_regularizer = w_reg, b_regularizer = b_reg ))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
@@ -387,8 +387,8 @@ if __name__ == '__main__':
     add_feature_flag = setting.get('add_feature', True)
 
 
-    model = define_simple_seg_rnn()
-    # model = define_simple_sequential_rnn()
+    # model = define_simple_seg_rnn()
+    model = define_simple_sequential_rnn()
     # if embedding_in != None:
     #     model = define_rnn(disturbance, flat_event_flag, embedding_in)
     # else:
