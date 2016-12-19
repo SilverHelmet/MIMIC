@@ -240,7 +240,9 @@ def merge_event_by_seg(event_seq, split):
             event_seqs.append(event_seq[st:ed])
             st = ed
     event_cnts = sequence2bow(event_seqs)
-    if aggre_mode == "ave":
+    if aggre_mode == "one":
+        event_cnts[event_cnts > 1] = 1
+    elif aggre_mode == "ave":
         event_cnts = norm_to_prob(event_cnts)
     return event_cnts
 
@@ -332,6 +334,7 @@ if __name__ == '__main__':
         labels, features, events, ids, segs = load_data(train_file, train_seg_file)
         val_labels, val_feaures, val_events, val_ids, val_segs = load_data(test_file, test_seg_file)
         max_segs = segs.shape[1]
+        print "max_segs = %d" %max_segs
     else:
         labels, features, events, ids, = load_data(train_file)
         val_labels, val_feaures, val_events, val_ids = load_data(test_file)
