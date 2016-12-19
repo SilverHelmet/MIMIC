@@ -44,8 +44,8 @@ def sample_generator(events, labels, batch_size):
 em = 20
 # load train data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\train_100_1000_True.h5','r')  
-# file = h5py.File("exper/train_100_1000_True.h5", 'r')
-file = h5py.File("ICU_exper/ICUIn_train_800.h5")
+file = h5py.File("exper/train_100_1000_True.h5", 'r')
+# file = h5py.File("ICU_exper/ICUIn_train_800.h5")
 label = file['label'][:]
 event = file['event'][:]
 train_label = np.array([label], dtype = 'int32').T
@@ -56,8 +56,8 @@ print "length = %d" %length
 
 #load test data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\test_100_1000_True.h5','r')  
-# file = h5py.File("exper/test_100_1000_True.h5", 'r')
-file = h5py.File("ICU_exper/ICUIn_test_800.h5")
+file = h5py.File("exper/test_100_1000_True.h5", 'r')
+# file = h5py.File("ICU_exper/ICUIn_test_800.h5")
 label = file['label'][:]
 event = file['event'][:]
 test_label = np.array([label], dtype = 'int32').T
@@ -71,13 +71,12 @@ w_reg = None
 b_reg = None
 w_reg = l2(0.0001)
 b_reg = l2(0.0001)
-pre = np.zeros([8909,1])
 model = Sequential()
 model.add(Masking(mask_value=0., input_shape = (length, 3391)))
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
-# model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
-        # bias = False))
-model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
+model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
+        bias = False))
+model.add(LSTM(input_dim = embedding_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
     W_regularizer = w_reg, b_regularizer = b_reg ))
 #return_sequences=True,
@@ -99,7 +98,7 @@ print "test size = %d" %test_label.size
 a=model.get_config() 
 print a
 batch_size = 32
-for t in range(30):
+for t in range(120):
     print('-' * 50)
     print('Iteration ', t+1)
     nb_samples = train_label.size
