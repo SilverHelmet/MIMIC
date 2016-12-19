@@ -53,7 +53,7 @@ train_event = np.array(event, dtype = 'float64')
 event_len = train_event.shape[1]
 length = (event_len/em)
 print "length = %d" %length
-
+print "train_event shape = %s" %(train_event.shape)
 #load test data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\test_100_1000_True.h5','r')  
 file = h5py.File("exper/test_100_1000_True.h5", 'r')
@@ -98,6 +98,7 @@ print "test size = %d" %test_label.size
 a=model.get_config() 
 print a
 batch_size = 32
+print "batch_size = %d" %batch_size
 for t in range(120):
     print('-' * 50)
     print('Iteration ', t+1)

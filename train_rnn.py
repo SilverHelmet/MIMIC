@@ -36,7 +36,7 @@ def load_data(filepath, seg_filepath = None):
 
     
 feature_dim = 668
-embedding_dim = 50
+embedding_dim = 128
 hiden_dim = 128
 event_len = 800
 event_dim = 3391
@@ -96,13 +96,17 @@ def define_simple_sequential_rnn():
 
 def define_simple_seg_rnn():
     global hiden_dim
-    global event_len, event_dim ,setting
+    global event_len, event_dim ,setting, embedding_dim
     print "define simple seg rnn"
+    print "embedding_dim = %d" %embeddin_dim
+    print "hiden_dim = %d" %hiden_dim
     w_reg = l2(0.0001)
     b_reg = l2(0.0001)
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
-    lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
+    model.add(TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
+        bias = False))
+    lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
         W_regularizer = w_reg, b_regularizer = b_reg)(masked)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
