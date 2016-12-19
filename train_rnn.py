@@ -109,7 +109,7 @@ def define_simple_seg_rnn():
     # lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
     #     W_regularizer = w_reg, b_regularizer = b_reg)(emd)
     lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
-        W_regularizer = w_reg, b_regularizer = b_reg)(emd)
+        W_regularizer = w_reg, b_regularizer = b_reg)(masked)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
     opt = Adam(lr = 0.001)
