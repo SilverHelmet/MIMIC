@@ -8,20 +8,20 @@ add_feature=False
 # model training 
 lr=0.3
 batch_size=128
-nb_epoch=20
+nb_epoch=100
 
 # dataset
-train_dataset=ICU_exper/ICUIn_train_300.h5
-test_dataset=ICU_exper/ICUIn_test_300.h5
+train_dataset=ICU_exper/ICUIn_train_800.h5
+test_dataset=ICU_exper/ICUIn_test_800.h5
 
 # segment
 aggregation=sum
-seg_mode=custom
-train_seg_file=ICU_exper/segs/ICUIn_train_300_segmode=timeAggre.h5
-test_seg_file=ICU_exper/segs/ICUIn_test_300_segmode=timeAggre.h5
+seg_mode=timeAggre
+# train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre.h5
+# test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre.h5
 
 # embedding 
 # embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
-embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
+# embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
 
 

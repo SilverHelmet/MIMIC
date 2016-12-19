@@ -84,6 +84,8 @@ def define_simple_seg_rnn():
         loss = 'binary_crossentropy', 
          metrics=['accuracy'])
     print "opt config:", opt.get_config()
+    for layer in model.get_config()['layers']:
+        print "\t", layer   
     return model
 
 
