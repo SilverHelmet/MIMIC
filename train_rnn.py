@@ -98,7 +98,7 @@ def define_simple_seg_rnn():
     global hiden_dim
     global event_len, event_dim ,setting, embedding_dim
     print "define simple seg rnn"
-    print "embedding_dim = %d" %embeddin_dim
+    print "embedding_dim = %d" %embedding_dim
     print "hiden_dim = %d" %hiden_dim
     w_reg = l2(0.0001)
     b_reg = l2(0.0001)
