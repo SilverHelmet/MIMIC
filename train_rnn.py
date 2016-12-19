@@ -1,13 +1,13 @@
 from keras.models import Sequential
-from keras.layers.core import Activation, Dense, Masking, Merge
-from keras.layers.wrappers import TimeDistributed
+from keras.layers.core import Activation, Dense, Masking, Merge, TimeDistributedDense
+from keras.layers.wrappers import TimeDistributed, TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN
 from keras.layers import Input, merge
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
-from keras.optimizers import SGD
+from keras.optimizers import SGD, Adam 
 import numpy as np
 import h5py
 import sys
@@ -70,25 +70,31 @@ def load_weights(filepath, event_dim, dim):
     assert vocal_size == file_vocal_size-2
     return weights
 
+def define_simple_seg_rnn():
+    global hiden_dim
+    global event_len, event_dim ,setting
+
+    event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
+    masked = Masking(mask_value=0)(event_input)
+    lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid')
+    pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
+    model = Model(input = event_input, output = pred)
+    opt = Adam(lr = 0.001)
+    model.compile(optimizer = opt,
+        loss = 'binary_crossentropy', 
+         metrics=['accuracy'])
+    print "opt config:", opt.get_config()
+    return model
+
+
+
 def define_rnn(disturbance_flag, flat_event_flag, embedding_weights_file = None):
     global feature_dim, embedding_dim, hiden_dim
     global event_len, event_dim, setting
     global lr_hiden, segment_flag, max_segs
-    
 
     
-    # debug    
-    # event_len = 3
-    # event_dim = 10
-    # feature_dim = 3
-    # embedding_dim = 20
-    # hiden_dim = 10
-    # feature_data1 = [[0, 0, 0],[1, 0, 2],[1,2,3]]
-    # event_data1 = [0, 3 , 5]
-    # feature_data2 = [[1, 0, 2], [0,0,0],[1,2,3]]
-    # event_data2 = [3, 0, 5]
-    # event_data = np.array([event_data1, event_data2])
-    # feature_data = np.array([feature_data1, feature_data2])
+
 
     activation = "tanh"
     w_regul_ef = setting.get("w_reg", 0.001)
@@ -98,11 +104,6 @@ def define_rnn(disturbance_flag, flat_event_flag, embedding_weights_file = None)
         event_input = Input(shape = (max_segs, event_dim), name = 'seg_event_input')
     else:
         event_input = Input(shape = (event_len, ), name = "event_input")
-    # if embedding_weights_file is not None:
-    #     embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero =True, 
-    #             weights = [load_weights(embedding_weights_file, event_dim, embedding_dim)],
-    #             name = "event_embedding")(event_input)
-    # else:
     if embedding_weights_file is not None:
         init_weights = load_numpy_array(embedding_weights_file)
         init_weights[0, :] = 0
@@ -255,7 +256,7 @@ def sequence2bow(event):
 
 def sample_generator(labels, features, events, segs):
     nb_sample = len(labels)
-    global batch_size, disturbance, flat_event_flag, segment_flag
+    global batch_size, disturbance, flat_event_flag, segment_flag, add_feature_flag
     while  True:
         i = 0
         while i < nb_sample:
@@ -265,16 +266,24 @@ def sample_generator(labels, features, events, segs):
             label = labels[st:ed]
             event = events[st:ed]
             if segment_flag:
-                seg_event = []
-                seg_feature_matrixes = [] 
-                for j in range(st, ed):
-                    split_seq = segs[j]
-                    seg_event.append(merge_event_by_seg(events[j], split_seq))
-                    seg_feature_matrixes.append(merge_fea_by_seg(features[j], split_seq))
-                seg_event = np.array(seg_event)
-                seg_feature_matrixes = np.array(seg_feature_matrixes)
-                # print "data size", seg_event.shape, seg_feature_matrixes.shape, label.shape 
-                yield ([seg_event, seg_feature_matrixes] , label)            
+                if add_feature_flag:
+                    seg_event = []
+                    seg_feature_matrixes = [] 
+                    for j in range(st, ed):
+                        split_seq = segs[j]
+                        seg_event.append(merge_event_by_seg(events[j], split_seq))
+                        seg_feature_matrixes.append(merge_fea_by_seg(features[j], split_seq))
+                    seg_event = np.array(seg_event)
+                    seg_feature_matrixes = np.array(seg_feature_matrixes)
+                    # print "data size", seg_event.shape, seg_feature_matrixes.shape, label.shape 
+                    yield ([seg_event, seg_feature_matrixes] , label)            
+                else:
+                    seg_event = []
+                    for j in range(st, ed):
+                        split_seq = segs[j]
+                        seg_event.append(merge_event_by_seg(events[j], split_seg))
+                    seg_event = np.array(seg_event)
+                    yield(seg_event, label)
             elif disturbance:
                 feature_matrixes = []
                 for j in range(st, ed):
@@ -338,16 +347,19 @@ if __name__ == '__main__':
     segment_flag = setting.get("segment", False)
     aggre_mode = setting.get("aggregation", "sum")
     embedding_out_file = setting.get('embedding_out', None)
-    
-    if embedding_in != None:
-        model = define_rnn(disturbance, flat_event_flag, embedding_in)
-    else:
-        model = define_rnn(disturbance, flat_event_flag)
+    add_feature_flag = setting.get('add_feature', True)
+
+
+    model = define_simple_seg_rnn()
+    # if embedding_in != None:
+    #     model = define_rnn(disturbance, flat_event_flag, embedding_in)
+    # else:
+    #     model = define_rnn(disturbance, flat_event_flag)
     print "validation data size =", len(val_labels)
     print "batch_size =", batch_size
     print 'start trainning'
     early_stopping =EarlyStopping(monitor = "loss", patience = 2)  
-    nb_epoch = int(setting.get("nb_epoch", 5))
+    nb_epoch = int(setting.get("nb_epoch", 100))
     weights = {}
     for layer in model.layers:
         name = layer.name

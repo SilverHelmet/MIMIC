@@ -3,8 +3,9 @@ segment=True
 disturbance=True
 lr_hiden=False
 flat_event=False
+add_feature=False
 
-# model learning 
+# model training 
 lr=0.3
 batch_size=128
 nb_epoch=20
