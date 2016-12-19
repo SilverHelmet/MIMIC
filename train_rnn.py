@@ -90,8 +90,6 @@ def define_simple_sequential_rnn():
         metrics=['accuracy'])
     print "optimizer config"
     print opt.get_config()
-    for layer in model.get_config()['layers']:
-        print "\t", layer   
     return model
 
 def define_simple_seg_rnn():
