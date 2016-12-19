@@ -334,6 +334,7 @@ if __name__ == '__main__':
         labels, features, events, ids, segs = load_data(train_file, train_seg_file)
         val_labels, val_feaures, val_events, val_ids, val_segs = load_data(test_file, test_seg_file)
         max_segs = segs.shape[1]
+        max_segs = 40
         print "max_segs = %d" %max_segs
     else:
         labels, features, events, ids, = load_data(train_file)
