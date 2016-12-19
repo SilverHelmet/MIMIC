@@ -282,7 +282,7 @@ def sample_generator(labels, features, events, segs):
                 else:
                     seg_event = []
                     for j in range(st, ed):
-                        split_seq = segs[j]
+                        split_seg = segs[j]
                         seg_event.append(merge_event_by_seg(events[j], split_seg))
                     seg_event = np.array(seg_event)
                     yield(seg_event, label)
