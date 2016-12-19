@@ -150,7 +150,7 @@ if __name__ == "__main__":
         mode = sys.argv[2]
     max_chunks = 80
     chunk_length = 10
-    seg_out_path = infer_path(dataset_path, mode, chunk_length)
+    seg_out_path = infer_path(dataset_path, mode, max_chunk, chunk_length)
     print "load data from [%s] write segs to [%s], mode = [%s]" %(dataset_path, seg_out_path, mode)
 
     f = h5py.File(dataset_path, 'r')
