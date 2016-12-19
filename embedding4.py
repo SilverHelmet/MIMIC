@@ -8,7 +8,7 @@ Created on Wed Nov 16 16:18:25 2016
 from keras.models import  Sequential
 from keras.layers.recurrent import LSTM
 import numpy as np
-from  keras.layers.core import RepeatVector, TimeDistributedDense, Activation, Dropout, Dense, Masking
+from  keras.layers.core import RepeatVector, TimeDistributedDense, Activation, Dropout, Dense, Masking, Activation
 from keras.layers import Embedding, Input
 from keras.optimizers import Adam, SGD
 from keras.regularizers import l2, l1l2, l1
@@ -70,11 +70,10 @@ w_reg = l2(0.0001)
 b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
+model.add(Masking(mask_value=0., input_shape = (1000/em, 3391)))
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
 # model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
         # bias = False))
-model.add(Input(shape = (1000/em, em)))
-model.add(Masking(mask_value=0.))
 model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
     W_regularizer = w_reg, b_regularizer = b_reg ))
