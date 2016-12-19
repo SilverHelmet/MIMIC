@@ -69,8 +69,10 @@ w_reg = l2(0.0001)
 b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
-#model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
-model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
+# model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
+model.add(TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', init = "uniform",
+        bias = False), name = "event_embedding"))
+model.add(LSTM(input_dim = embedding_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
     W_regularizer = w_reg, b_regularizer = b_reg ))
 #return_sequences=True,
