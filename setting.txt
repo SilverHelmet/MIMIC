@@ -15,10 +15,12 @@ train_dataset=ICU_exper/ICUIn_train_800.h5
 test_dataset=ICU_exper/ICUIn_test_800.h5
 
 # segment
-aggregation=sum
+aggregation=custom
 seg_mode=timeAggre
 # train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre.h5
 # test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre.h5
+train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=fixLength_maxchunk=80_length=10.h5
+test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=fixLength_maxchunk=80_length=10.h5
 
 # embedding 
 # embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
