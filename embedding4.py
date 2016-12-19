@@ -73,7 +73,7 @@ model = Sequential()
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
 # model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
         # bias = False))
-model.add(Input(shape = (1000/em, em))
+model.add(Input(shape = (1000/em, em)))
 model.add(Masking(mask_value=0.))
 model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
