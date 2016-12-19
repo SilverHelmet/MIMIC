@@ -75,6 +75,8 @@ def define_simple_sequential_rnn():
 
     print "define simple Sequential rnn"
     model = Sequential()
+    w_reg = l2(0.0001)
+    b_reg = l2(0.0001)
     model.add(Masking(mask_value=0., input_shape = (max_segs, event_dim)))
     model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
         input_length = None, output_dim = hidden_size,
