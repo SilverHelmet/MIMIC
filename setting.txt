@@ -15,8 +15,8 @@ train_dataset=ICU_exper/ICUIn_train_800.h5
 test_dataset=ICU_exper/ICUIn_test_800.h5
 
 # segment
-aggregation=custom
-seg_mode=timeAggre
+aggregation=sum
+seg_mode=custom
 # train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre.h5
 # test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre.h5
 train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=fixLength_maxchunk=80_length=10.h5
