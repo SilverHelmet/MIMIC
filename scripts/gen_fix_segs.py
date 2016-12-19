@@ -125,7 +125,7 @@ def split_by_timeAggre(event_seq, time_seq, max_chunk):
 
 def infer_path(dataset_path, mode, max_chunk, chunk_length):
     filename = os.path.basename(dataset_path).split('.h5')[0]
-    if mode == "fixLengh":
+    if mode == "fixLength":
         return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
     return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d.h5" %(mode, max_chunk))
 
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     print "max_chunks = %d" %max_chunks
     print "chunk_length = %d" %chunk_length
     for idx, event_seq in enumerate(event):
-        if idx % 1000 == 0:
+        if idx % 10000 == 0:
             now_time = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
             print "\t %s collect %d" %(now_time, idx)
         if mode == "fixChunk#length":
