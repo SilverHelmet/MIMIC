@@ -123,9 +123,11 @@ def split_by_timeAggre(event_seq, time_seq, max_chunk):
     return seg
 
 
-def infer_path(dataset_path, mode):
+def infer_path(dataset_path, mode, max_chunk, chunk_length):
     filename = os.path.basename(dataset_path).split('.h5')[0]
-    return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s.h5" %mode)
+    if mode == "fixLengh":
+        return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
+    return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d.h5" %(mode, max_chunk))
 
 def infer_and_load(dataset_path, mode):
     path = infer_path(dataset_path, mode)
@@ -146,7 +148,9 @@ if __name__ == "__main__":
     dataset_path = sys.argv[1]
     if len(sys.argv) >= 3:
         mode = sys.argv[2]
-    seg_out_path = infer_path(dataset_path, mode)
+    max_chunks = 80
+    chunk_length = 10
+    seg_out_path = infer_path(dataset_path, mode, chunk_length)
     print "load data from [%s] write segs to [%s], mode = [%s]" %(dataset_path, seg_out_path, mode)
 
     f = h5py.File(dataset_path, 'r')
@@ -155,8 +159,9 @@ if __name__ == "__main__":
         times = f['time'][:]
     f.close()
     segs = []
-    max_chunks = 20
+
     print "max_chunks = %d" %max_chunks
+    print "chunk_length = %D" %chunk_length
     for idx, event_seq in enumerate(event):
         if idx % 1000 == 0:
             now_time = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
@@ -168,7 +173,7 @@ if __name__ == "__main__":
         elif mode == "fixTime":
             seg = split_by_time(event_seq, times[idx], time_slot, max_chunks)
         elif mode == "fixLength":
-            seg = split_by_length(event_seq, max_chunks, chunk_length = 15)
+            seg = split_by_length(event_seq, max_chunks, chunk_length = chunk_length)
         elif mode == "timeAggre":
             seg = split_by_timeAggre(event_seq, times[idx], max_chunks)
         else:
