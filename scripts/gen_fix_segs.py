@@ -161,7 +161,7 @@ if __name__ == "__main__":
     segs = []
 
     print "max_chunks = %d" %max_chunks
-    print "chunk_length = %D" %chunk_length
+    print "chunk_length = %d" %chunk_length
     for idx, event_seq in enumerate(event):
         if idx % 1000 == 0:
             now_time = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
