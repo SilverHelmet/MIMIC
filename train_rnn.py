@@ -112,7 +112,7 @@ def define_simple_seg_rnn():
         W_regularizer = w_reg, b_regularizer = b_reg)(masked)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
-    opt = Adam(lr = 0.001)
+    opt = Adam(lr = 0.001, decay = 0.03)
     model.compile(optimizer = opt,
         loss = 'binary_crossentropy', 
          metrics=['accuracy'])
