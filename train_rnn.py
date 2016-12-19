@@ -38,7 +38,7 @@ def load_data(filepath, seg_filepath = None):
 feature_dim = 668
 embedding_dim = 50
 hiden_dim = 128
-event_len = 300
+event_len = 800
 event_dim = 3391
 
 
@@ -340,6 +340,8 @@ if __name__ == '__main__':
     seg_mode = setting.get("seg_mode", None)
     train_file = setting["train_dataset"]
     test_file = setting['test_dataset']
+    print "train dataset = %s" %train_file
+    print "test dataset = %s" %test_file
     if seg_mode is not None:
         print "seg_mode =", seg_mode
         if seg_mode == 'custom':
@@ -374,8 +376,8 @@ if __name__ == '__main__':
     add_feature_flag = setting.get('add_feature', True)
 
 
-    # model = define_simple_seg_rnn()
-    model = define_simple_sequential_rnn()
+    model = define_simple_seg_rnn()
+    # model = define_simple_sequential_rnn()
     # if embedding_in != None:
     #     model = define_rnn(disturbance, flat_event_flag, embedding_in)
     # else:
