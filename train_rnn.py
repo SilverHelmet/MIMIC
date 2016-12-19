@@ -104,10 +104,10 @@ def define_simple_seg_rnn():
     b_reg = l2(0.0001)
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
-    model.add(TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
-        bias = False))
+    emd = TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
+        bias = False)(masked)
     lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
-        W_regularizer = w_reg, b_regularizer = b_reg)(masked)
+        W_regularizer = w_reg, b_regularizer = b_reg)(emd)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
     opt = Adam(lr = 0.001)
