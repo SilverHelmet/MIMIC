@@ -76,7 +76,7 @@ def define_simple_seg_rnn():
 
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
-    lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid')
+    lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid')(masked)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
     opt = Adam(lr = 0.001)
