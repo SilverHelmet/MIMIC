@@ -70,6 +70,28 @@ def load_weights(filepath, event_dim, dim):
     assert vocal_size == file_vocal_size-2
     return weights
 
+def define_simple_sequential_rnn():
+    global hiden_dim, event_dim, max_segs
+
+    print "define simple Sequential rnn"
+    model = Sequential()
+    model.add(Masking(mask_value=0., input_shape = (max_segs, event_dim)))
+    model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
+        input_length = None, output_dim = hidden_size,
+        W_regularizer = w_reg, b_regularizer = b_reg ))
+    model.add(Dense(1))
+    model.add(Activation('sigmoid'))
+
+    opt = Adam(lr=0.001)
+    model.compile(loss='binary_crossentropy',
+        optimizer=opt,
+        metrics=['accuracy'])
+    print "optimizer config"
+    print opt.get_config()
+    for layer in model.get_config()['layers']:
+        print "\t", layer   
+    return model
+
 def define_simple_seg_rnn():
     global hiden_dim
     global event_len, event_dim ,setting
@@ -94,9 +116,6 @@ def define_rnn(disturbance_flag, flat_event_flag, embedding_weights_file = None)
     global feature_dim, embedding_dim, hiden_dim
     global event_len, event_dim, setting
     global lr_hiden, segment_flag, max_segs
-
-    
-
 
     activation = "tanh"
     w_regul_ef = setting.get("w_reg", 0.001)
@@ -334,7 +353,6 @@ if __name__ == '__main__':
         labels, features, events, ids, segs = load_data(train_file, train_seg_file)
         val_labels, val_feaures, val_events, val_ids, val_segs = load_data(test_file, test_seg_file)
         max_segs = segs.shape[1]
-        max_segs = 40
         print "max_segs = %d" %max_segs
     else:
         labels, features, events, ids, = load_data(train_file)
@@ -356,7 +374,8 @@ if __name__ == '__main__':
     add_feature_flag = setting.get('add_feature', True)
 
 
-    model = define_simple_seg_rnn()
+    # model = define_simple_seg_rnn()
+    model = define_simple_sequential_rnn()
     # if embedding_in != None:
     #     model = define_rnn(disturbance, flat_event_flag, embedding_in)
     # else:
