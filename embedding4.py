@@ -70,7 +70,7 @@ b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
-model.add(TimeDistributedDense(output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
+model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
         bias = False))
 model.add(LSTM(input_dim = embedding_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
