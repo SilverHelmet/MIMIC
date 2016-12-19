@@ -43,7 +43,8 @@ def sample_generator(events, labels, batch_size):
 em = 20
 # load train data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\train_100_1000_True.h5','r')  
-file = h5py.File("exper/train_100_1000_True.h5", 'r')
+# file = h5py.File("exper/train_100_1000_True.h5", 'r')
+file = h5py.File("ICU_exper/ICUIn_train_800.h5")
 label = file['label'][:]
 event = file['event'][:]
 train_label = np.array([label], dtype = 'int32').T
@@ -53,7 +54,8 @@ length = (1000/em)
 
 #load test data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\test_100_1000_True.h5','r')  
-file = h5py.File("exper/test_100_1000_True.h5", 'r')
+# file = h5py.File("exper/test_100_1000_True.h5", 'r')
+file = h5py.File("ICU_exper/ICUIn_test_800.h5")
 label = file['label'][:]
 event = file['event'][:]
 test_label = np.array([label], dtype = 'int32').T

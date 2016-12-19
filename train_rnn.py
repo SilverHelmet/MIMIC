@@ -37,7 +37,7 @@ def load_data(filepath, seg_filepath = None):
     
 feature_dim = 668
 embedding_dim = 50
-hiden_dim = 50
+hiden_dim = 128
 event_len = 300
 event_dim = 3391
 
