@@ -19,6 +19,7 @@ from keras.utils.np_utils import to_categorical
 
 
 def sample_generator(events, labels, batch_size):
+    global em
     st = 0
     nb_samples = labels.size
     while st < nb_samples:
@@ -49,8 +50,9 @@ label = file['label'][:]
 event = file['event'][:]
 train_label = np.array([label], dtype = 'int32').T
 train_event = np.array(event, dtype = 'float64')
-print (1000/em)+1
-length = (1000/em)
+event_len = train_event.shape[1]
+length = (event_len/em)
+print "length = %d" %length
 
 #load test data and scaling
 # file = h5py.File('C:\\Users\\wenzhang\\Desktop\\haichao\\test_100_1000_True.h5','r')  
@@ -64,7 +66,6 @@ test_event = np.array(event, dtype = 'float64')
 hidden_size = 128    
 embedding_dim = 128
 #layers = 1
-test_result = np.zeros([8909, 1])
 print "finish"
 w_reg = None
 b_reg = None
@@ -72,7 +73,7 @@ w_reg = l2(0.0001)
 b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
-model.add(Masking(mask_value=0., input_shape = (1000/em, 3391)))
+model.add(Masking(mask_value=0., input_shape = (length, 3391)))
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
 # model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
         # bias = False))
