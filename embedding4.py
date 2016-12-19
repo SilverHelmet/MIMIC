@@ -8,7 +8,7 @@ Created on Wed Nov 16 16:18:25 2016
 from keras.models import  Sequential
 from keras.layers.recurrent import LSTM
 import numpy as np
-from  keras.layers.core import RepeatVector, TimeDistributedDense, Activation, Dropout, Dense
+from  keras.layers.core import RepeatVector, TimeDistributedDense, Activation, Dropout, Dense, Masking
 from keras.layers import Embedding
 from keras.optimizers import Adam, SGD
 from keras.regularizers import l2, l1l2, l1
@@ -32,7 +32,8 @@ def sample_generator(events, labels, batch_size):
                 output[idx][0] = 1
             for j in range(length):
                 for k in range(j*em, j*em + em):
-                    event_em[idx][j][int(events[i][k])] = 1
+                    if int(events[i][k]) >= 2:
+                        event_em[idx][j][int(events[i][k])] = 1
         
         yield(event_em, output)
         st = ed
@@ -70,9 +71,10 @@ b_reg = l2(0.0001)
 pre = np.zeros([8909,1])
 model = Sequential()
 # model.add(Embedding(input_dim=3391, output_dim=embedding_dim, input_length = length))
-model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
-        bias = False))
-model.add(LSTM(input_dim = embedding_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
+# model.add(TimeDistributedDense(input_dim = 3391, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
+        # bias = False))
+model.add(Masking(mask_value=0.))
+model.add(LSTM(input_dim = 3391, activation='sigmoid', inner_activation='hard_sigmoid', 
     input_length = None, output_dim = hidden_size,
     W_regularizer = w_reg, b_regularizer = b_reg ))
 #return_sequences=True,
