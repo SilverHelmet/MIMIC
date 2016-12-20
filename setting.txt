@@ -4,6 +4,7 @@ disturbance=True
 lr_hiden=False
 flat_event=False
 add_feature=False
+attention=True
 
 # model training 
 lr=0.3
