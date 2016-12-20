@@ -81,9 +81,8 @@ def define_simple_sequential_rnn():
     model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
         input_length = None, output_dim = hiden_dim,
         W_regularizer = w_reg, b_regularizer = b_reg ))
-    model.add(Dense(1))
-    model.add(Activation('sigmoid'))
-
+    model.add(Dense(1, activation = "sigmoid"))
+    # model.add(Activation('sigmoid'))
     opt = Adam(lr=0.001)
     model.compile(loss='binary_crossentropy',
         optimizer=opt,
@@ -107,10 +106,10 @@ def define_simple_seg_rnn():
     # lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
     #     W_regularizer = w_reg, b_regularizer = b_reg)(emd)
     lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
-        W_regularizer = w_reg, b_regularizer = b_reg)(masked)
+        W_regularizer = w_reg, b_regularizer = b_reg, input_length = None)(masked)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
     model = Model(input = event_input, output = pred)
-    opt = Adam(lr = 0.001, decay = 0.03)
+    opt = Adam(lr = 0.001)
     model.compile(optimizer = opt,
         loss = 'binary_crossentropy', 
          metrics=['accuracy'])
