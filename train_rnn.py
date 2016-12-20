@@ -106,9 +106,10 @@ def define_simple_seg_rnn():
     #     bias = False)(masked)
     # lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
     #     W_regularizer = w_reg, b_regularizer = b_reg)(emd)
+    attention = setting.get("attention", False)
     lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
-        W_regularizer = w_reg, b_regularizer = b_reg, input_length = None)(masked)
-    if setting.get("attention", False):
+        W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
+    if attention:
         print "add attention"
         lstm = SimpleAttentionRNN(lstm)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
