@@ -7,7 +7,7 @@ add_feature=False
 
 # model training 
 lr=0.3
-batch_size=128
+batch_size=32
 nb_epoch=50
 
 # dataset
