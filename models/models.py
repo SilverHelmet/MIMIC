@@ -5,7 +5,7 @@ from keras.layers.wrappers import TimeDistributed
 
 
 def SimpleAttentionRNN(rnn):
-    score = TimeDistributed(Dense(1))(lstm)
+    score = TimeDistributed(Dense(1))(rnn)
     flatten_score = MaskFlatten(name = 'flatten_score')(score)
     alpha = MaskLambda(function = mask_softmax, name = 'alpha')(flatten_score)
     attention = merge([alpha, rnn], mode = 'dot', dot_axes = 1, name = 'attention')
