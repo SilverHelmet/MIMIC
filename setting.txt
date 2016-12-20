@@ -8,7 +8,7 @@ add_feature=False
 # model training 
 lr=0.3
 batch_size=32
-nb_epoch=100
+nb_epoch=50
 
 # dataset
 train_dataset=ICU_exper/ICUIn_train_800.h5
