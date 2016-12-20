@@ -1,6 +1,7 @@
 from keras import backend as K
 from keras.layers.core import  Flatten, Lambda
 from keras.layers import merge
+from keras.layers.wrappers import TimeDistributed
 
 
 def SimpleAttentionRNN(rnn):
