@@ -9,9 +9,11 @@ rnn=gru
 
 
 # model training 
-lr=0.3
+# lr=0.3
 batch_size=32
 nb_epoch=50
+l2_reg_cof = 0.0001
+
 
 # dataset
 train_dataset=ICU_exper/ICUIn_train_800.h5

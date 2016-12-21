@@ -99,8 +99,10 @@ def define_simple_seg_rnn():
     print "define simple seg rnn"
     print "embedding_dim = %d" %embedding_dim
     print "hiden_dim = %d" %hiden_dim
-    w_reg = l2(0.0001)
-    b_reg = l2(0.0001)
+    l2_cof = setting.get('l2_reg_cof', 0.0001)
+    print "l2 regulazation cof = %f" %l2_cof
+    w_reg = l2(l2_cof)
+    b_reg = l2(l2_cof)
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
     # emd = TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
