@@ -113,10 +113,10 @@ def define_simple_seg_rnn():
     rnn_model = setting.get('rnn', 'lstm')
     print "rnn = %s" %rnn_model
     if rnn_model == 'gru':
-        rnn = GRU(input_dim = event_dim , output_dim = hiden_dim, activation = 'sigmoid',
-            W_regularizer=None = w_reg, b_regularizer = b_reg, input_length =None, return_sequences = attention)(masked)
+        rnn = GRU(output_dim = hiden_dim, activation = 'sigmoid',
+            W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     elif rnn_model == "lstm":
-        rnn = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
+        rnn = LSTM(output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
             W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     else:
         print "error"
