@@ -112,7 +112,7 @@ def define_simple_seg_rnn():
     attention = setting.get("attention", False)
     rnn_model = setting.get('rnn', 'lstm')
     print "rnn = %s" %rnn_model
-    if rnn_model == 'gru:
+    if rnn_model == 'gru':
         rnn = GRU(input_dim = event_dim , output_dim = hiden_dim, activation = 'sigmoid',
             W_regularizer=None = w_reg, b_regularizer = b_reg, input_length =None, return_sequences = attention)(masked)
     elif rnn_model == "lstm":
