@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers.core import Activation, Dense, Masking, Merge, TimeDistributedDense
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
-from keras.layers.recurrent import LSTM, SimpleRNN
+from keras.layers.recurrent import LSTM, SimpleRNN, GRU
 from keras.layers import Input, merge
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
@@ -71,26 +71,27 @@ def load_weights(filepath, event_dim, dim):
     assert vocal_size == file_vocal_size-2
     return weights
 
-def define_simple_sequential_rnn():
-    global hiden_dim, event_dim, max_segs
+# def define_simple_sequential_rnn():
+#     global hiden_dim, event_dim, max_segs
 
-    print "define simple Sequential rnn"
-    model = Sequential()
-    w_reg = l2(0.0001)
-    b_reg = l2(0.0001)
-    model.add(Masking(mask_value=0., input_shape = (max_segs, event_dim)))
-    model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
-        input_length = None, output_dim = hiden_dim,
-        W_regularizer = w_reg, b_regularizer = b_reg ))
-    model.add(Dense(1, activation = "sigmoid"))
-    # model.add(Activation('sigmoid'))
-    opt = Adam(lr=0.001)
-    model.compile(loss='binary_crossentropy',
-        optimizer=opt,
-        metrics=['accuracy'])
-    print "optimizer config"
-    print opt.get_config()
-    return model
+#     print "define simple Sequential rnn"
+#     model = Sequential()
+#     w_reg = l2(0.0001)
+#     b_reg = l2(0.0001)
+#     model.add(Masking(mask_value=0., input_shape = (max_segs, event_dim)))
+#     model.add(LSTM(input_dim = event_dim, activation='sigmoid', inner_activation='hard_sigmoid', 
+#         input_length = None, output_dim = hiden_dim,
+#         W_regularizer = w_reg, b_regularizer = b_reg ))
+#     model.add(Dense(1, activation = "sigmoid"))
+#     # model.add(Activation('sigmoid'))
+#     opt = Adam(lr=0.001)
+#     model.compile(loss='binary_crossentropy',
+#         optimizer=opt,
+#         metrics=['accuracy'])
+#     print "optimizer config"
+#     print opt.get_config()
+#     return model
+
 
 def define_simple_seg_rnn():
     global hiden_dim
@@ -98,8 +99,8 @@ def define_simple_seg_rnn():
     print "define simple seg rnn"
     print "embedding_dim = %d" %embedding_dim
     print "hiden_dim = %d" %hiden_dim
-    w_reg = l2(0.001)
-    b_reg = l2(0.001)
+    w_reg = l2(0.0001)
+    b_reg = l2(0.0001)
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
     # emd = TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
@@ -107,12 +108,20 @@ def define_simple_seg_rnn():
     # lstm = LSTM(input_dim = embedding_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
     #     W_regularizer = w_reg, b_regularizer = b_reg)(emd)
     attention = setting.get("attention", False)
-    lstm = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
-        W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
+    rnn_model = setting.get('rnn', 'lstm')
+    print "rnn = %s" %rnn_model
+    if rnn_model == 'gru:
+        rnn = GRU(input_dim = event_dim , output_dim = hiden_dim, activation = 'sigmoid',
+            W_regularizer=None = w_reg, b_regularizer = b_reg, input_length =None, return_sequences = attention)(masked)
+    elif rnn_model == "lstm":
+        rnn = LSTM(input_dim = event_dim, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
+            W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
+    else:
+        print "error"
     if attention:
         print "add attention"
-        lstm = SimpleAttentionRNN(lstm)
-    pred = Dense(1, activation = "sigmoid", name = 'prediction')(lstm)
+        rnn = SimpleAttentionRNN(rnn)
+    pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
     model = Model(input = event_input, output = pred)
     opt = Adam(lr = 0.001)
     model.compile(optimizer = opt,
@@ -406,7 +415,7 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     for epoch_round in range(nb_epoch):
         model.fit_generator(sample_generator(labels, features, events, segs), samples_per_epoch, 
-            nb_epoch = 1, callbacks = [early_stopping])
+            nb_epoch = 1, callbacks = [early_stopping], verbose = 0)
             # validation_data = val_generator, nb_val_samples = len(val_labels))
         prediction = model.predict_generator(sample_generator(val_labels, val_feaures, val_events, val_segs), val_samples = len(val_labels))
         auc = roc_auc_score(val_labels, prediction)

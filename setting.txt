@@ -5,6 +5,8 @@ lr_hiden=False
 flat_event=False
 add_feature=False
 attention=True
+rnn=gru
+
 
 # model training 
 lr=0.3
