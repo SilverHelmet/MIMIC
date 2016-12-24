@@ -21,3 +21,5 @@ if __name__ == "__main__":
     print "up 100 = %d" %seg_lengths[100]
     print "up 1000 = %d" %seg_lengths[1000]
     print "up 10000 = %d" %seg_lengths[10000]
+    print "up 100000 = %d" %seg_lengths[100000]
+    print "up 500000 = %d" %seg_lengths[500000]
