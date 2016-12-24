@@ -17,7 +17,7 @@ if __name__ == "__main__":
             st = ed
     print max_seg_length
     print 'size = %d' %(len(seg_lengths))
-    seg_lengths.sort(reversed = True)
+    seg_lengths.sort(reverse = True)
     print "up 100 = %d" %seg_lengths[100]
     print "up 1000 = %d" %seg_lengths[1000]
     print "up 10000 = %d" %seg_lengths[10000]
