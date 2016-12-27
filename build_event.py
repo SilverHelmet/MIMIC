@@ -71,7 +71,11 @@ class Event():
         return True
 
     def __cmp__(self, other):
-        return cmp(self.time, other.time)
+        ret = cmp(self.time, other.time)
+        if ret != 0:
+            return ret
+        else:
+            return cmp(self.index, other.index)
 
     def __str__(self):
         out = [self.index, self.pid, " ".join(map(str, self.features)), self.time]
