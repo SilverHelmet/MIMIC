@@ -14,7 +14,7 @@ import sys
 from util import *
 from sklearn.metrics import roc_auc_score, accuracy_score
 from scripts import gen_fix_segs
-from models.models import SimpleAttentionRNN
+from models.models import SimpleAttentionRNN, EventAttentionLSTM
 
 def load_data(filepath, seg_filepath = None):
     global event_len
@@ -92,6 +92,14 @@ def load_weights(filepath, event_dim, dim):
 #     print opt.get_config()
 #     return model
 
+def make_input(setting, max_segs, event_dim):
+    rnn_model = setting.get('rnn', 'lstm')
+    if rnn_model == 'attlstm':
+        max_seg_length = setting.get('max_seg_length', None)
+        assert max_seg_length
+        return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
+    else:
+        return Input(shape = (max_segs, event_dim), name = 'seg event input')
 
 def define_simple_seg_rnn():
     global hiden_dim
@@ -103,6 +111,7 @@ def define_simple_seg_rnn():
     print "l2 regulazation cof = %f" %l2_cof
     w_reg = l2(l2_cof)
     b_reg = l2(l2_cof)
+    event_inptu = make_input(max_)
     event_input = Input(shape = (max_segs, event_dim), name = "seg_event_input")
     masked = Masking(mask_value=0)(event_input)
     # emd = TimeDistributedDense(input_dim = event_dim, output_dim = embedding_dim , name = 'seg_event_embedding', init = "uniform",
@@ -117,6 +126,9 @@ def define_simple_seg_rnn():
             W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     elif rnn_model == "lstm":
         rnn = LSTM(output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
+            W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
+    elif rnn_model == "attlstm:
+        rnn = EventAttentionLSTM(hidden_dim = 128, output_dim = hiden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
             W_regularizer = w_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     else:
         print "error"

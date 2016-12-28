@@ -14,6 +14,10 @@ def SimpleAttentionRNN(rnn):
 
 class EventAttentionLSTM(LSTM):
     
+    def __init__(self, hidden_dim, **kwargs):
+        self.att_hidden_dim = att_hidden_dim
+        super(EventAttentionLSTM, self).__init__(**kwargs)
+    
     def build(self, input_shape):
         self.input_spec = [InputSpec(shape=input_shape)]
         self.input_dim = input_shape[-1]
@@ -28,12 +32,15 @@ class EventAttentionLSTM(LSTM):
                                         np.zeros(self.output_dim))),
                                 name='{}_b'.format(self.name))
         # event attention
-        self.Wea = self.init((self.input_dim, ),
+        self.Wea = self.init((self.input_dim, self.att_hidden_dim),
                             name = '{}_We'.format(self.name))
         # output attention
-        self.Woa = self.inner_init((self.output_dim, ))
+        self.Woa = self.inner_init((self.output_dim, self.att_hidden_dim))
 
-        self.trainable_weights = [self.W, self.U, self.b, self.Wea, self.Wao]
+        # hidden layer W
+        self.Wha = self.inner_init((self.att_hidden_dim, ))
+
+        self.trainable_weights = [self.W, self.U, self.b, self.Wea, self.Wao, self.Wha]
 
         self.regularizers = []
         if self.W_regularizer:
@@ -54,18 +61,22 @@ class EventAttentionLSTM(LSTM):
 
     def process(x, output):
         '''
-            x: (samples, seg_length, input_dim)
-            output: (samples, output_dim)
+            args:
+                x: (samples, seg_length, input_dim)
+                output: (samples, output_dim)
+            return:
+                seg_emd: (samples, input_dim)
         '''
         
         mask = K.any(K.not_equal(x, 0.0), axis=-1)  # (samples, seg_length)
-        ea = K.dot(x, self.Wea)                     # (samples, seg_length) 
-        oa = K.dot(output, self.Woa)                # (samples,)
-        oa = K.expand_dims(oa, -1)                  # (samples, 1)
-        att = ea + oa                               # (samples, seg_length)
-        att = mask_softmax(att, x)                  # (samples. seg_length)
-        # att = K.tanh(ea + oa)                       # (samples, seg_length)
-        seg_emd = K.batch_dot(att, x)
+        ea = K.dot(x, self.Wea)                     # (samples, seg_length, hidden_dim) 
+        oa = K.dot(output, self.Woa)                # (samples, hidden_dim)
+        oa = K.expand_dims(oa, 1)                   # (samples, 1, hidden_dim)
+        att = ea + oa                               # (samples, seg_length, hidden_dim)
+        att = K.tanh(att)                           # (samples, seg_length, hidden_dim)
+        att = K.dot(att, self.Wha)                  # (samples, seg_length)
+        att = mask_softmax(att, mask)               # (samples, seg_length)
+        seg_emd = K.batch_dot(att, x)               # (samples, input_dim)
 
         return seg_emd
 

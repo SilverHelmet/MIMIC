@@ -74,7 +74,8 @@ if __name__ == "__main__":
     sample_file = sys.argv[1] 
     print "load samples from [%s]" %sample_file
     tot_cnt = [0] * 2
-    ratio = 0.8
+    valid_ratio = 0.1
+    test_ratio = 0.2
     nb_error = 0
     labels = []
     for idx, line in enumerate(file(sample_file)):
@@ -85,21 +86,29 @@ if __name__ == "__main__":
         labels.append(label)
     
     print tot_cnt
-    train_limits = [round(cnt * ratio) for cnt in tot_cnt]
-    test_limits = [round(cnt * (1-ratio)) for cnt in tot_cnt]
+    train_limits = [round(cnt * train_ratio) for cnt in tot_cnt]
+    valid_limits = [round(cnt * valid_ratio) for cnt in tot_cnt]
+    test_limits = [cnt - train_cnt - valid_cnt for cnt, train_cnt, valid_cnt in zip(tot_cnt, train_limits, valid_limits)]
     print "train_limits =", train_limits
+    print "valid_limits =", valid_limits
     print "test_limitrs =", test_limits
     train_idx = set()
+    valid_idx = set()
     test_idx = set()
     for idx, label in enumerate(labels):
         if train_limits[label] > 0:
             train_idx.add(idx)
             train_limits[label] -= 1
+        elif valid_limits[label] > 0:
+            valid_idx.add(idx)
+            valid_limits[label] -= 1 
         elif test_limits[label] > 0:
             test_limits[label] -= 1
             test_idx.add(idx)
     print train_limits
+    print valid_limits
     print test_limits
+    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(ICU_exper_dir, "ICUIn_valid_%d.h5", %max_len), max_len)
     print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(ICU_exper_dir, "ICUIn_train_%d.h5" %max_len), max_len)
     print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(ICU_exper_dir, "ICUIn_test_%d.h5" %max_len), max_len)
 
