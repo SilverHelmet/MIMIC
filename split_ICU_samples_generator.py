@@ -108,7 +108,7 @@ if __name__ == "__main__":
     print train_limits
     print valid_limits
     print test_limits
-    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(ICU_exper_dir, "ICUIn_valid_%d.h5", %max_len), max_len)
+    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(ICU_exper_dir, "ICUIn_valid_%d.h5" %max_len), max_len)
     print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(ICU_exper_dir, "ICUIn_train_%d.h5" %max_len), max_len)
     print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(ICU_exper_dir, "ICUIn_test_%d.h5" %max_len), max_len)
 
