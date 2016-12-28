@@ -10,7 +10,6 @@ event_stat
 ICU_exper
 exper
 backup
-event_seq_stat
 graph
 log
 event2vec

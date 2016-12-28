@@ -86,9 +86,9 @@ if __name__ == "__main__":
         labels.append(label)
     
     print tot_cnt
-    train_limits = [round(cnt * train_ratio) for cnt in tot_cnt]
+    test_limits = [round(cnt * test_ratio) for cnt in tot_cnt]
     valid_limits = [round(cnt * valid_ratio) for cnt in tot_cnt]
-    test_limits = [cnt - train_cnt - valid_cnt for cnt, train_cnt, valid_cnt in zip(tot_cnt, train_limits, valid_limits)]
+    train_limits = [cnt - test_cnt - valid_cnt for cnt, test_cnt, valid_cnt in zip(tot_cnt, test_limits, valid_limits)]
     print "train_limits =", train_limits
     print "valid_limits =", valid_limits
     print "test_limitrs =", test_limits

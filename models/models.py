@@ -3,6 +3,7 @@ from keras.layers.core import  Flatten, Lambda, Dense
 from keras.layers import merge
 from keras.layers.recurrent import LSTM
 from keras.layers.wrappers import TimeDistributed
+from keras.layers.embeddings import Embedding
 
 
 def SimpleAttentionRNN(rnn):
@@ -124,6 +125,31 @@ class MaskLambda(Lambda):
     def compute_mask(self, input, input_mask = None):
         return None
 
+class SegMaskEmbedding(Embedding):
+    def __init__(self, mask_value = 0., **kwargs):
+        self.mask_value = mask_value
+        super(SegMaskEmbedding, self).__init__()
+
+    
+    def build(self, input_shape):
+        '''
+            set W[0] = 0
+        '''
+        super(SegMaskEmbedding, self).__init__()
+        WV = self.W.get_value()
+        WV[0] = 0
+        K.set_value(W, WV)
+        
+    def compute_mask(self, x, input_mask = None):
+        '''
+            args:
+                x: (samples, max_segs, max_seg_length)
+        '''
+        return K.any(K.not_equal(input, self.mask_value), axis=-1)      #  (samples, max_segs)
+
+
+
 def mask_softmax(x, mask):
     y = K.ones_like(mask) - K.cast(mask, K.floatx())
     return K.cast(K.softmax(y * (-999999999) + x), K.floatx())
+    
