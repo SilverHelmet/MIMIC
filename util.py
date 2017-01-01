@@ -9,7 +9,7 @@ import numpy as np
 
 
 def connect():
-    host = '162.105.146.246'
+    host = '162.105.146.245'
     schema = 'mimiciii'
     db = DB(host = host, user = 'mimic', passwd = 'mimic')
     db.query('set search_path to %s' %(schema))
