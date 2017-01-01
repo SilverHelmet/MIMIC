@@ -136,9 +136,8 @@ def extract_from_table(table, extractors, only_test = False, limit = 100000):
         extractor.open()
     while True:
         print '\tquery from [%s] limit [%d] offset [%d]' %(table, limit, offset)
-        query = "select * from %s limit %d offset %d" %(table, limit, offset)
+        query = "select * from %s order by row_id limit %d offset %d" %(table, limit, offset)
         res = db.query(query)
-
         for row in res.dictresult():
             for extractor in extractors:
                 extractor.extract(row)
