@@ -21,7 +21,7 @@ class ValueStat:
         self.nentry += 1
         if value == "":
             self.nnull += 1
-            self.ntxt += 1we
+            self.ntxt += 1
         elif is_time(value):
             self.ntime += 1
         elif is_number(value):
