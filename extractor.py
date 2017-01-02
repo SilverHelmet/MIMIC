@@ -150,6 +150,8 @@ def extract_from_table(table, extractors, only_test = False, limit = 100000):
         offset += limit
         if ntuples < limit or only_test:
             break
+        if offset >= limit * 3:
+            break
     for extractor in extractors:
         extractor.close()
 
