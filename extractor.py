@@ -138,12 +138,15 @@ def extract_from_table(table, extractors, only_test = False, limit = 100000):
         query = "select * from %s order by row_id limit %d offset %d" %(table, limit, offset)
         print '\t%s' %query
         res = db.query(query)
+        cnt = 0
         for row in res.dictresult():
+            cnt += 1
             for extractor in extractors:
                 extractor.extract(row)
 
         ntuples = res.ntuples()
         print "ntuples = %d" %ntuples
+        print "cnt = %d" %cnt
         offset += limit
         if ntuples < limit or only_test:
             break
