@@ -2,6 +2,7 @@ from util import *
 from select_feature import load_value_type_text, TypeFeature
 from extractor import parse_line
 import glob
+import itertools
 
 class Feature():
     def __init__(self, index, value):
@@ -102,10 +103,15 @@ class EventBuilder():
         self.value_builder_init(text_map)
 
     def builder_des(self):
-        for event_fac in self.feature_texts:
+        des_list = []
+        for event_fac in reversed(self.feature_texts):
             if len(event_fac) > 0:
-                return event_fac
-        return [""]            
+                des_list.append(event_fac)
+        if len(des_list) == 0:
+            return [""]
+        else:
+            return [x for x in itertools.product(*des_list)]
+          
 
 
     def event_builder_init(self, text_map):
@@ -152,7 +158,6 @@ class EventBuilder():
             if self.event_factor[i] > 0:
                 value = values[i]
                 idx = self.feature_texts[i].index(value.strip().lower())
-                assert idx != -1
                 event = event + idx * self.event_factor[i]
         return event + self.event_base
 
