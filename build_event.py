@@ -43,7 +43,6 @@ class TimeFeatureExtractor(FeatureExtractor):
         else:
             duration = (value - time).total_seconds()/3600.0
             if duration < 0:
-                print "duration < 0" 
                 TimeFeatureExtractor.nerror += 1
                 return None
             return Feature(base + self.feature_index, duration)
@@ -212,7 +211,6 @@ def gen_builders(type_features, text_map, build_des_file):
         r = event_dim
         event_des = builder.builder_des()
         for i in range(l, r):
-            print i , event_des
             f.write("%d %s %s\n" %(i, type_feature.rtype, event_des[i - l]))
         feature_dim = builder.set_feature_base(feature_dim)
         builders[type_feature.rtype] = builder
