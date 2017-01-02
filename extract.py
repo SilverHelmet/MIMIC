@@ -384,7 +384,7 @@ if __name__ == '__main__':
     get_prescriptions_extractors, get_datetimeevents_extractors, get_chartevents_extractors, get_proceduresicd_extractors,
     get_procedureevents_extractors, get_inputevents_cv_extractors, get_inputevents_mv_extractors, get_cptevents_extractors]
 
-    # funcs = [get_datetimeevents_extractors]
+    funcs = [get_labevents_extractors]
     tables = []
     for func in funcs:
         table = func(data_dir, extractor_map)
