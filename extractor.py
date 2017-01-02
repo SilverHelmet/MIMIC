@@ -134,7 +134,6 @@ def extract_from_table(table, extractors, only_test = False, limit = 100000):
     offset = 0
     for extractor in extractors:
         extractor.open()
-    offset = 27000000
     while True:
         query = "select * from %s order by row_id limit %d offset %d" %(table, limit, offset)
         print '\t%s' %query
