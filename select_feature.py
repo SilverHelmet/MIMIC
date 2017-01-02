@@ -197,7 +197,7 @@ def select_feature(stat_file, limit, text_map, value_stat_map):
             for value_feature in type_feature.features:
                 if value_feature.main_type != "text":
                     dim += value_feature.ndim
-                    print value_feature.ndim
+                    # print value_feature.ndim
                 if value_feature.ndim > 1:
                     cc += 1
                 t_event_dim *= value_feature.ndim

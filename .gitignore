@@ -5,12 +5,15 @@ data
 event
 stat
 result
-data_bk
 event_stat
 ICU_exper
 exper
-backup
 graph
 log
 event2vec
 BOWLR_log
+
+# backup
+result_backup
+backup
+data_bk
