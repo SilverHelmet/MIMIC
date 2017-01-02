@@ -5,7 +5,6 @@ from datetime import timedelta
 import datetime
 
 fmt = "%-25s %-25s %-40s %s\n"
-fmt = "%-100s %-100s %-100s %s\n"
 
 def parse_line(line):
     line = line.rstrip()
@@ -146,12 +145,8 @@ def extract_from_table(table, extractors, only_test = False, limit = 100000):
                 extractor.extract(row)
 
         ntuples = res.ntuples()
-        print "ntuples = %d" %ntuples
-        print "cnt = %d" %cnt
         offset += limit
         if ntuples < limit or only_test:
-            break
-        if offset >= limit * 3:
             break
     for extractor in extractors:
         extractor.close()
