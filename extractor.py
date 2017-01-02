@@ -5,6 +5,7 @@ from datetime import timedelta
 import datetime
 
 fmt = "%-25s %-25s %-40s %s\n"
+fmt = "%-100s %-100s %-100s %s\n"
 
 def parse_line(line):
     line = line.rstrip()
