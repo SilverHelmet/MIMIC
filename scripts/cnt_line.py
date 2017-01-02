@@ -5,4 +5,4 @@ if __name__ == "__main__":
     cnt = 0
     for line in file(filepath):
         cnt += 1
-        print cnt
+    print cnt
