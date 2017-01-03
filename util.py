@@ -100,7 +100,7 @@ def load_reg(filepath):
 
 def load_id2event_value():
     ret = {}
-    for line in file(os.path.join(static_data_dir, "event_des_text.tsv")):
+    for line in file(os.path.join(result_dir, "event_des_text.tsv")):
         parts = line.strip("\n").split(" ")
         event_id = int(parts[0])
         event_type = parts[1]

@@ -247,7 +247,7 @@ def print_event(builders, filepath):
 if __name__ == '__main__':
     text_map = load_value_type_text(os.path.join(result_dir, "value_type_text.tsv"))
     type_features = load_type_features(os.path.join(result_dir, 'selected_features.tsv'))
-    event_des_file = os.path.join(static_data_dir, "event_des_text.tsv")
+    event_des_file = os.path.join(result_dir, "event_des_text.tsv")
     builders = gen_builders(type_features, text_map, event_des_file)
     for filepath in glob.glob(data_dir + "/*tsv"):
         name = os.path.basename(filepath)
