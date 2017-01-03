@@ -1,8 +1,8 @@
 ## build ICU In samples
 `python scripts/patient.py`
 
->   generate event_seq info of each patient/hospital <br/>
->   read from `event/*.tsv` write to `result/event_seq.dat` # 
+        generate event_seq info of each patient/hospital <br/>
+        read from `event/*.tsv` write to `result/event_seq.dat`
 
 `python scripts/stat_event_seq.py`
 
