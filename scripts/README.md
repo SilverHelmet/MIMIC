@@ -7,7 +7,7 @@
 `python scripts/stat_event_seq.py`
 
 >   generate event_seq stat <br/>
->   read from result/event_seq.dat write to `event_seq_stat/event_seq_stat.result`
+>   read from `result/event_seq.dat` write to `event_seq_stat/event_seq_stat.result`
 
 `python scripts/sample_setting.py`
 
