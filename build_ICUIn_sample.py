@@ -30,7 +30,7 @@ def load_event(filepath, sample_map):
 
 
 if __name__ == "__main__":
-    max_event_len = 300
+    max_event_len = 1000
     sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt") 
     sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
     sample_map = init_sample(sample_setting_map, max_event_len)
