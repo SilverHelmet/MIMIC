@@ -143,8 +143,23 @@ def load_numpy_array(filepath):
 def now():
     return datetime.datetime.now().strftime('%m-%d %H:%M:%S')
 
-    
-
+def merge_event_map(filepath):
+    print "load event des from [%s]" %filepath
+    new_idx_cnt = 2
+    new_events_idx = {}
+    old2new = {0: 0, 1: 1}
+    for line in file(filepath):
+        line = line.strip()
+        if line == "":
+            conitnue
+        parts = line.split(" ")
+        old_idx = int(parts[0])
+        rtype = parts[1]
+        if not rtype in new_events_idx:
+            new_events_idx[rtype] = new_idx_cnt
+            new_idx_cnt += 1
+        old2new[old_idx] = new_events_idx[rtype]
+    return old2new
 
 def load_setting(filepath):
     setting = {}
@@ -191,7 +206,9 @@ event_seq_stat_dir = os.path.join(script_dir, "event_seq_stat")
 graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
-
-
-
-
+if __name__ == "__main__":
+    old2new = merge_event_map('result/event_des_text.tsv')
+    print reduce(min, old2new.keys())
+    print reduce(max, old2new.keys())
+    print reduce(min, old2new.values())
+    print reduce(max, old2new.values())

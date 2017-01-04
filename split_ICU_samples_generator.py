@@ -20,7 +20,7 @@ def s_generator(filepath, index_set):
             yield Sample.load_from_json(json.loads(line))
         
 max_feature_len = 6
-def print_to_local_generator(generator, filepath, max_len):
+def print_to_local_generator(generator, filepath, max_len, event_map):
     global max_feature_len
     f = h5py.File(filepath, 'w')
     labels = []
@@ -38,6 +38,9 @@ def print_to_local_generator(generator, filepath, max_len):
 
         feature_seqs = []
         for event in sample.events:
+            # may map event to no text retyping event
+            # or the map is the identify map
+            event.index = event_map[event.index]
             event_seq.append(event.index)
             event_time_seq.append(str(event.time))
             feature_seq = []
@@ -70,8 +73,16 @@ def adjust(limits, ratio):
         limits[i] = min(up_cell, limits[i])
 
 if __name__ == "__main__":
+    '''
+        python split_ICU_samples_generator.py sample_file [event_des_text]
+    '''
     max_len = 300
     sample_file = sys.argv[1] 
+    if len(sys.argv) > 3:
+        print "----- merge event to no text retyping event -----"
+        event_map = merge_event_map(os.path.join(result_dir, "event_des_text.tsv"))
+    else:
+        event_map = lambda x: x
     print "load samples from [%s]" %sample_file
     tot_cnt = [0] * 2
     valid_ratio = 0.1
@@ -108,9 +119,9 @@ if __name__ == "__main__":
     print train_limits
     print valid_limits
     print test_limits
-    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(ICU_exper_dir, "ICUIn_valid_%d.h5" %max_len), max_len)
-    print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(ICU_exper_dir, "ICUIn_train_%d.h5" %max_len), max_len)
-    print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(ICU_exper_dir, "ICUIn_test_%d.h5" %max_len), max_len)
+    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(ICU_exper_dir, "ICUIn_valid_%d.h5" %max_len), max_len, event_map)
+    print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(ICU_exper_dir, "ICUIn_train_%d.h5" %max_len), max_len, event_map)
+    print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(ICU_exper_dir, "ICUIn_test_%d.h5" %max_len), max_len, event_map)
 
         
         
