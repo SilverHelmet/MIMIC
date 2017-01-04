@@ -76,7 +76,7 @@ if __name__ == "__main__":
     '''
         python split_ICU_samples_generator.py sample_file [event_des_text]
     '''
-    max_len = 300
+    max_len = 1000
     sample_file = sys.argv[1] 
     if len(sys.argv) > 3:
         print "----- merge event to no text retyping event -----"
