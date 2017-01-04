@@ -78,11 +78,13 @@ if __name__ == "__main__":
     '''
     max_len = 1000
     sample_file = sys.argv[1] 
-    if len(sys.argv) > 3:
+    if len(sys.argv) >= 3:
         print "----- merge event to no text retyping event -----"
         event_map = merge_event_map(os.path.join(result_dir, "event_des_text.tsv"))
     else:
-        event_map = lambda x: x
+        event_map = {}
+        for i in xrange(10000):
+            event_map[i] = i
     print "load samples from [%s]" %sample_file
     tot_cnt = [0] * 2
     valid_ratio = 0.1
