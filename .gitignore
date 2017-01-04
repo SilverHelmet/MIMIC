@@ -1,17 +1,22 @@
 # python
 *.py[cod]
 test
-data
-event
+
 stat
 result
 event_stat
-ICU_exper
-exper
+
 graph
 log
 event2vec
 BOWLR_log
+
+# data
+data
+event
+ICU_exper
+exper
+ICU_merged_exper
 
 # backup
 result_backup
