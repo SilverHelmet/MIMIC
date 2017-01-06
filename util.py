@@ -190,6 +190,8 @@ def load_setting(filepath):
                 print "load arg %s = %s" %(key, value)
     return setting
 
+
+
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(script_dir, 'data')
 stat_dir = os.path.join(script_dir, 'stat')

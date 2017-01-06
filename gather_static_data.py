@@ -45,6 +45,15 @@ class Admission:
         admission.admit_type = parts[-1]
         return admission
 
+def load_admission():
+    ad_map = {}
+    for line in file(static_data_dir + "/admission.tsv"):
+        parts = line.strip().split("\t")
+        pid = int(parts[0])
+        adm = Admission.load_from_line("\t".join(parts[1:]))
+        ad_map[pid] = adm
+    return ad_map
+
 class SingleAdmission:
     def __init__(self, pid, admit_time, disch_time, admit_type):
         self.pid = pid

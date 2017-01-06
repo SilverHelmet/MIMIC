@@ -3,6 +3,7 @@ from util import *
 from gather_from_event_seq_count import load
 import json
 from build_event import Event
+import gather_static_data
 
 class PatientSample:
     '''
@@ -29,6 +30,52 @@ class PatientSample:
             if sample.valid():
                 sample.write(writer)
 
+
+class PatientDeathSampleSetting:
+    pred_bias_time = datetime.timedelta(days = 0.5)
+    interval_time = datetime.timedelta(days = 1.0)
+    max_sample_per_case = 5
+    nb_case = 0
+
+    def __init__(self, pid):
+        self.pid = pid
+        self.settings = []
+    
+    def gen_sample_setting(self, patient, death):
+        self.death = death
+        fi = len(patient.hospital_settings) - 1
+        for idx, hos in enumerate(patient.hospital_settings):
+            hos_st = hos.st
+            hos_ed = hos.ed
+            last_time = hos_st
+            label = False if idx < fi else death
+            pred_time = hos.ed - PatientDeathSampleSetting.pred_bias_time
+            for i in range(PatientDeathSampleSetting.max_sample_per_case):
+                if pred_time < last_time:
+                    break
+                sample_setting = SampleSetting(hos_st, pred_time, label, 
+                            hos_ed, PatientDeathSampleSetting.nb_case)
+                self.settings.append(sample_setting)
+                pred_time -= PatientDeathSampleSetting.interval_time
+            PatientDeathSampleSetting.nb_case += 1
+    
+    def to_json(self):
+        obj = {
+            "pid": self.pid,
+            "settings": [setting.to_json() for setting in self.settings]
+        }
+        return obj
+
+    @staticmethod
+    def load_from_json(obj):
+        pid = obj['pid']
+        patient_setting = PatientDeathSampleSetting(pid)
+        patient_setting.settings = [SampleSetting.load_from_json(setting_obj) for setting_obj in obj['settings']]
+        return patient_setting
+        
+        
+            
+            
 class PatientICUInSampleSetting:
     pred_bias_time = datetime.timedelta(days = 0.5)
     intervel_time = datetime.timedelta(days = 1.0)
@@ -55,7 +102,7 @@ class PatientICUInSampleSetting:
                     self.settings.append(sample_setting)
                     pred_time -= PatientICUInSampleSetting.intervel_time
                 PatientICUInSampleSetting.nb_icu += 1
-                last_time = icu_ed
+                last_time = icu_ed                                      
             pred_time = hos_ed - PatientICUInSampleSetting.pred_bias_time
             for i in range(PatientICUInSampleSetting.max_sample_per_icu):
                 if pred_time < last_time:
@@ -287,11 +334,21 @@ def load_patient_setting(setting_path):
         patient_setting_map[p_setting.pid] = p_setting
     return patient_setting_map
 
-def gen_sample_setting(setting_out_path, patient_setting_map):
+def gen_ICU_sample_setting(setting_out_path, patient_setting_map):
     writer = file(setting_out_path, 'w')
     for pid in sorted(patient_setting_map.keys()):
         sample_setting = PatientICUInSampleSetting(pid)
         sample_setting.gen_sample_setting(patient_setting_map[pid])
+        obj = sample_setting.to_json()
+        writer.write(json.dumps(obj) + "\n")
+    writer.close()
+
+def gen_death_sample_setting(setting_out_path, patient_setting_map, ad_map):
+    writer = file(setting_out_path, 'w')
+    for pid in sorted(patient_setting_map.keys()):
+        death_label = ad_map[pid].death
+        sample_setting = PatientDeathSampleSetting(pid)
+        sample_setting.gen_sample_setting(patient_setting_map[pid], death_label)
         obj = sample_setting.to_json()
         writer.write(json.dumps(obj) + "\n")
     writer.close()
@@ -303,16 +360,28 @@ def load_ICUIn_sample_setting(sample_setting_path):
         sample_setting_map[sample_setting.pid] = sample_setting
     return sample_setting_map
 
+def load_death_sample_setting(sample_setting_path):
+    sample_setting_map = {}
+    for line in file(sample_setting_path):
+        sample_setting = PatientDeathSampleSetting.load_from_json(json.loads(line))
+        sample_setting_map[sample_setting.pid] = sample_setting
+    return sample_setting_map
+
 def simple_count(sample_setting_map):
     tot_sample = 0   
     max_sample = 0
+    label_cnt = [0, 0]
     for pid in sample_setting_map:
         sample_setting = sample_setting_map[pid]
+        for setting in sample_setting_map[pid].settings:
+            label = setting.label
+            label_cnt[label] += 1
         tot_sample += len(sample_setting.settings)
         max_sample = max(max_sample, len(sample_setting.settings))
 
     print tot_sample / len(sample_setting_map)
     print max_sample
+    print label_cnt
 
     
     
@@ -320,20 +389,32 @@ def simple_count(sample_setting_map):
 
 if __name__ == "__main__":
     # generate patient settings
-    event_seq_stat_result_path = os.path.join(event_seq_stat_dir, "event_seq_stat.result")
-    patient_cnt_map = load(event_seq_stat_result_path)
-    setting_map = gen_settings(patient_cnt_map)
-    result_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
-    write(result_path, setting_map)
+    # event_seq_stat_result_path = os.path.join(event_seq_stat_dir, "event_seq_stat.result")
+    # patient_cnt_map = load(event_seq_stat_result_path)
+    # setting_map = gen_settings(patient_cnt_map)
+    # result_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
+    # write(result_path, setting_map)
 
     # load patient setting
-    setting_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
-    patient_setting_map = load_patient_setting(setting_path)
+    # setting_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
+    # patient_setting_map = load_patient_setting(setting_path)
 
     # generate icu entrance prediciton sample settings 
-    sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt")
-    gen_sample_setting(sample_setting_path, patient_setting_map)
+    # sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt")
+    # gen_ICU_sample_setting(sample_setting_path, patient_setting_map)
+
+    # generate death prediction sample settings
+    sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
+    admission_map = gather_static_data.load_admission()
+    setting_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
+    patient_setting_map = load_patient_setting(setting_path)
+    gen_death_sample_setting(sample_setting_path, patient_setting_map, admission_map)
 
     # load icu sample setting & count
     # sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
     # simple_count(sample_setting_map)
+
+    # load death sample setting & count
+    sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
+    sample_setting_map = load_death_sample_setting(sample_setting_path)
+    simple_count(sample_setting_map)
