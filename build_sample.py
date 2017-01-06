@@ -36,7 +36,7 @@ if __name__ == "__main__":
     # sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
     # out_path = os.path.join(ICU_exper_dir, "ICU_samples_len=%d.txt" %max_event_len)
 
-    sample_setting_path = os.path.join(evnet_seq_stat_dir, "death_sample_setting.txt")
+    sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
     sample_setting_map = load_death_sample_setting(sample_setting_path)
     out_path = os.path.join(death_exper_dir, "death_sample_len=%d.txt" %max_event_len)
     
