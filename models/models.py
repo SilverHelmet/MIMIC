@@ -1,9 +1,10 @@
 from keras import backend as K
 from keras.layers.core import  Flatten, Lambda, Dense
-from keras.layers import merge
+from keras.layers import merge, InputSpec
 from keras.layers.recurrent import LSTM
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
+import numpy as np
 
 
 def SimpleAttentionRNN(rnn):
@@ -15,9 +16,11 @@ def SimpleAttentionRNN(rnn):
 
 class EventAttentionLSTM(LSTM):
     
-    def __init__(self, hidden_dim, **kwargs):
-        self.att_hidden_dim = att_hidden_dim
+    def __init__(self, att_hidden_dim, **kwargs):
+        
         super(EventAttentionLSTM, self).__init__(**kwargs)
+        self.att_hidden_dim = att_hidden_dim
+        self.input_spec = [InputSpec(ndim=4)]
     
     def build(self, input_shape):
         self.input_spec = [InputSpec(shape=input_shape)]
@@ -34,14 +37,16 @@ class EventAttentionLSTM(LSTM):
                                 name='{}_b'.format(self.name))
         # event attention
         self.Wea = self.init((self.input_dim, self.att_hidden_dim),
-                            name = '{}_We'.format(self.name))
+                            name = '{}_Wea'.format(self.name))
         # output attention
-        self.Woa = self.inner_init((self.output_dim, self.att_hidden_dim))
+        self.Woa = self.inner_init((self.output_dim, self.att_hidden_dim),
+                            name = '{}_Woa'.format(self.name))
 
         # hidden layer W
-        self.Wha = self.inner_init((self.att_hidden_dim, ))
+        self.Wha = self.init((self.att_hidden_dim, ),
+                            name = '{}_Wha'.format(self.name))
 
-        self.trainable_weights = [self.W, self.U, self.b, self.Wea, self.Wao, self.Wha]
+        self.trainable_weights = [self.W, self.U, self.b, self.Wea, self.Woa, self.Wha]
 
         self.regularizers = []
         if self.W_regularizer:
@@ -128,24 +133,33 @@ class MaskLambda(Lambda):
 class SegMaskEmbedding(Embedding):
     def __init__(self, mask_value = 0., **kwargs):
         self.mask_value = mask_value
-        super(SegMaskEmbedding, self).__init__()
+        super(SegMaskEmbedding, self).__init__(**kwargs)
 
     
     def build(self, input_shape):
         '''
             set W[0] = 0
         '''
-        super(SegMaskEmbedding, self).__init__()
+
+        super(SegMaskEmbedding, self).build(input_shape)
         WV = self.W.get_value()
         WV[0] = 0
-        K.set_value(W, WV)
+        K.set_value(self.W, WV)
         
     def compute_mask(self, x, input_mask = None):
         '''
             args:
                 x: (samples, max_segs, max_seg_length)
         '''
-        return K.any(K.not_equal(input, self.mask_value), axis=-1)      #  (samples, max_segs)
+        return K.any(K.not_equal(x, self.mask_value), axis=-1)      #  (samples, max_segs)
+    
+
+    def get_output_shape_for(self, input_shape):
+        if not self.input_length:
+            input_length = input_shape[1]
+        else:
+            input_length = self.input_length
+        return (input_shape[0], input_length, input_shape[2], self.output_dim)
 
 
 

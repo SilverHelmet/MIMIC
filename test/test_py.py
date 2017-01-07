@@ -3,14 +3,20 @@
 class A:
     def __init__(self, pid):
         self.pid = pid
-    @staticmethod 
-    def ok(o):
+
+    def ok(self):
         print self.pid
+        self.ok2()
+
+    def ok2(self):
+        print "A"
     
 class B(A):
-    def __init__(self. pid):
+    def __init__(self, pid):
         self.pid = pid
 
-    @st
+    def ok2(self):
+        print "B"
 
-A.ok(1)
+b = B(3)
+b.ok()

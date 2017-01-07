@@ -74,7 +74,8 @@ def adjust(limits, ratio):
 
 if __name__ == "__main__":
     '''
-        python split_ICU_samples_generator.py sample_file [event_des_text]
+        python split_samples_generator.py sample_file [merge]
+        split samples into train valid test with ratio (0.7 0.2 0.1)
     '''
     max_len = 1000
     sample_file = sys.argv[1] 
@@ -121,7 +122,9 @@ if __name__ == "__main__":
     print train_limits
     print valid_limits
     print test_limits
-    out_dir = ICU_merged_exper_dir
+    # out_dir = ICU_merged_exper_dir
+    out_dir = death_exper_dir
+
     print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(out_dir, "ICUIn_valid_%d.h5" %max_len), max_len, event_map)
     print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(out_dir, "ICUIn_train_%d.h5" %max_len), max_len, event_map)
     print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(out_dir, "ICUIn_test_%d.h5" %max_len), max_len, event_map)
