@@ -215,7 +215,7 @@ if __name__ == '__main__':
         
         val_eval = datasets[1].eval(model, setting)
 
-        print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' 
+        print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
             %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
         if val_eval[3] > max_merged_auc:
             print "new max max_merged_auc"
