@@ -5,6 +5,7 @@ from keras.layers.recurrent import LSTM
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 import numpy as np
+from keras_model import my_rnn
 
 
 def SimpleAttentionRNN(rnn):
@@ -21,6 +22,48 @@ class EventAttentionLSTM(LSTM):
         super(EventAttentionLSTM, self).__init__(**kwargs)
         self.att_hidden_dim = att_hidden_dim
         self.input_spec = [InputSpec(ndim=4)]
+
+    def call(self, x, mask=None):
+        # input shape: (nb_samples, time (padded with zeros), input_dim)
+        # note that the .build() method of subclasses MUST define
+        # self.input_spec with a complete input shape.
+        input_shape = self.input_spec[0].shape
+        if self.unroll and input_shape[1] is None:
+            raise ValueError('Cannot unroll a RNN if the '
+                            'time dimension is undefined. \n'
+                            '- If using a Sequential model, '
+                            'specify the time dimension by passing '
+                            'an `input_shape` or `batch_input_shape` '
+                            'argument to your first layer. If your '
+                            'first layer is an Embedding, you can '
+                            'also use the `input_length` argument.\n'
+                            '- If using the functional API, specify '
+                            'the time dimension by passing a `shape` '
+                            'or `batch_shape` argument to your Input layer.')
+        if self.stateful:
+            initial_states = self.states
+        else:
+            initial_states = self.get_initial_states(x)
+        constants = self.get_constants(x)
+        preprocessed_input = self.preprocess_input(x)
+
+        last_output, outputs, states = my_rnn(self.step, preprocessed_input,
+                                            initial_states,
+                                            go_backwards=self.go_backwards,
+                                            mask=mask,
+                                            constants=constants,
+                                            unroll=self.unroll,
+                                            input_length=input_shape[1])
+        if self.stateful:
+            updates = []
+            for i in range(len(states)):
+                updates.append((self.states[i], states[i]))
+            self.add_updates(updates, x)
+
+        if self.return_sequences:
+            return outputs
+        else:
+            return last_output
     
     def build(self, input_shape):
         self.input_spec = [InputSpec(shape=input_shape)]
