@@ -14,8 +14,9 @@ BOWLR_log
 data
 event
 ICU_exper
-exper
 ICU_merged_exper
+death_exper
+death_merged_exper
 
 # backup
 result_backup
