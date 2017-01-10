@@ -131,7 +131,7 @@ def sample_generator(dataset, setting):
                     split_seg = segs[j]
                     seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))
                 seged_event = np.array(seged_event)
-                yield (seg_event, label)
+                yield (seged_event, label)
             else:
                 # output shape (nb_sample, max_segs, event_dim)
                 for j in range(st, ed):
