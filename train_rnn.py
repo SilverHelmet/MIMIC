@@ -103,10 +103,10 @@ def define_simple_seg_rnn(setting):
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "lstm":
         masked = Masking(mask_value=0)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
-        bias = False), name = "event_embedding")(masked)
+        # embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
+        # bias = False), name = "event_embedding")(masked)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     elif rnn_model == "attlstm":
         emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         rnn = EventAttentionLSTM(att_hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
@@ -211,7 +211,7 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     max_merged_auc = 0
     for epoch_round in range(nb_epoch):
-        model.fit_generator(sample_generator(datasets[0], setting), datasets[0].size, nb_epoch = 1, verbose = 0)
+        model.fit_generator(sample_generator(datasets[0], setting), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
 
