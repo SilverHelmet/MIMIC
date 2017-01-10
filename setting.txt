@@ -4,6 +4,10 @@ disturbance=False
 attention=False
 rnn=attlstm
 
+#model args
+embedding_dim=128
+hiden_dim
+
 
 # model training 
 batch_size=32

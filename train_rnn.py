@@ -154,11 +154,6 @@ def default_setting():
 
 
 def load_argv(argv):
-    global embedding_dim, hiden_dim
-    if len(argv) >= 2:
-        embedding_dim = int(argv[1])
-    if len(argv) >= 3:
-        hiden_dim = int(argv[2])
     if len(argv) >= 4:
         setting = load_setting(argv[3], default_setting())
     else:
