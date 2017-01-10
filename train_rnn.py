@@ -187,7 +187,7 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:
             dataset.load()
-        max_segs = dataset[0].segs.shape[1]
+        max_segs = datasets[0].segs.shape[1]
         setting['max_segs'] = max_segs
         print "max_segs = %d" %max_segs
     print "train feature shape =", dataset[0].features.shape
