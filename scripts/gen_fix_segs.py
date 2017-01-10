@@ -123,11 +123,11 @@ def split_by_timeAggre(event_seq, time_seq, max_chunk):
     return seg
 
 
-def infer_path(dataset_path, mode, max_chunk, chunk_length):
+def infer_path(dataset_path, seg_dir, mode, max_chunk, chunk_length):
     filename = os.path.basename(dataset_path).split('.h5')[0]
     if mode == "fixLength":
-        return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
-    return os.path.join(util.ICU_seg_dir, filename + "_segmode=%s_maxchunk=%d.h5" %(mode, max_chunk))
+        return os.path.join(seg_idr, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
+    return os.path.join(seg_dir, filename + "_segmode=%s_maxchunk=%d.h5" %(mode, max_chunk))
 
 def infer_and_load(dataset_path, mode):
     path = infer_path(dataset_path, mode)
@@ -146,11 +146,12 @@ if __name__ == "__main__":
     mode = "timeAggre"
     time_slot = datetime.timedelta(days = 0.1)
     dataset_path = sys.argv[1]
+    seg_dir = ICU_seg_dir
     if len(sys.argv) >= 3:
         mode = sys.argv[2]
-    max_chunks = 80
-    chunk_length = 10
-    seg_out_path = infer_path(dataset_path, mode, max_chunks, chunk_length)
+    max_chunks = 50
+    chunk_length = 20
+    seg_out_path = infer_path(dataset_path, seg_dir, mode, max_chunks, chunk_length)
     print "load data from [%s] write segs to [%s], mode = [%s]" %(dataset_path, seg_out_path, mode)
 
     f = h5py.File(dataset_path, 'r')
