@@ -30,7 +30,7 @@ class Dataset:
         self.labels = f['label'][:]
         self.size = len(self.labels)
         self.events = f['event'][:]
-        self.features = f['features'][:]
+        self.features = f['feature'][:]
         self.ids = f['sample_id'][:]
         self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
