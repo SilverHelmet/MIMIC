@@ -126,7 +126,7 @@ def split_by_timeAggre(event_seq, time_seq, max_chunk):
 def infer_path(dataset_path, seg_dir, mode, max_chunk, chunk_length):
     filename = os.path.basename(dataset_path).split('.h5')[0]
     if mode == "fixLength":
-        return os.path.join(seg_idr, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
+        return os.path.join(seg_dir, filename + "_segmode=%s_maxchunk=%d_length=%d.h5" %(mode, max_chunk, chunk_length))
     return os.path.join(seg_dir, filename + "_segmode=%s_maxchunk=%d.h5" %(mode, max_chunk))
 
 def infer_and_load(dataset_path, mode):
