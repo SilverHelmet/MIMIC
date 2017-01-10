@@ -99,17 +99,17 @@ def define_simple_seg_rnn(setting):
         masked = Masking(mask_value=0)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
             bias = False), name = "event_embedding")(masked)
-        rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid',
+        rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu'
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "lstm":
         masked = Masking(mask_value=0)(event_input)
         # embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
         # bias = False), name = "event_embedding")(masked)
-        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid',
+        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu'
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
     elif rnn_model == "attlstm":
         emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
-        rnn = EventAttentionLSTM(att_hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
+        rnn = EventAttentionLSTM(att_hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu'
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(emd)
     else:
         print "error"
