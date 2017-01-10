@@ -1,3 +1,4 @@
+import baseline_util 
 import h5py
 import numpy as np
 from scipy import interp
@@ -7,8 +8,13 @@ from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curv
 from sklearn.svm import LinearSVC, SVC
 from util import *
 
+
+
+        
 #f = h5py.File('exper/emerg_urgent_train_100_2000_True.h5', 'r')
 # t = h5py.File('exper/emerg_urgent_test_100_2000_True.h5', 'r')
+dataset_dir = ICU_exper_dir
+files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 f = h5py.File('ICU_exper/ICUIn_train_300.h5')
 t = h5py.File('ICU_exper/ICUIn_test_300.h5')
 labels = f['label'][:]

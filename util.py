@@ -161,8 +161,8 @@ def merge_event_map(filepath):
         old2new[old_idx] = new_events_idx[rtype]
     return old2new
 
-def load_setting(filepath):
-    setting = {}
+def load_setting(filepath, default_setting):
+    setting = default_setting if default_setting else {}
 
     for line in file(filepath):
         line = line.rstrip()
