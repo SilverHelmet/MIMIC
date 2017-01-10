@@ -7,7 +7,7 @@ class Dataset:
     
     def __init__(self, file, seg = None):
         self.dataset_file = file
-        self.seg_file = None
+        self.seg_file = seg
     
     @staticmethod
     def create_datasets(files ,dataset_dir = None, segs = None, seg_dir = None):
@@ -23,7 +23,7 @@ class Dataset:
         datasets = []
         for file, seg in zip(files, segs):
             datasets.append(Dataset(file, seg))
-        return tuple(datasets)
+        return datasets
 
     def load(self, load_time = False):
         f = h5py.File(self.dataset_file, 'r')
