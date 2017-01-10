@@ -88,7 +88,7 @@ def define_simple_seg_rnn(setting):
     print "l2 regulazation cof = %f" %l2_cof
     w_reg = l2(l2_cof)
     b_reg = l2(l2_cof)
-    u_reg = l2(lr_cof)
+    u_reg = l2(l2_cof)
     
     event_input = make_input(setting)
     attention = setting["attention"]
