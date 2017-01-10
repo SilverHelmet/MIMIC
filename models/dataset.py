@@ -71,7 +71,8 @@ def gen_seged_event_seq(event_seq, split, max_seg_length):
         if ed == 0:
             event_seqs.append([0] * max_seg_length)
         else:
-            event_seqs.append(add_padding(event_seq[st:ed], max_seg_length))
+
+            event_seqs.append(add_padding(list(event_seq[st:ed]), max_seg_length))
             st = ed
     return event_seqs
 
