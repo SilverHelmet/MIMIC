@@ -196,7 +196,6 @@ if __name__ == '__main__':
     
     disturbance = setting['disturbance']
     segment_flag = setting['segment']
-    aggre_mode = setting['aggre_mode']
 
 
     model = define_simple_seg_rnn(setting)
