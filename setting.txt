@@ -6,7 +6,7 @@ rnn=attlstm
 
 #model args
 embedding_dim=128
-hiden_dim
+hidden_dim=128
 
 
 # model training 
@@ -17,7 +17,7 @@ l2_reg_cof = 0.0001
 
 # dataset
 train_dataset=ICU_exper/ICUIn_train_1000.h5
-valid_datasetICU_exper/ICUIn_valid_1000.h5
+valid_dataset=ICU_exper/ICUIn_valid_1000.h5
 test_dataset=ICU_exper/ICUIn_test_1000.h5
 
 # segment
