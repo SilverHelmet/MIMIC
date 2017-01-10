@@ -151,6 +151,7 @@ def default_setting():
         'rnn': 'lstm',
         'nb_epoch': 100,
     }
+    return setting
 
 
 def load_argv(argv):
