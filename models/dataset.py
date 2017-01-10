@@ -23,7 +23,7 @@ class Dataset:
         datasets = []
         for file, seg in zip(files, segs):
             datasets.append(Dataset(file, seg))
-        return datasets
+        return tuple(datasets)
 
     def load(self, load_time = False):
         f = h5py.File(self.dataset_file, 'r')
@@ -38,7 +38,7 @@ class Dataset:
         f.close()
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
-            self.segs = f['seg'][:]
+            self.segs = f['segment'][:]
             f.close()
 
     def eval(self, model, setting):
