@@ -112,7 +112,6 @@ def sample_generator(dataset, setting):
     batch_size = setting['batch_size']
     disturbance = setting['disturbance']
     segment_flag = setting['segment_flag']
-    add_feature_flag = setting['add_feature_flag']
     max_seg_length = setting.get('max_seg_length', None)
     event_dim = setting['event_dim']
     rnn = setting['rnn']
