@@ -21,7 +21,7 @@ valid_dataset=ICU_exper/ICUIn_valid_1000.h5
 test_dataset=ICU_exper/ICUIn_test_1000.h5
 
 # segment
-# aggregation=one
+aggregation=one
 seg_mode=custom
 # train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre_maxchunk=25.h5
 # test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre_maxchunk=25.h5

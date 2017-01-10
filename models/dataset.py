@@ -76,8 +76,7 @@ def gen_seged_event_seq(event_seq, split, max_seg_length):
             st = ed
     return event_seqs
 
-def sequence2bow(event):
-    global event_dim
+def sequence2bow(event, event_dim):
     size = len(event)
     ret = np.zeros((size, event_dim))
     for i in range(size):
@@ -87,8 +86,8 @@ def sequence2bow(event):
                 ret[i][event_idx] += 1
     return ret
 
-def merge_event_by_seg(event_seq, split, event_dim):
-    global aggre_mode
+def merge_event_by_seg(event_seq, split, event_dim, aggre_mode):
+    
     st = 0
     event_seqs = []
     for ed in split:
@@ -134,11 +133,12 @@ def sample_generator(dataset, setting):
                 yield (seged_event, label)
             else:
                 # output shape (nb_sample, max_segs, event_dim)
+                aggre_mode = setting['aggregation']
                 for j in range(st, ed):
                     seg_event = []
                     for j in range(st, ed):
                         split_seg = segs[j]
-                        seg_event.append(merge_event_by_seg(events[j], split_seg, event_dim))
+                        seg_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
                     seg_event = np.array(seg_event)
                     yield(seg_event, label)
 
