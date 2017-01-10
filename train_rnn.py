@@ -107,7 +107,7 @@ def define_simple_seg_rnn(setting):
         bias = False), name = "event_embedding")(masked)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
-    elif rnn_model == "attlstm:
+    elif rnn_model == "attlstm":
         emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")
         rnn = EventAttentionLSTM(hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
