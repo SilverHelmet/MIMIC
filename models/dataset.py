@@ -125,6 +125,7 @@ def sample_generator(dataset, setting):
             event = events[st:ed]
             if rnn == 'attlstm':
                 # output shape (nb_sample, max_segs, max_seg_length)
+                seged_event = []
                 for j in range(st, ed):
                     split_seg = segs[j]
                     seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))
