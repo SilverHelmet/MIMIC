@@ -26,7 +26,7 @@ class Dataset:
         return tuple(datasets)
 
     def load(self, load_time = False):
-        f = h5py.File(self.dataset_file， 'r')
+        f = h5py.File(self.dataset_file, 'r')
         self.labels = f['label'][:]
         self.size = len(self.labels)
         self.events = f['event'][:]
