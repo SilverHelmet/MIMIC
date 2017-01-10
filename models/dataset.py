@@ -63,6 +63,7 @@ def add_padding(l, max_len, padding_value = 0):
     assert max_len >= len(l)
     for i in range(max_len - len(l)):
         l.append(padding_value)
+    return l
 
 def gen_seged_event_seq(event_seq, split, max_seg_length):
     st = 0
@@ -70,8 +71,7 @@ def gen_seged_event_seq(event_seq, split, max_seg_length):
     for ed in split:
         if ed == 0:
             event_seqs.append([0] * max_seg_length)
-        else:
-
+        else:    
             event_seqs.append(add_padding(list(event_seq[st:ed]), max_seg_length))
             st = ed
     return event_seqs
@@ -131,7 +131,6 @@ def sample_generator(dataset, setting):
                     split_seg = segs[j]
                     seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))
                 seged_event = np.array(seged_event)
-                print seged_event.shape
                 yield (seged_event, label)
             else:
                 # output shape (nb_sample, max_segs, event_dim)
