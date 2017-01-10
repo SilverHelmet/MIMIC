@@ -1,31 +1,30 @@
 # model
 segment=True
-disturbance=True
-lr_hiden=False
-flat_event=False
-add_feature=False
-attention=True
-rnn=gru
+disturbance=False
+attention=False
+rnn=attlstm
 
 
 # model training 
-# lr=0.3
 batch_size=32
 nb_epoch=50
 l2_reg_cof = 0.0001
 
 
 # dataset
-train_dataset=ICU_exper/ICUIn_train_800.h5
-test_dataset=ICU_exper/ICUIn_test_800.h5
+train_dataset=ICU_exper/ICUIn_train_1000.h5
+valid_datasetICU_exper/ICUIn_valid_1000.h5
+test_dataset=ICU_exper/ICUIn_test_1000.h5
 
 # segment
-aggregation=one
+# aggregation=one
 seg_mode=custom
-train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre_maxchunk=25.h5
-test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre_maxchunk=25.h5
-# train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=fixLength_maxchunk=80_length=20.h5
-# test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=fixLength_maxchunk=80_length=20.h5
+# train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre_maxchunk=25.h5
+# test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre_maxchunk=25.h5
+train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=50_length=20.h5
+valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=50_length=20.h5
+test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=50_length=20.h5
+max_seg_length=20
 
 # embedding 
 # embedding_in=ICU_exper/embeddings/fixLength25.emd.npy

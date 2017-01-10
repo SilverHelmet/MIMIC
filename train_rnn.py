@@ -84,15 +84,15 @@ def define_simple_seg_rnn(setting):
     print "define simple seg rnn"
     print "embedding_dim = %d" %embedding_dim
     print "hidden_dim = %d" %hidden_dim
-    l2_cof = setting.get["l2_reg_cof"]
+    l2_cof = setting["l2_reg_cof"]
     print "l2 regulazation cof = %f" %l2_cof
     w_reg = l2(l2_cof)
     b_reg = l2(l2_cof)
     u_reg = l2(lr_cof)
     
     event_input = make_input(setting)
-    attention = setting.get["attention"]
-    rnn_model = setting.get["rnn"]
+    attention = setting["attention"]
+    rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
 
     if rnn_model == 'gru':
@@ -135,6 +135,7 @@ def default_setting():
     setting = {
         'seg_mode': None,
         "batch_size": 32,
+        'attention': False, 
         'disturbance': False,   # add feature disturbance
         'segment_flag': False,  # split event seq to event segment
         'aggregation': 'sum',    # only useful when segment_flag is True
@@ -146,7 +147,7 @@ def default_setting():
         'event_dim': 3418,
 
         'l2_reg_cof': 0.0001,
-        'attention': False, 
+        
         'rnn': 'lstm',
         'nb_epoch': 100,
     }
