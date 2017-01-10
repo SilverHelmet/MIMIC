@@ -2,7 +2,7 @@
 segment=True
 disturbance=False
 attention=False
-rnn=attlstm
+rnn=lstm
 
 #model args
 embedding_dim=128
