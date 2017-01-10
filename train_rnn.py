@@ -190,8 +190,8 @@ if __name__ == '__main__':
         max_segs = datasets[0].segs.shape[1]
         setting['max_segs'] = max_segs
         print "max_segs = %d" %max_segs
-    print "train feature shape =", dataset[0].features.shape
-    print "train event shape =", dataset[0].events.shape
+    print "train feature shape =", datasets[0].features.shape
+    print "train event shape =", datasets[0].events.shape
     
     
     disturbance = setting['disturbance']
