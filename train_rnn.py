@@ -183,7 +183,7 @@ if __name__ == '__main__':
 
         print "train seg file = [%s]" %train_seg_file
         print "test seg file = [%s]" %test_seg_file
-        datasets = DataSet.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
+        datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:
             dataset.load()
         max_segs = dataset[0].segs.shape[1]
