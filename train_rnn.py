@@ -182,6 +182,7 @@ if __name__ == '__main__':
             test_seg_file = gen_fix_segs.infer_path(test_file, seg_mode)
 
         print "train seg file = [%s]" %train_seg_file
+        print "valid seg file = [%s]" %valid_seg_file
         print "test seg file = [%s]" %test_seg_file
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:

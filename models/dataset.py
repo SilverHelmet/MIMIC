@@ -36,7 +36,7 @@ class Dataset:
         if load_time:
             self.times = f['time'][:]
         f.close()
-        if self.seg is not None:
+        if self.seg_file is not None:
             f = h5py.File(self.seg_file)
             self.segs = f['seg'][:]
             f.close()
@@ -116,7 +116,6 @@ def sample_generator(dataset, setting):
     max_seg_length = setting.get('max_seg_length', None)
     event_dim = setting['event_dim']
     rnn = setting['rnn']
-    global batch_size, disturbance, flat_event_flag, segment_flag, add_feature_flag
     while  True:
         i = 0
         while i < nb_sample:
