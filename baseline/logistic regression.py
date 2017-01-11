@@ -15,6 +15,8 @@ import os
 # t = h5py.File('exper/emerg_urgent_test_100_2000_True.h5', 'r')
 dataset_dir = ICU_exper_dir
 files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+# dataset_dir = death_exper_dir
+# files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
 labels = f['label'][:]
@@ -31,9 +33,10 @@ merged_test_labels = merge_label(test_labels, test_sids)
 
 nb_samples = len(labels)
 nb_test = len(test_labels)
+event_dim = events.max() + 1
 
-count_events = [[0 for col in range(3391)] for row in range(nb_samples)]
-count_test_events = [[0 for col in range(3391)] for row in range(nb_test)]
+count_events = [[0 for col in range(event_dim)] for row in range(nb_samples)]
+count_test_events = [[0 for col in range(event_dim)] for row in range(nb_test)]
 
 for i in xrange(0,nb_samples):
     for j in xrange(event_len):
