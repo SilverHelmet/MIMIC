@@ -221,7 +221,7 @@ if __name__ == '__main__':
             print "new max max_merged_auc"
             test_eval = datasets[2].eval(model, setting)
             print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
-            max_merged_auc = val_eval
+            max_merged_auc = val_eval[3]
         new_weights = {}
         
         for layer in model.layers:
