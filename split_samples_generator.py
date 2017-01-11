@@ -125,6 +125,7 @@ if __name__ == "__main__":
     # out_dir = ICU_merged_exper_dir
     # out_dir = death_exper_dir
     out_dir = death_merged_exper_dir
+    out_prefix = "death/"
 
     print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(out_dir, "ICUIn_valid_%d.h5" %max_len), max_len, event_map)
     print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(out_dir, "ICUIn_train_%d.h5" %max_len), max_len, event_map)
