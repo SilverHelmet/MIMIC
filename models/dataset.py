@@ -134,13 +134,12 @@ def sample_generator(dataset, setting):
             else:
                 # output shape (nb_sample, max_segs, event_dim)
                 aggre_mode = setting['aggregation']
+                seg_event = []
                 for j in range(st, ed):
-                    seg_event = []
-                    for j in range(st, ed):
-                        split_seg = segs[j]
-                        seg_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
-                    seg_event = np.array(seg_event)
-                    yield(seg_event, label)
+                    split_seg = segs[j]
+                    seg_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
+                seg_event = np.array(seg_event)
+                yield(seg_event, label)
 
             i += batch_size 
             if i >= nb_sample:
