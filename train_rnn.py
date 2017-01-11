@@ -106,7 +106,7 @@ def define_simple_seg_rnn(setting):
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
         bias = False), name = "event_embedding")(masked)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(masked)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding_dim)
     elif rnn_model == "attlstm":
         emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "")(event_input)
         rnn = EventAttentionLSTM(att_hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -221,7 +221,7 @@ if __name__ == '__main__':
             print "new max max_merged_auc"
             test_eval = datasets[2].eval(model, setting)
             print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
-            max_merged_auc = val_eval[3]
+            g = val_eval[3]
         new_weights = {}
         
         for layer in model.layers:
