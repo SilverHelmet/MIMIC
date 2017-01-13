@@ -80,6 +80,7 @@ def define_simple_seg_rnn(setting):
     event_len = setting['event_len']
     event_dim = setting['event_dim']
     embedding_dim = setting['embedding_dim']
+    att_hidden_dim = setting['att_hidden_dim']
 
     print "define simple seg rnn"
     print "embedding_dim = %d" %embedding_dim
@@ -109,7 +110,7 @@ def define_simple_seg_rnn(setting):
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "attlstm":
         emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "")(event_input)
-        rnn = EventAttentionLSTM(att_hidden_dim = 128, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+        rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(emd)
     else:
         print "error"
@@ -145,6 +146,7 @@ def default_setting():
         'hidden_dim': 128,
         'event_len': 1000,
         'event_dim': 3418,
+        'att_hidden_dim': 128, 
 
         'l2_reg_cof': 0.0001,
         

@@ -7,6 +7,7 @@ rnn=lstm
 #model args
 embedding_dim=128
 hidden_dim=128
+att_hidden_dim=128
 
 
 # model training 
