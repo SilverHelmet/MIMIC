@@ -119,7 +119,8 @@ def define_simple_seg_rnn(setting):
         rnn = SimpleAttentionRNN(rnn)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
     model = Model(input = event_input, output = pred)
-    opt = Adam(lr = 0.001)
+    lr = setting['lr']
+    opt = Adam(lr = lr)
     model.compile(optimizer = opt,
         loss = 'binary_crossentropy', 
          metrics=['accuracy'])
@@ -149,6 +150,7 @@ def default_setting():
         'att_hidden_dim': 128, 
 
         'l2_reg_cof': 0.0001,
+        'lr':0.001,
         
         'rnn': 'lstm',
         'nb_epoch': 100,
