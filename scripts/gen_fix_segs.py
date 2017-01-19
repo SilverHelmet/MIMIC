@@ -170,9 +170,9 @@ if __name__ == "__main__":
     print "max_chunks = %d" %max_chunks
     print "chunk_length = %d" %chunk_length
     for idx, event_seq in enumerate(event):
-        if idx % 10000 == 0:
-            now_time = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
-            print "\t %s collect %d" %(now_time, idx)
+        # if idx % 10000 == 0:
+        #     now_time = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
+        #     print "\t %s collect %d" %(now_time, idx)
         if mode == "fixChunk#length":
             seg = split_to_fix_chunk(event_seq, max_chunks, mode)
         elif mode == "fixChunk#time":
@@ -189,5 +189,6 @@ if __name__ == "__main__":
         segs.append(seg)
     out_f = h5py.File(seg_out_path, 'w')
     out_f['segment'] = np.array(segs, dtype=int)
-    out_f['max_chunks'] = max_chunks
+    out_f['max_segs'] = max_chunks
+    out_f['max_seg_length'] = chunk_length
     out_f.close()

@@ -1,6 +1,6 @@
-max_length=32
+max_length=1
 str=""
-length=32
+length=256
 dir=ICU_exper
 files="ICUIn_train_1000.h5 ICUIn_valid_1000.h5 ICUIn_test_1000.h5"
 seg_dir=ICU_exper/segs
