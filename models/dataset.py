@@ -1,7 +1,7 @@
 from util import *
 import os
 import h5py
-from sklearn.metrics import roc_auc_score, accuracy_score
+from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc
 
 class Dataset:
     
@@ -44,10 +44,16 @@ class Dataset:
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
 
-        auc = roc_auc_score(self.labels, prediction)
+        auROC = roc_auc_score(self.labels, prediction)
 
         merged_prediction = merge_prob(prediction, self.ids, max)
-        merged_auc = roc_auc_score(self.merged_labels, merged_prediction)
+        merged_auROC = roc_auc_score(self.merged_labels, merged_prediction)
+
+        fpr, tpr, thresholds = roc_curve(self.labels, prediction)
+        auPRC = auc(fpr, tpr)
+        fpr, tpr, thresholds = roc_curve(self.merged_labels, merged_prediction)
+        merged_auPRC = auc(fpt, tpr)
+
 
         prediction[prediction >= 0.5] = 1
         prediction[prediction < 0.5] =0
@@ -56,8 +62,16 @@ class Dataset:
         merged_prediction[merged_prediction >= 0.5] = 1
         merged_prediction[merged_prediction < 0.5] = 0
         merged_acc = accuracy_score(self.merged_labels, merged_prediction)
-        return (acc, auc, merged_acc, merged_auc)
 
+        
+
+
+        return (acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC)
+
+def print_eval(prefix, result):
+    out = [prefix, *result]
+    print "%s  acc = %f, auROC = %f, auPRC merged_acc = %f, merged_auc = %f"
+    
 
 def add_padding(l, max_len, padding_value = 0):
     assert max_len >= len(l)
@@ -87,7 +101,6 @@ def sequence2bow(event, event_dim):
     return ret
 
 def merge_event_by_seg(event_seq, split, event_dim, aggre_mode):
-    
     st = 0
     event_seqs = []
     for ed in split:

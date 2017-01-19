@@ -60,8 +60,8 @@ p = np.mean(labels_pred == test_labels)
 print("acc =",p)
 auc_value = roc_auc_score(test_labels,c[:,1])
 print("auROC =", auc_value)
-fpr, tpr, thresholds = roc_curve(test_labels, c[:, 1])
-auPRC = auc(fpr, tpr)
+precision, recall,  thresholds = precision_recall_curve(test_labels, c[:, 1])
+auPRC = auc(recall, precision)
 print ("auPRC =", auPRC)
 
 merged_labels_pred = merge_prob(labels_pred, test_sids, max)
@@ -72,8 +72,8 @@ p = np.mean(merged_labels_pred == merged_test_labels)
 print "merged acc =", p
 merged_auc = roc_auc_score(merged_test_labels, merged_c)
 print "merged auROC =", merged_auc
-fpr, tpr, thresholds = roc_curve(merged_test_labels, merged_c)
-merged_auPRC = auc(fpr, tpr)
+precision, recall, thresholds = precision_recall_curve(merged_test_labels, merged_c)
+merged_auPRC = auc(recall, precision)
 print "merged auPRC =", merged_auPRC
 
 
