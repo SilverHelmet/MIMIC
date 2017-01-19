@@ -4,7 +4,7 @@ import numpy as np
 from scipy import interp
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve, 
+from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve
 from sklearn.svm import LinearSVC, SVC
 from util import *
 import os
@@ -55,13 +55,11 @@ clf = LogisticRegression()
 clf.fit(count_events, labels)
 labels_pred = clf.predict(count_test_events)
 c = clf.predict_proba(count_test_events)
+
 p = np.mean(labels_pred == test_labels)
 print("acc =",p)
-
-
 auc_value = roc_auc_score(test_labels,c[:,1])
 print("auROC =", auc_value)
-
 fpr, tpr, thresholds = roc_curve(test_labels, c[:, 1])
 auPRC = auc(fpr, tpr)
 print ("auPRC =", auPRC)

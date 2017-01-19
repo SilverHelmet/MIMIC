@@ -5,9 +5,9 @@ attention=False
 rnn=lstm
 
 #model args
-embedding_dim=128
-hidden_dim=128
-att_hidden_dim=128
+embedding_dim=64
+hidden_dim=64
+att_hidden_dim=64
 
 
 # model training 
