@@ -4,7 +4,7 @@ import numpy as np
 from scipy import interp
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve
+from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve, 
 from sklearn.svm import LinearSVC, SVC
 from util import *
 import os
@@ -54,16 +54,29 @@ for i in xrange(0,nb_test):
 clf = LogisticRegression()
 clf.fit(count_events, labels)
 labels_pred = clf.predict(count_test_events)
-merged_labels_pred = merge_prob(labels_pred, test_sids, max)
+c = clf.predict_proba(count_test_events)
 p = np.mean(labels_pred == test_labels)
 print("acc =",p)
+
+
+auc_value = roc_auc_score(test_labels,c[:,1])
+print("auROC =", auc_value)
+
+fpr, tpr, thresholds = roc_curve(test_labels, c[:, 1])
+auPRC = auc(fpr, tpr)
+print ("auPRC =", auPRC)
+
+merged_labels_pred = merge_prob(labels_pred, test_sids, max)
+merged_test_labels = merge_label(test_labels, test_sids)
+merged_c = merge_prob(c[:, 1], test_sids, max)
+
 p = np.mean(merged_labels_pred == merged_test_labels)
 print "merged acc =", p
-
-c = clf.predict_proba(count_test_events)
-merged_c = merge_prob(c[:, 1], test_sids, max)
-auc_value = roc_auc_score(test_labels,c[:,1])
-print("auc =", auc_value)
 merged_auc = roc_auc_score(merged_test_labels, merged_c)
-print "merged auc =", merged_auc
+print "merged auROC =", merged_auc
+fpr, tpr, thresholds = roc_curve(merged_test_labels, merged_c)
+merged_auPRC = auc(fpr, tpr)
+print "merged auPRC =", merged_auPRC
+
+
 
