@@ -8,7 +8,7 @@ from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
 from keras.optimizers import SGD, Adam 
-from models.dataset import Dataset, sample_generator
+from models.dataset import Dataset, sample_generator, print_eval
 import numpy as np
 import h5py
 import sys
@@ -219,13 +219,16 @@ if __name__ == '__main__':
         
         val_eval = datasets[1].eval(model, setting)
 
-        print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
-            %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
-        if val_eval[3] > max_merged_auc:
-            print "new max max_merged_auc"
+        # print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
+        #     %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
+        print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
+        
+        if val_eval[4] > max_merged_auc:
+            print "new max max_merged_auROC"
             test_eval = datasets[2].eval(model, setting)
-            print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
-            max_merged_auc = val_eval[3]
+            # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
+            print_eval("round %d" %(epoch_round+1), test_eval)
+            max_merged_auc = val_eval[4]
         new_weights = {}
         
         for layer in model.layers:

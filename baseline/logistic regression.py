@@ -58,8 +58,8 @@ c = clf.predict_proba(count_test_events)
 
 p = np.mean(labels_pred == test_labels)
 print("acc =",p)
-auc_value = roc_auc_score(test_labels,c[:,1])
-print("auROC =", auc_value)
+auROC = roc_auc_score(test_labels,c[:,1])
+print("auROC =", auROC)
 precision, recall,  thresholds = precision_recall_curve(test_labels, c[:, 1])
 auPRC = auc(recall, precision)
 print ("auPRC =", auPRC)
@@ -70,8 +70,8 @@ merged_c = merge_prob(c[:, 1], test_sids, max)
 
 p = np.mean(merged_labels_pred == merged_test_labels)
 print "merged acc =", p
-merged_auc = roc_auc_score(merged_test_labels, merged_c)
-print "merged auROC =", merged_auc
+merged_auROC = roc_auc_score(merged_test_labels, merged_c)
+print "merged auROC =", merged_auROC
 precision, recall, thresholds = precision_recall_curve(merged_test_labels, merged_c)
 merged_auPRC = auc(recall, precision)
 print "merged auPRC =", merged_auPRC

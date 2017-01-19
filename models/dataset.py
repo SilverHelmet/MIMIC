@@ -1,7 +1,7 @@
 from util import *
 import os
 import h5py
-from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc
+from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
 
 class Dataset:
     
@@ -49,10 +49,10 @@ class Dataset:
         merged_prediction = merge_prob(prediction, self.ids, max)
         merged_auROC = roc_auc_score(self.merged_labels, merged_prediction)
 
-        fpr, tpr, thresholds = roc_curve(self.labels, prediction)
-        auPRC = auc(fpr, tpr)
-        fpr, tpr, thresholds = roc_curve(self.merged_labels, merged_prediction)
-        merged_auPRC = auc(fpt, tpr)
+        precision, recall, thresholds = precision_recall_curve(self.labels, prediction)
+        auPRC = auc(recall, precision)
+        precision, recall, thresholds = precision_recall_curve(self.merged_labels, merged_prediction)
+        merged_auPRC = auc(recall, precision)
 
 
         prediction[prediction >= 0.5] = 1
@@ -69,8 +69,10 @@ class Dataset:
         return (acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC)
 
 def print_eval(prefix, result):
-    out = [prefix, *result]
-    print "%s  acc = %f, auROC = %f, auPRC merged_acc = %f, merged_auc = %f"
+    out = [prefix]
+    for value in result:
+        out.extend(value)
+    print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auc = %.4f, merged_auPRC = %f" %(tuple(out))
     
 
 def add_padding(l, max_len, padding_value = 0):

@@ -19,10 +19,10 @@ class B(A):
     def ok2(self):
         print "B"
 
-y_label = np.random.randint(0, 2, (50,))
-y_pred = np.random.random((50,))
+y_label = np.random.randint(0, 2, (1000000,))
+y_pred = np.random.random((1000000,))
 auc_value = roc_auc_score(y_label, y_pred)
 print auc_value
 precision, recall, thredholds = precision_recall_curve(y_label, y_pred)
-print auc(precision, recall, reorder=True)
-print auc(recall, precision, reorder=True)
+# print auc(precision, recall, reorder=True)
+print auc(recall, precision)
