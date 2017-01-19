@@ -145,12 +145,17 @@ if __name__ == "__main__":
     mode = "fixLength"
     mode = "timeAggre"
     time_slot = datetime.timedelta(days = 0.1)
-    dataset_path = sys.argv[1]
+    
     seg_dir = ICU_seg_dir
-    if len(sys.argv) >= 3:
-        mode = sys.argv[2]
     max_chunks = 50
     chunk_length = 20
+
+    dataset_path = sys.argv[1]
+    mode = sys.argv[2]
+    chunk_length = int(sys.argv[3])
+    seg_dir = sys.argv[4]
+
+    
     seg_out_path = infer_path(dataset_path, seg_dir, mode, max_chunks, chunk_length)
     print "load data from [%s] write segs to [%s], mode = [%s]" %(dataset_path, seg_out_path, mode)
 
