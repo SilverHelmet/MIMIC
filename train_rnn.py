@@ -69,8 +69,7 @@ def make_input(setting):
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
     if rnn_model == 'attlstm':
-        max_seg_length = setting.get('max_seg_length', None)
-        assert max_seg_length
+        max_seg_length = setting['max_seg_length']
         return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
     else:
         return Input(shape = (max_segs, event_dim), name = 'seg event input')
@@ -194,6 +193,7 @@ if __name__ == '__main__':
             dataset.load()
         max_segs = datasets[0].segs.shape[1]
         setting['max_segs'] = max_segs
+        setting['max_seg_length'] = datasets[0].max_seg_length
         print "max_segs = %d" %max_segs
     print "train feature shape =", datasets[0].features.shape
     print "train event shape =", datasets[0].events.shape
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     
     disturbance = setting['disturbance']
     segment_flag = setting['segment']
-
+    
 
     model = define_simple_seg_rnn(setting)
     for dataset in datasets:

@@ -39,6 +39,8 @@ class Dataset:
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
             self.segs = f['segment'][:]
+            self.max_segs = f['max_segs'].value
+            self.max_seg_length = f['max_seg_length'].value
             f.close()
 
     def eval(self, model, setting):
