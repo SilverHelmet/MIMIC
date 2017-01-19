@@ -154,7 +154,7 @@ if __name__ == "__main__":
     mode = sys.argv[2]
     chunk_length = int(sys.argv[3])
     seg_dir = sys.argv[4]
-    max_chunks = int(math.ceil(1000/chunk_length))
+    max_chunks = int(math.ceil(1000.0/chunk_length))
 
     
     seg_out_path = infer_path(dataset_path, seg_dir, mode, max_chunks, chunk_length)
