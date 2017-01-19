@@ -25,8 +25,6 @@ test_dataset=ICU_exper/ICUIn_test_1000.h5
 # segment
 aggregation=sum
 seg_mode=custom
-# train_seg_file=ICU_exper/segs/ICUIn_train_800_segmode=timeAggre_maxchunk=25.h5
-# test_seg_file=ICU_exper/segs/ICUIn_test_800_segmode=timeAggre_maxchunk=25.h5
 train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=50_length=20.h5
 valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=50_length=20.h5
 test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=50_length=20.h5

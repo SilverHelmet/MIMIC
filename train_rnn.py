@@ -215,10 +215,10 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     max_merged_auc = 0
     for epoch_round in range(nb_epoch):
-        model.fit_generator(sample_generator(datasets[0], setting), datasets[0].size, nb_epoch = 1, verbose = 1)
+        model.fit_generator(sample_generator(datasets[0], setting), 64, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
-
+        print val_eval
         # print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
         #     %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
         print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
