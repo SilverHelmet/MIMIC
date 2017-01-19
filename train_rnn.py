@@ -145,7 +145,6 @@ def default_setting():
         'embedding_dim': 128, 
         'hidden_dim': 128,
         'event_len': 1000,
-        'event_dim': 3418,
         'att_hidden_dim': 128, 
 
         'l2_reg_cof': 0.0001,
@@ -191,6 +190,8 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:
             dataset.load()
+        setting['event_dim'] = int(datasets[0].events.max() + 1)
+        print "get event_dim from dateset as %d" %setting['event_dim']
         max_segs = datasets[0].segs.shape[1]
         setting['max_segs'] = max_segs
         setting['max_seg_length'] = datasets[0].max_seg_length
