@@ -154,6 +154,7 @@ if __name__ == "__main__":
     mode = sys.argv[2]
     chunk_length = int(sys.argv[3])
     seg_dir = sys.argv[4]
+    max_chunks = int(math.ceil(1000/chunk_length))
 
     
     seg_out_path = infer_path(dataset_path, seg_dir, mode, max_chunks, chunk_length)
@@ -179,7 +180,6 @@ if __name__ == "__main__":
         elif mode == "fixTime":
             seg = split_by_time(event_seq, times[idx], time_slot, max_chunks)
         elif mode == "fixLength":
-            max_chunks = int(math.ceil(1000/chunk_length))
             seg = split_by_length(event_seq, max_chunks, chunk_length = chunk_length)
         elif mode == "timeAggre":
             seg = split_by_timeAggre(event_seq, times[idx], max_chunks)
