@@ -215,7 +215,7 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     max_merged_auc = 0
     for epoch_round in range(nb_epoch):
-        model.fit_generator(sample_generator(datasets[0], setting), dataset[0].size, nb_epoch = 1, verbose = 1)
+        model.fit_generator(sample_generator(datasets[0], setting), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
         print val_eval

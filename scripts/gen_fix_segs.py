@@ -174,6 +174,7 @@ if __name__ == "__main__":
         elif mode == "fixTime":
             seg = split_by_time(event_seq, times[idx], time_slot, max_chunks)
         elif mode == "fixLength":
+            max_chunks = int(math.ceil(1000/chunk_length))
             seg = split_by_length(event_seq, max_chunks, chunk_length = chunk_length)
         elif mode == "timeAggre":
             seg = split_by_timeAggre(event_seq, times[idx], max_chunks)
@@ -183,4 +184,5 @@ if __name__ == "__main__":
         segs.append(seg)
     out_f = h5py.File(seg_out_path, 'w')
     out_f['segment'] = np.array(segs, dtype=int)
+    out_f['max_chunks'] = max_chunks
     out_f.close()
