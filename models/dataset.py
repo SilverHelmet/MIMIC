@@ -63,15 +63,11 @@ class Dataset:
         merged_prediction[merged_prediction < 0.5] = 0
         merged_acc = accuracy_score(self.merged_labels, merged_prediction)
 
-        
-
-
         return (acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC)
 
 def print_eval(prefix, result):
     out = [prefix]
-    for value in result:
-        out.extend(value)
+    out.extend(result)
     print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auc = %.4f, merged_auPRC = %f" %(tuple(out))
     
 
