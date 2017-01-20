@@ -49,7 +49,7 @@ def treatLongDat(input,time):
 def makeFile(dataset, out_dir, tag):
     f = h5py.File(dataset, 'r')
     events = f['event'][:]
-    labels = f'labels'][:]
+    labels = f'label'][:]
     f.close()
     all_event = []
     all_label = []
@@ -68,9 +68,6 @@ def makeFile(dataset, out_dir, tag):
     f = open(os.path.join(out_dir, "label." + tag), 'wb')
     cPickle.dump(all_label,f,cPickle.HIGHEST_PROTOCOL)
     f.close()
-
-
-
 
 
 
