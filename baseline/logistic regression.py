@@ -57,7 +57,8 @@ for i in xrange(0,nb_test):
 count_events = np.array(count_events)
 count_test_events = np.array(count_test_events)
 
-def add_feature_cnts(evnet_cnts, features, feature_dim):
+def add_feature_cnts(event_cnts, features, feature_dim):
+    global event_len
     nb_samples = event_cnts.shape[0]
     feature_cnts = [[0] * feature_dim for i in range(nb_samples)]
     feature_length = features.shape[2]
@@ -73,7 +74,7 @@ def add_feature_cnts(evnet_cnts, features, feature_dim):
                     feature_cnts[i][index] += value
                 idx += 2
     feature_cnts = np.array(feature_cnts)
-    return np.concatenate([event_cnts, features], axis = 1)
+    return np.concatenate([event_cnts, feature_cnts], axis = 1)
                 
 
 if add_feature:
