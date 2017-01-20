@@ -15,17 +15,20 @@ import os
 # t = h5py.File('exper/emerg_urgent_test_100_2000_True.h5', 'r')
 dataset_dir = ICU_exper_dir
 files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+add_feature = True
 # dataset_dir = death_exper_dir
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
 labels = f['label'][:]
 events = f['event'][:]
+features = f['feature'][:]
 event_len = events.shape[1]
 sids = f['sample_id'][:]
 merged_labels = merge_label(labels, sids)
 test_labels = t['label'][:]
 test_events = t['event'][:]
+test_features = t['feature'][:]
 test_sids = t['sample_id'][:]
 merged_test_labels = merge_label(test_labels, test_sids)
 
@@ -34,6 +37,7 @@ merged_test_labels = merge_label(test_labels, test_sids)
 nb_samples = len(labels)
 nb_test = len(test_labels)
 event_dim = events.max() + 1
+feature_dim = 649
 
 count_events = [[0 for col in range(event_dim)] for row in range(nb_samples)]
 count_test_events = [[0 for col in range(event_dim)] for row in range(nb_test)]
@@ -49,6 +53,25 @@ for i in xrange(0,nb_test):
         if test_events[i][j]<2:
             continue
         count_test_events[i][test_events[i][j]]+=1
+
+count_events = np.array(count_events)
+count_test_events = np.array(count_test_events)
+
+def add_feature_cnts(evnet_cnts, features, feature_dim):
+    nb_samples = event_cnts.shape[0]
+    feature_cnts = [[0] * feature_dim for i in range(nb_samples)]
+    feature_length = features.shape[2]
+    for i in xrange(nb_samples):
+        feature =features[j]
+        for j in xrange(event_len):
+            feature_pair = feature[j]
+            idx = 0
+            while idx < feature_length:
+                
+
+if add_feature:
+    count_events = add_feature_cnts(count_events, features, feature_dim)
+    count_test_events = add_feature_cnts(count_test_events, test_features, feature_dim)
         
         
 clf = LogisticRegression()
