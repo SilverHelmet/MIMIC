@@ -63,7 +63,7 @@ def add_feature_cnts(event_cnts, features, feature_dim):
     feature_cnts = [[0] * feature_dim for i in range(nb_samples)]
     feature_length = features.shape[2]
     for i in xrange(nb_samples):
-        feature =features[j]
+        feature =features[i]
         for j in xrange(event_len):
             feature_pair = feature[j]
             idx = 0
