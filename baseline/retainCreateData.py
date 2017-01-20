@@ -54,7 +54,7 @@ def makeFile(dataset, out_dir, tag):
     all_event = []
     all_label = []
 
-    for row in test_event:
+    for row in events:
         all_event.append(treatLongDat(row,40))
 
     all_label = []
