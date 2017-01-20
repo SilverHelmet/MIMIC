@@ -1,0 +1,36 @@
+# model
+segment=True
+disturbance=False
+attention=False
+rnn=lstm
+
+#model args
+embedding_dim=64
+hidden_dim=64
+att_hidden_dim=64
+
+
+# model training 
+batch_size=32
+nb_epoch=30
+l2_reg_cof = 0.0001
+lr=0.001
+
+
+# dataset
+train_dataset=ICU_exper/ICUIn_train_1000.h5
+valid_dataset=ICU_exper/ICUIn_valid_1000.h5
+test_dataset=ICU_exper/ICUIn_test_1000.h5
+
+# segment
+aggregation=sum
+seg_mode=custom
+train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=32_length=32.h5
+valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=32_length=32.h5
+test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=32_length=32.h5
+
+# embedding 
+# embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
+# embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
+
+
