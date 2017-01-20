@@ -1,9 +1,9 @@
-event_dim = 3391 (0 is padding, 1 is intervel)
+event_dim = 3391 (0 is padding, 1 is interval)
 feature_dim = 668(0 is interval)
 nfeature = 954
 
 
 ——————————————
 event dim = 3416+2(0 and 1)
-feature dim = 648
+feature dim = 648 + 1 ( 0 is interval)
 nfeature = 949
