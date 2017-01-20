@@ -49,7 +49,7 @@ def treatLongDat(input,time):
 def makeFile(dataset, out_dir, tag):
     f = h5py.File(dataset, 'r')
     events = f['event'][:]
-    labels = f'label'][:]
+    labels = f['label'][:]
     f.close()
     all_event = []
     all_label = []
