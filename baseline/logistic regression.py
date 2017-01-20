@@ -67,11 +67,21 @@ def add_feature_cnts(evnet_cnts, features, feature_dim):
             feature_pair = feature[j]
             idx = 0
             while idx < feature_length:
+                if feature_pair[idx+1] != 0:
+                    index = int(feature_pair[idx])
+                    value = feature_pair[idx+1]
+                    feature_cnts[i][index] += value
+                idx += 2
+    feature_cnts = np.array(feature_cnts)
+    return np.concatenate([event_cnts, features], axis = 1)
                 
 
 if add_feature:
     count_events = add_feature_cnts(count_events, features, feature_dim)
     count_test_events = add_feature_cnts(count_test_events, test_features, feature_dim)
+
+print "X1 shape = ", count_events.shape
+print "X2 shape = ", count_test_events.shape
         
         
 clf = LogisticRegression()
