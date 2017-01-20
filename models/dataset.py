@@ -116,6 +116,67 @@ def merge_event_by_seg(event_seq, split, event_dim, aggre_mode):
         event_cnts = norm_to_prob(event_cnts)
     return event_cnts
 
+
+def collect_feature(feature_matrix, st, ed, feature_dim):
+    length = len(feature_matrix[0])
+    vec = np.zeros(feature_dim)
+    for i in range(st, ed):
+        feature_pairs = feature_matrix[i]
+        idx = 0
+        while idx < length:
+            if feature_pairs[idx+1] != 0:
+                index = int(feature_pairs[idx])
+                value = feature_pairs[idx+1]
+                vec[index] += value
+            idx += 2
+    return vec
+
+def merge_fea_by_seg(feature_matrix, split, feature_dim):
+    '''
+        return shape: (max_segs, feature_dim)
+    '''
+
+    seg_fea_matrix = []
+    st = 0
+    for ed in split:
+        if ed == 0:
+            seg_fea_matrix.append(np.zeros(feature_dim))
+        else:
+            seg_fea_matrix.append(collect_feature(feature_matrix, st, ed, feature_dim))
+            st = ed
+    return seg_fea_matrix
+
+def gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim):
+    length = len(feature_matrix[0])
+    vec = np.zeros(max_seg_length, feature_dim)
+    for j in range(st, ed):
+        feature_pairs = feature_matrix[j]
+        i = j - st
+        idx = 0
+        while idx < length:
+            if feature_pairs[idx+1] != 0:
+                index = int(feature_pairs[idx])
+                value = feature_pairs[idx+1]
+                vec[i][index] += value
+            idx += 2
+    return vec
+
+
+def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
+    '''
+        return shape: (max_segs, max_seg_length, feature_dim)
+    '''
+    seg_fea_matrix = []
+    st = 0
+    for ed in split:
+        if ed == 0:
+            seg_fea_matrix.append(np.zeros(max_seg_length, feature_dim))
+        else:
+            seg_fea_matrix.append(gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim))
+            st = ed
+    return seg_fea_matrix
+
+
 def sample_generator(dataset, setting):
     labels = dataset.labels
     features = dataset.features
@@ -128,6 +189,7 @@ def sample_generator(dataset, setting):
     max_seg_length = setting.get('max_seg_length', None)
     event_dim = setting['event_dim']
     rnn = setting['rnn']
+    feature_dim = setting['feature_dim']
     while  True:
         i = 0
         while i < nb_sample:
@@ -141,73 +203,35 @@ def sample_generator(dataset, setting):
                 seged_event = []
                 for j in range(st, ed):
                     split_seg = segs[j]
-                    seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))
+                    seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))                    
                 seged_event = np.array(seged_event)
-                yield (seged_event, label)
-            else:
-                # output shape (nb_sample, max_segs, event_dim)
-                aggre_mode = setting['aggregation']
-                seg_event = []
+
+                # output shape (nb_sample, max_segs, max_seg_length, feature_dim)
+                seg_feature_matrixes = []
                 for j in range(st, ed):
                     split_seg = segs[j]
-                    seg_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
-                seg_event = np.array(seg_event)
-                yield(seg_event, label)
+                    seg_feature_matrixes.append(gen_seged_feature_seq(features[j], split_seg, feature_dim))
+            else:
+                
+                aggre_mode = setting['aggregation']
+                # output shape (nb_sample, max_segs, event_dim)
+                seged_event = []
+                for j in range(st, ed):
+                    split_seg = segs[j]
+                    seged_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
+                seged_event = np.array(seged_event)
 
+                # output shape (nb_sample, max_segs, feature_dim)
+                if disturbance:
+                    seg_feature_matrixes = []
+                    for j in range(st, ed):
+                        split_seg = segs[j]
+                        seg_feature_matrixes.append(merge_fea_by_seg(features[j], split_seg, feature_dim))
+                    seg_feature_matrixes = np.array(seg_feature_matrixes)
+            if disturbance:
+                yield ([seged_event, seg_feature_matrixes], label)
+            else:
+                yield (seged_event, label)
             i += batch_size 
             if i >= nb_sample:
-                i = 0
-
-        
-
-
-            
-    
-        
-        
-        
-            
-
-# def pair_to_vec(feature_pairs):
-#     global feature_dim
-#     i = 0
-#     length = len(feature_pairs)
-#     vec = np.zeros(feature_dim)
-#     while i < length:
-#         if feature_pairs[i+1] != 0:
-#             index = int(feature_pairs[i])
-#             value = feature_pairs[i+1]
-#             vec[index] = value
-#         i += 2
-#     return vec
-
-
-# def collect_feature(feature_matrix, st, ed):
-#     global aggre_mode
-#     length = len(feature_matrix[0])
-#     vec = np.zeros(feature_dim)
-#     for i in range(st, ed):
-#         feature_pairs = feature_matrix[i]
-#         idx = 0
-#         while idx < length:
-#             if feature_pairs[idx+1] != 0:
-#                 index = int(feature_pairs[idx])
-#                 value = feature_pairs[idx+1]
-#                 vec[index] += value
-#             idx += 2
-#     dim = ed - st + 0.0
-#     if aggre_mode == "ave":
-#         vec /= dim
-#     return vec
-
-# def merge_fea_by_seg(feature_matrix, split):
-#     global feature_dim
-#     seg_fea_matrix = []
-#     st = 0
-#     for ed in split:
-#         if ed == 0:
-#             seg_fea_matrix.append(np.zeros(feature_dim))
-#         else:
-#             seg_fea_matrix.append(collect_feature(feature_matrix, st, ed))
-#             st = ed
-#     return seg_fea_matrix
+                i = 0           

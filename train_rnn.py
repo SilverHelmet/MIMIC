@@ -80,10 +80,15 @@ def define_simple_seg_rnn(setting):
     event_dim = setting['event_dim']
     embedding_dim = setting['embedding_dim']
     att_hidden_dim = setting['att_hidden_dim']
+    disturbance = setting['disturbance']
+    feature_dim = setting['feature_dim']
+    
 
     print "define simple seg rnn"
     print "embedding_dim = %d" %embedding_dim
     print "hidden_dim = %d" %hidden_dim
+    if disturbance:
+        print "add feature dim"
     l2_cof = setting["l2_reg_cof"]
     print "l2 regulazation cof = %f" %l2_cof
     w_reg = l2(l2_cof)
@@ -91,6 +96,7 @@ def define_simple_seg_rnn(setting):
     u_reg = l2(l2_cof)
     
     event_input = make_input(setting)
+    inputs = event_input
     attention = setting["attention"]
     rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
@@ -99,25 +105,41 @@ def define_simple_seg_rnn(setting):
         masked = Masking(mask_value=0)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
             bias = False), name = "event_embedding")(masked)
+        if disturbance:
+            feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
+            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+            inputs = [event_input, feature_input]
         rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "lstm":
         masked = Masking(mask_value=0)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
         bias = False), name = "event_embedding")(masked)
+        if disturbance:
+            feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
+            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+            inputs = [event_input, feature_input]
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "attlstm":
-        emd = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "")(event_input)
+        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "")(event_input)
+        if disturbance:
+            max_seg_length = setting['max_seg_length']
+            feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
+            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+            inputs = [event_input, feature_input]
         rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(emd)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     else:
         print "error"
     if attention:
         print "add attention"
         rnn = SimpleAttentionRNN(rnn)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
-    model = Model(input = event_input, output = pred)
+    model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
     model.compile(optimizer = opt,
@@ -138,7 +160,7 @@ def default_setting():
         "batch_size": 32,
         'attention': False, 
         'disturbance': False,   # add feature disturbance
-        'segment_flag': False,  # split event seq to event segment
+        'segment_flag': True,  # split event seq to event segment
         'aggregation': 'sum',    # only useful when segment_flag is True
 
         'feature_dim': 648,
@@ -200,7 +222,6 @@ if __name__ == '__main__':
     print "train event shape =", datasets[0].events.shape
     
     
-    disturbance = setting['disturbance']
     segment_flag = setting['segment']
     
 
