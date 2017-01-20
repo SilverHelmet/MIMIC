@@ -179,10 +179,10 @@ def default_setting():
 
 
 def load_argv(argv):
+    setting = default_setting()
     if len(argv) >= 2:
-        setting = load_setting(argv[1], default_setting())
-    else:
-        setting = default_setting()
+        for arg in argv[1:]
+            setting = load_setting(argv[1], default_setting())
     return setting
 
 if __name__ == '__main__':

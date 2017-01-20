@@ -1,8 +1,6 @@
 # model
 segment=True
 disturbance=False
-attention=False
-rnn=lstm
 
 #model args
 embedding_dim=64
