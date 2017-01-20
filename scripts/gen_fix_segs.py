@@ -76,7 +76,7 @@ def split_by_length(event_seq, nb_chunk, chunk_length):
     return seg
 
 # @jit(cache = True)
-def check_valid(times, max_duration, max_chunk):
+def check_valid(times, max_duration, max_chunk, chunk_length):
     # seg = np.zeros(max_chunk, ntype = int)
     seg = [0] * max_chunk
     i = 0
@@ -86,7 +86,7 @@ def check_valid(times, max_duration, max_chunk):
         if i == max_chunk:
             return None
         ed = st + 1
-        while ed < fi and times[ed] - times[st] <= max_duration:
+        while ed < fi and ed - st < chunk_length and times[ed] - times[st] <= max_duration:
             ed += 1
         seg[i] = ed
         i += 1
@@ -96,13 +96,13 @@ def check_valid(times, max_duration, max_chunk):
 
 
 eps = 0.001
-def get_timeAggre(times, max_chunk):
+def get_timeAggre(times, max_chunk, chunk_length):
     global eps
     l = 0
     r = times[-1] + eps * 2
     while l + eps < r:
         mid = (l + r) / 2
-        seg = check_valid(times, mid, max_chunk)
+        seg = check_valid(times, mid, max_chunk, max_chunk)
         if seg is not None:
             r = mid
         else:
@@ -114,12 +114,12 @@ def get_timeAggre(times, max_chunk):
     
 
 
-def split_by_timeAggre(event_seq, time_seq, max_chunk):
+def split_by_timeAggre(event_seq, time_seq, max_chunk, chunk_length):
     event_seq = [i for i in event_seq if i != 0]
     fi = len(event_seq)
     time_seq = [parse_time(time) for time in time_seq[:fi]]
     time_bias = [(time - time_seq[0]).total_seconds() / 3600.0 for time in time_seq]
-    seg = get_timeAggre(time_bias, max_chunk)
+    seg = get_timeAggre(time_bias, max_chunk, chunk_length)
     return seg
 
 
@@ -156,6 +156,10 @@ if __name__ == "__main__":
     seg_dir = sys.argv[4]
     max_chunks = int(math.ceil(1000.0/chunk_length))
 
+    if mode == 'timeAggre':
+        max_chunks = max_chunks * 2
+        
+
     
     seg_out_path = infer_path(dataset_path, seg_dir, mode, max_chunks, chunk_length)
     print "load data from [%s] write segs to [%s], mode = [%s]" %(dataset_path, seg_out_path, mode)
@@ -182,7 +186,7 @@ if __name__ == "__main__":
         elif mode == "fixLength":
             seg = split_by_length(event_seq, max_chunks, chunk_length = chunk_length)
         elif mode == "timeAggre":
-            seg = split_by_timeAggre(event_seq, times[idx], max_chunks)
+            seg = split_by_timeAggre(event_seq, times[idx], max_chunks, chunk_length)
         else:
             print "error"
             break
