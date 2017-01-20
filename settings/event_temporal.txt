@@ -1,2 +1,2 @@
-attention=False
+attention=True
 rnn=attlstm
