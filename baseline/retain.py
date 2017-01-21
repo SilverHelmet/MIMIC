@@ -14,7 +14,9 @@ import theano.tensor as T
 from theano import config
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, average_precision_score
+import baseline_util
+from util import merge_label, merge_prob
 
 def unzip(zipped):
 	new_params = OrderedDict()
@@ -295,12 +297,17 @@ def load_data_debug(seqFile, labelFile, timeFile=''):
 
 
 def load_data(seqFile, labelFile, timeFile):
+	idFile = ".".join(seqFile.split(".")[:-1]) + ".id"
+	print ("idFile = %s" %idFile)
 	train_set_x = pickle.load(open(seqFile+'.train', 'rb'))
 	valid_set_x = pickle.load(open(seqFile+'.valid', 'rb'))
 	test_set_x = pickle.load(open(seqFile+'.test', 'rb'))
 	train_set_y = pickle.load(open(labelFile+'.train', 'rb'))
 	valid_set_y = pickle.load(open(labelFile+'.valid', 'rb'))
 	test_set_y = pickle.load(open(labelFile+'.test', 'rb'))
+	train_set_id = pickle.load(open(idFile + ".train", 'rb'))
+	valid_set_id = pickle.load(open(idFile + ".valid", 'rb'))
+	test_set_id = pickle.load(open(idFile + ".test", 'rb'))
 	train_set_t = None
 	valid_set_t = None
 	test_set_t = None
@@ -316,27 +323,31 @@ def load_data(seqFile, labelFile, timeFile):
 	train_sorted_index = len_argsort(train_set_x)
 	train_set_x = [train_set_x[i] for i in train_sorted_index]
 	train_set_y = [train_set_y[i] for i in train_sorted_index]
+	train_set_id = [train_set_id[i] for i in train_sorted_index]
 
 	valid_sorted_index = len_argsort(valid_set_x)
 	valid_set_x = [valid_set_x[i] for i in valid_sorted_index]
 	valid_set_y = [valid_set_y[i] for i in valid_sorted_index]
+	valid_set_id = [valid_set_id[i] for i in valid_sorted_index]
 
 	test_sorted_index = len_argsort(test_set_x)
 	test_set_x = [test_set_x[i] for i in test_sorted_index]
 	test_set_y = [test_set_y[i] for i in test_sorted_index]
+	test_set_id = [test_set_id[i] for i in test_set_id]
 
 	if len(timeFile) > 0:
 		train_set_t = [train_set_t[i] for i in train_sorted_index]
 		valid_set_t = [valid_set_t[i] for i in valid_sorted_index]
 		test_set_t = [test_set_t[i] for i in test_sorted_index]
 
-	train_set = (train_set_x, train_set_y, train_set_t)
-	valid_set = (valid_set_x, valid_set_y, valid_set_t)
-	test_set = (test_set_x, test_set_y, test_set_t)
+
+	train_set = (train_set_x, train_set_y, train_set_t, train_set_id)
+	valid_set = (valid_set_x, valid_set_y, valid_set_t, valid_set_id)
+	test_set = (test_set_x, test_set_y, test_set_t, test_set_id)
 
 	return train_set, valid_set, test_set
 
-def calculate_auc(test_model, dataset, options):
+def calculate_auc(test_model, dataset, options, calc_all = False):
 	batchSize = options['batchSize']
 	useTime = options['useTime']
 	
@@ -352,9 +363,43 @@ def calculate_auc(test_model, dataset, options):
 			x, lengths = padMatrixWithoutTime(batchX, options)
 			scores = test_model(x, lengths)
 		scoreVec.extend(list(scores))
-	labels = dataset[1]
-	auc = roc_auc_score(list(labels), list(scoreVec))
-	return auc
+	
+
+	if calc_all:
+		labels = dataset[1]
+		merged_labels = merge_label(labels, ids)
+		ids = dataset[3
+		score = np.array(scoreVec)
+		merged_score = merge_prob(score, ids)
+
+		auROC = roc_auc_score(labels, score)
+		merged_auROC = roc_auc_score(merged_labels, merged_score)
+
+		auPRC = average_precision_score(labels, score)
+		merged_auPRC = average_precision_score(merged_labels, merged_score)
+
+    	score[score >= 0.5] = 1
+		score[score < 0.5] = 0
+		merged_score[merged_score >= 0.5] = 1
+		merged_score[merged_score < 0.5] = 0
+    	acc = np.mean(lables == score)
+		merged_acc = np.mean(merged_labels == merged_score)
+
+		out = ["best Test target ", acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC]
+		print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
+	else:
+		labels = dataset[1]
+		# auc = roc_auc_score(list(labels), list(scoreVec))
+		ids = dataset[3]
+		merged_labels = merge_label(labels, ids)
+		merged_score = merge_prob(scoreVec, ids, max)
+		merged_auRoc = roc_auc_score(merged_labels, merged_score)
+		
+	
+	
+	
+
+	return merged_auRoc
 
 def calculate_cost(test_model, dataset, options):
 	batchSize = options['batchSize']
@@ -520,7 +565,7 @@ def train_RETAIN(
 		if validAuc > bestValidAuc: 
 			bestValidAuc = validAuc
 			bestValidEpoch = epoch
-			bestTestAuc = calculate_auc(get_prediction, testSet, options)
+			bestTestAuc = calculate_auc(get_prediction, testSet, options, calc_all = True)
 			buf = 'Currently the best validation AUC found. Test AUC:%f at epoch:%d' % (bestTestAuc, epoch)
 			print buf
 			print2file(buf, logFile)
