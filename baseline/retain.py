@@ -382,10 +382,10 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
         score[score < 0.5] = 0
         merged_score[merged_score >= 0.5] = 1
         merged_score[merged_score < 0.5] = 0
-        acc = np.mean(lables == score)
+        acc = np.mean(labels == score)
         merged_acc = np.mean(merged_labels == merged_score)
 
-        out = ["best Test target ", acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC]
+        out = ["best Test target, ", acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC]
         print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
     else:
         labels = dataset[1]
