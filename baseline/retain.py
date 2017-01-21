@@ -369,7 +369,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
 		labels = dataset[1]
 		merged_labels = merge_label(labels, ids)
 		ids = dataset[3
-		score = np.array(scoreVec)
+		score = p.array(scoreVec)
 		merged_score = merge_prob(score, ids)
 
 		auROC = roc_auc_score(labels, score)
