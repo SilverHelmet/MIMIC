@@ -49,6 +49,7 @@ def treatLongDat(input,time):
 def makeFile(dataset, out_dir, tag, prefix):
     f = h5py.File(dataset, 'r')
     events = f['event'][:]
+    print "event max index = ", events.max()
     labels = f['label'][:]
     ids = f['sample_id'][:]
     f.close()

@@ -1,1 +1,2 @@
-python baseline/retain.py --verbose baseline/retainData/visit 3418 baseline/retainData/visit/label baseline/retainData/visit/weight
+dir="baseline/retainData/icu_catAtt."
+python baseline/retain.py --verbose "${dir}visit" 3418 "${dir}label" "${dir}weight"
