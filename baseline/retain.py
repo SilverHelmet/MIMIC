@@ -370,7 +370,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
         ids = dataset[3]
         merged_labels = merge_label(labels, ids)
         score = np.array(scoreVec)
-        merged_score = merge_prob(score, ids)
+        merged_score = merge_prob(score, ids, max)
 
         auROC = roc_auc_score(labels, score)
         merged_auROC = roc_auc_score(merged_labels, merged_score)
@@ -530,6 +530,7 @@ def train_RETAIN(
         costVector = []
         indexNum=0
         for index in random.sample(range(n_batches), n_batches):
+            break
             use_noise.set_value(1.)
             batchX = trainSet[0][index*batchSize:(index+1)*batchSize]
             y = np.array(trainSet[1][index*batchSize:(index+1)*batchSize]).astype(config.floatX)
