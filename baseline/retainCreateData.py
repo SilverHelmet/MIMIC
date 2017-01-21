@@ -61,11 +61,11 @@ def makeFile(dataset, out_dir, tag, prefix):
 
     all_label = []
     for i in labels:
-        all_label.append(i)
+        all_label.append(labels[i])
 
     all_id = []
     for i in ids:
-        all_id.append(all_id)
+        all_id.append(ids[i])
 
     f = open(os.path.join(out_dir, prefix + ".visit." + tag), 'wb')
     cPickle.dump(all_event, f, cPickle.HIGHEST_PROTOCOL)
