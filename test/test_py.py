@@ -1,5 +1,6 @@
 from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve, average_precision_score
 import numpy as np
+import sklearn.svm
 
 class A:
     def __init__(self, pid):

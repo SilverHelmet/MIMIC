@@ -393,13 +393,13 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
         ids = dataset[3]
         merged_labels = merge_label(labels, ids)
         merged_score = merge_prob(scoreVec, ids, max)
-        merged_auRoc = roc_auc_score(merged_labels, merged_score)
+        merged_auROC = roc_auc_score(merged_labels, merged_score)
         
     
     
     
 
-    return merged_auRoc
+    return merged_auROC
 
 def calculate_cost(test_model, dataset, options):
     batchSize = options['batchSize']
