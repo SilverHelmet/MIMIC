@@ -333,7 +333,7 @@ def load_data(seqFile, labelFile, timeFile):
     test_sorted_index = len_argsort(test_set_x)
     test_set_x = [test_set_x[i] for i in test_sorted_index]
     test_set_y = [test_set_y[i] for i in test_sorted_index]
-    test_set_id = [test_set_id[i] for i in test_set_id]
+    test_set_id = [test_set_id[i] for i in test_sorted_index]
 
     if len(timeFile) > 0:
         train_set_t = [train_set_t[i] for i in train_sorted_index]
