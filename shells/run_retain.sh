@@ -1,1 +1,1 @@
-python baseline/retain.py --verbose baseline/retainData/visit 3418 label weight
+python baseline/retain.py --verbose baseline/retainData/visit 3418 baseline/retainData/visit/label baseline/retainData/visit/weight
