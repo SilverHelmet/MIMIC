@@ -46,7 +46,7 @@ def treatLongDat(input,time):
 
 
 
-def makeFile(dataset, out_dir, tag):
+def makeFile(dataset, out_dir, tag, prefix):
     f = h5py.File(dataset, 'r')
     events = f['event'][:]
     labels = f['label'][:]
@@ -61,11 +61,11 @@ def makeFile(dataset, out_dir, tag):
     for i in labels:
         all_label.append(i)
 
-    f = open(os.path.join(out_dir, "visit." + tag), 'wb')
+    f = open(os.path.join(out_dir, prefix + ".visit." + tag), 'wb')
     cPickle.dump(all_event, f, cPickle.HIGHEST_PROTOCOL)
     f.close()
 
-    f = open(os.path.join(out_dir, "label." + tag), 'wb')
+    f = open(os.path.join(out_dir, prefix + ".label." + tag), 'wb')
     cPickle.dump(all_label,f,cPickle.HIGHEST_PROTOCOL)
     f.close()
 
@@ -73,8 +73,10 @@ def makeFile(dataset, out_dir, tag):
 
 out_dir = os.path.join(os.path.join(script_dir, "baseline"), 'retainData')
 dataset_dir = ICU_exper_dir
+prefix = "icu_catAtt"
 files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 datasets = [os.path.join(dataset_dir, file) for file in files]
-makeFile(datasets[0], out_dir, "train")
-makeFile(datasets[1], out_dir, "valid")
-makeFile(datasets[2], out_dir, "test")
+
+makeFile(datasets[0], out_dir, "train", prefix)
+makeFile(datasets[1], out_dir, "valid", prefix)
+makeFile(datasets[2], out_dir, "test", prefix)
