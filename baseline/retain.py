@@ -530,7 +530,6 @@ def train_RETAIN(
         costVector = []
         indexNum=0
         for index in random.sample(range(n_batches), n_batches):
-            break
             use_noise.set_value(1.)
             batchX = trainSet[0][index*batchSize:(index+1)*batchSize]
             y = np.array(trainSet[1][index*batchSize:(index+1)*batchSize]).astype(config.floatX)
