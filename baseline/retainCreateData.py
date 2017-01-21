@@ -50,6 +50,7 @@ def makeFile(dataset, out_dir, tag, prefix):
     f = h5py.File(dataset, 'r')
     events = f['event'][:]
     labels = f['label'][:]
+    ids = f['sample_id'][:]
     f.close()
     all_event = []
     all_label = []
@@ -61,12 +62,20 @@ def makeFile(dataset, out_dir, tag, prefix):
     for i in labels:
         all_label.append(i)
 
+    all_id = []
+    for i in ids:
+        all_id.append(all_id)
+
     f = open(os.path.join(out_dir, prefix + ".visit." + tag), 'wb')
     cPickle.dump(all_event, f, cPickle.HIGHEST_PROTOCOL)
     f.close()
 
     f = open(os.path.join(out_dir, prefix + ".label." + tag), 'wb')
     cPickle.dump(all_label,f,cPickle.HIGHEST_PROTOCOL)
+    f.close()
+
+    f = open(os.path.join(out_dir, prefix + '.id.' + tag), 'wb')
+    cPickle.dump(all_id,f,cPickle.HIGHEST_PROTOCOL)
     f.close()
 
 
