@@ -80,8 +80,6 @@ def add_padding(l, max_len, padding_value = 0):
     return l
 
 def gen_seged_event_seq(event_seq, split, max_seg_length):
-    print split
-    print max_seg_length
     st = 0
     event_seqs = []
     for ed in split:
@@ -150,7 +148,7 @@ def merge_fea_by_seg(feature_matrix, split, feature_dim):
 
 def gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim):
     length = len(feature_matrix[0])
-    vec = np.zeros(max_seg_length, feature_dim)
+    vec = np.zeros((max_seg_length, feature_dim))
     for j in range(st, ed):
         feature_pairs = feature_matrix[j]
         i = j - st
