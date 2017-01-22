@@ -1,0 +1,2 @@
+attention=True
+rnn=lstm
