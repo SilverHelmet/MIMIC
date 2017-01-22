@@ -170,7 +170,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
     st = 0
     for ed in split:
         if ed == 0:
-            seg_fea_matrix.append(np.zeros(max_seg_length, feature_dim))
+            seg_fea_matrix.append(np.zeros((max_seg_length, feature_dim)))
         else:
             seg_fea_matrix.append(gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim))
             st = ed
