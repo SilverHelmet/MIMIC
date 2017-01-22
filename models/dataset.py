@@ -80,6 +80,8 @@ def add_padding(l, max_len, padding_value = 0):
     return l
 
 def gen_seged_event_seq(event_seq, split, max_seg_length):
+    print split
+    print max_seg_length
     st = 0
     event_seqs = []
     for ed in split:
