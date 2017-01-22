@@ -211,6 +211,7 @@ def sample_generator(dataset, setting):
                     for j in range(st, ed):
                         split_seg = segs[j]
                         seg_feature_matrixes.append(gen_seged_feature_seq(features[j], split_seg, max_seg_length, feature_dim))
+                seg_feature_matrixes = np.array(seg_feature_matrixes)
             else:
                 aggre_mode = setting['aggregation']
                 # output shape (nb_sample, max_segs, event_dim)
