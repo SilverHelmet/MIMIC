@@ -218,6 +218,7 @@ if __name__ == '__main__':
         setting['max_segs'] = max_segs
         setting['max_seg_length'] = datasets[0].max_seg_length
         print "max_segs = %d" %max_segs
+        print "max_seg_length = %d" %setting['max_seg_length']
     print "train feature shape =", datasets[0].features.shape
     print "train event shape =", datasets[0].events.shape
     
