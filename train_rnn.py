@@ -231,6 +231,8 @@ if __name__ == '__main__':
         print "\tdataset size = %d" %len(dataset.labels)
     print "batch_size =", setting['batch_size']
     print 'start trainning'
+    early_stop_round = 5
+    last_hit_round = 0
     nb_epoch = setting['nb_epoch']
     weights = {}
     for layer in model.layers:
@@ -238,6 +240,9 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     max_merged_auc = 0
     for epoch_round in range(nb_epoch):
+        if epoch_round - last_hit_round -1 >= early_stop_round:
+            print "early stop at round %d" %(epoch_round + 1)
+            break
         model.fit_generator(sample_generator(datasets[0], setting), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
@@ -246,6 +251,7 @@ if __name__ == '__main__':
         print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
         
         if val_eval[4] > max_merged_auc:
+            last_hit_round = epoch_round
             print "new max max_merged_auROC"
             test_eval = datasets[2].eval(model, setting)
             # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
