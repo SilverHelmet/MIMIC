@@ -1,6 +1,8 @@
 # model
 segment=True
 disturbance=False
+attention=False
+rnn=lstm
 
 
 #model args
@@ -27,9 +29,9 @@ seg_mode=custom
 # train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=32_length=32.h5
 # valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=32_length=32.h5
 # test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=32_length=32.h5
-train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=timeAggre_maxchunk=32.h5
-valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=timeAggre_maxchunk=32.h5
-test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=timeAggre_maxchunk=32.h5
+# train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=timeAggre_maxchunk=32.h5
+# valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=timeAggre_maxchunk=32.h5
+# test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=timeAggre_maxchunk=32.h5
 
 # embedding 
 # embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
