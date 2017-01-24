@@ -1,4 +1,4 @@
-dataset_setting="settings/fea_catAtt_lstm"
+dataset_setting="settings/fea_catAtt_lstm.txt"
 
 python -u train_rnn.py $dataset_setting  settings/fixLength4.txt >& log/icu_fixLength4_fea_catAtt_lstm.log1 
 # python -u train_rnn.py $dataset_setting  settings/fixLength8.txt >& log/icu_fixLength8_fea_catAtt_lstm.log1 
