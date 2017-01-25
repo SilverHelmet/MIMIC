@@ -81,12 +81,20 @@ def makeFile(dataset, out_dir, tag, prefix):
 
 
 
-out_dir = os.path.join(os.path.join(script_dir, "baseline"), 'retainData')
+
 # dataset_dir = ICU_exper_dir
 # prefix = "icu_catAtt"
-dataset_dir = ICU_merged_exper_dir
-prefix = "icu"
-files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+out_dir = os.path.join(os.path.join(script_dir, "baseline"), 'retainData')
+
+# dataset_dir = ICU_merged_exper_dir
+# prefix = "icu"
+# files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+
+dataset_dir = death_merged_exper_dir
+prefix = "death"
+# dataset_dir = death_exper_dir
+# prefix = "death_catAtt"
+files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
 datasets = [os.path.join(dataset_dir, file) for file in files]
 
 makeFile(datasets[0], out_dir, "train", prefix)
