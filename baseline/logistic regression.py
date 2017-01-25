@@ -11,11 +11,11 @@ import os
 
 
         
-#f = h5py.File('exper/emerg_urgent_train_100_2000_True.h5', 'r')
-# t = h5py.File('exper/emerg_urgent_test_100_2000_True.h5', 'r')
-dataset_dir = ICU_exper_dir
-files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
-add_feature = True
+# dataset_dir = ICU_exper_dir
+# files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+dataset_dir=death_merged_exper_dir
+files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
+add_feature = False
 # dataset_dir = death_exper_dir
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')

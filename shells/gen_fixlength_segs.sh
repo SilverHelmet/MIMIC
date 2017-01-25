@@ -1,9 +1,12 @@
 max_length=256
 str=""
 length=1
-dir=ICU_exper
-files="ICUIn_train_1000.h5 ICUIn_valid_1000.h5 ICUIn_test_1000.h5"
-seg_dir=ICU_exper/segs
+# dir=ICU_exper
+# files="ICUIn_train_1000.h5 ICUIn_valid_1000.h5 ICUIn_test_1000.h5"
+# seg_dir=ICU_exper/segs
+dir=death_exper
+files="death_test_1000.h5 death_train_1000.h5 death_valid_1000.h5"
+seg_dir=death_exper/segs
 
 while  [ $length -le $max_length ]
 do

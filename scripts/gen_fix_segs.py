@@ -146,7 +146,6 @@ if __name__ == "__main__":
     mode = "timeAggre"
     time_slot = datetime.timedelta(days = 0.1)
     
-    seg_dir = ICU_seg_dir
     max_chunks = 50
     chunk_length = 20
 
