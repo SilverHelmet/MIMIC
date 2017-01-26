@@ -14,7 +14,7 @@ att_hidden_dim=64
 # model training 
 batch_size=32
 nb_epoch=15
-l2_reg_cof = 0.0001
+l2_reg_cof=0.0001
 lr=0.001
 
 
@@ -22,9 +22,9 @@ lr=0.001
 # train_dataset=ICU_merged_exper/ICUIn_train_1000.h5
 # valid_dataset=ICU_merged_exper/ICUIn_valid_1000.h5
 # test_dataset=ICU_merged_exper/ICUIn_test_1000.h5
-train_dataset=death_exper/ICUIn_train_1000.h5
-valid_dataset=death_exper/ICUIn_valid_1000.h5
-test_dataset=death_exper/ICUIn_test_1000.h5
+train_dataset=death_merged_exper/death_train_1000.h5
+valid_dataset=death_merged_exper/death_valid_1000.h5
+test_dataset=death_merged_exper/death_test_1000.h5
 
 # segment
 aggregation=sum
