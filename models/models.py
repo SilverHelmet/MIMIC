@@ -8,6 +8,15 @@ import numpy as np
 from keras_model import my_rnn
 
 
+def get_custom_objects():
+    return {
+        "MaskFlatten": MaskFlatten,
+        "MaskLambda": MaskLambda,
+        "SegMaskEmbedding": SegMaskEmbedding,
+        "EventAttentionLSTM": EventAttentionLSTM,
+        "mask_softmax": mask_softmax
+    }
+    
 def SimpleAttentionRNN(rnn):
     score = TimeDistributed(Dense(1))(rnn)
     flatten_score = MaskFlatten(name = 'flatten_score')(score)
@@ -174,6 +183,13 @@ class EventAttentionLSTM(LSTM):
         h = o * self.activation(c)
         return h, [h, c]
 
+    def get_config(self):
+        config = {
+            "att_hidden_dim": self.att_hidden_dim,
+        }
+        base_config = super(EventAttentionLSTM, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+
     def test_process(self, x, output):
         '''
             args:
@@ -271,11 +287,21 @@ class MaskFlatten(Flatten):
 
 class MaskLambda(Lambda):
     def __init__(self, **kwargs):
-        self.supports_masking = True
         super(MaskLambda, self).__init__(**kwargs)
+        self.supports_masking = True
+        
 
     def compute_mask(self, input, input_mask = None):
         return None
+
+    def get_config(self):
+        config = {
+            # 'function': self.function.__name__,
+            # 'function_type': "function",
+            "arguments": {}
+        }
+        base_config = super(MaskLambda, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
 
 class SegMaskEmbedding(Embedding):
     def __init__(self, mask_value = 0., **kwargs):
@@ -302,12 +328,18 @@ class SegMaskEmbedding(Embedding):
     
 
     def get_output_shape_for(self, input_shape):
-    
         if not self.input_length:
             input_length = input_shape[1]
         else:
             input_length = self.input_length
         return (input_shape[0], input_length, input_shape[2], self.output_dim)
+
+    def get_config(self):
+        config = {
+            "mask_value": self.mask_value,
+        }
+        base_config = super(SegMaskEmbedding, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
 
 def np_switch(condition, x1, x2):
     return np.select([condition, np.not_equal(condition, True)], [x1, x2])
@@ -340,4 +372,13 @@ def mask_softmax(x, mask):
     z = y * (-999999999) + x
     z = K.softmax(z)
     return K.cast(z, K.floatx())
+
+if __name__ == "__main__":
+    import types as python_types
+    if isinstance(mask_softmax, python_types.LambdaType):
+        print mask_softmax.__name__
+        print "lambda"
+        # function = func_dump(mask_softmax)
+    else:
+        print "func"
     

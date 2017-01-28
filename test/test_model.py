@@ -35,8 +35,9 @@ emd = emdd(e_input)
 # merged_model.compile(optimizer = "adam", loss = 'binary_crossentropy')
 # emd = Embedding(input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(e_input)
 rnnn = EventAttentionLSTM(att_hidden_dim = 8, output_dim = hidden_dim, inner_activation='sigmoid', activation='sigmoid', 
-    input_length = None, return_sequences = False)
+    input_length = None, return_sequences = True)
 rnn = rnnn(emd)
+rnn = SimpleAttentionRNN(rnn)
 # rnn_model = Model(input = e_input, output = rnn)
 # rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             # W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
@@ -56,24 +57,22 @@ f2 = np.random.randint(0, 2, (max_segs, max_seg_length, feature_dim))
 label1 = 0
 label2 = 1
 data = np.array([data1, data2])
-print model.predict(x =data)
 
-for config in model.get_config()['layers']:
-    print "\t", config
+model.get_config()
+# for config in model.get_config()['layers']:
+    # print "\t", config
+
+
+print model.predict(data)
+for i in range(2):
+    model.fit(data, np.array([label1, label2]), nb_epoch=10, verbose = 0)
+    print model.predict(data)
+
 model.save("test.model")
-
-custom_objects = {
-    "SegMaskEmbedding": SegMaskEmbedding,
-    "EventAttentionLSTM":EventAttentionLSTM
-}
-model2 = load_model("test.model", custom_objects = custom_objects)
+model2 = load_model("test.model", custom_objects = get_custom_objects())
 print model2.predict(x = data)
-
-# print model.predict(data)
-# for i in range(10):
-#     model.fit(data, np.array([label1, label2]), nb_epoch=10)
-#     print model.predict(data)
-
+model3 = Model(input = model2.input, output = model2.get_layer("embedding").output)
+print model3.predict(x = data)
 
 
 
