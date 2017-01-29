@@ -206,6 +206,7 @@ class EventAttentionLSTM(LSTM):
         att = np.tanh(att)                           # (samples, seg_length, hidden_dim)
         att = np.dot(att, K.get_value(self.Wha))     # (samples, seg_length)
         att = np_mask_softmax(att, mask)             # (samples, seg_length)
+        self.attention.append(att)
         seg_emd = np.einsum('ij, ijk -> ik', att, x) # (samples, input_dim)
         return seg_emd
     
@@ -236,8 +237,8 @@ class EventAttentionLSTM(LSTM):
         '''
             printable version call
         '''
+        self.attention = []
         axes = [1,0,2,3]
-        print "mask shape =", mask.shape
         X = X.transpose(axes)
         mask = np.expand_dims(mask, -1)
         mask = mask.transpose(axes[:mask.ndim])
@@ -268,7 +269,12 @@ class EventAttentionLSTM(LSTM):
             successive_states.append(states)
 
         outputs = np.array(successive_outputs)
-        return outputs
+        outputs =outputs.transpose([1,0] + range(2, outputs.ndim))
+
+        self.attention = np.array(self.attention)
+        self.attention = self.attention.transpose([1,0] + range(2, self.attention.ndim))
+        
+        return self.attention
 
 
 
@@ -350,7 +356,7 @@ def np_sigmoid(x):
 def np_softmax(x):
     x = x - np.max(x, axis = 1, keepdims = True)
     e_x = np.exp(x)
-    y = e_x / np.sum(e_x, axis = 1)
+    y = e_x / np.sum(e_x, axis = 1, keepdims = True)
     return y
 
 def np_mask_softmax(x, mask):
@@ -373,12 +379,5 @@ def mask_softmax(x, mask):
     z = K.softmax(z)
     return K.cast(z, K.floatx())
 
-if __name__ == "__main__":
-    import types as python_types
-    if isinstance(mask_softmax, python_types.LambdaType):
-        print mask_softmax.__name__
-        print "lambda"
-        # function = func_dump(mask_softmax)
-    else:
-        print "func"
+
     
