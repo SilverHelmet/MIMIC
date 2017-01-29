@@ -1,2 +1,2 @@
-model_out="models/death_timeAggre_catAtt.model"
+model_out="RNNmodels/death_timeAggre_catAtt.model"
 nb_epoch=0

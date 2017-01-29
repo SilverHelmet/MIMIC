@@ -11,7 +11,7 @@ event2vec
 BOWLR_log
 
 # data
-models
+RNNmodels
 data
 event
 exper
