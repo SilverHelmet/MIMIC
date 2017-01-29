@@ -275,4 +275,4 @@ if __name__ == '__main__':
     print "end trainning"
 
     if "model_out" in setting:
-        model.save(setting['model_out']])
+        model.save(setting['model_out'])
