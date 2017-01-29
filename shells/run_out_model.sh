@@ -1,0 +1,1 @@
+python -u train_rnn.py settings/catAtt_lstm.txt settings/timeAggre.txt settings/event_temporal.txt settings/out_model.txt >& log/death_timeAggre_catAtt_eAtt_tAtt_lstm.log1 &

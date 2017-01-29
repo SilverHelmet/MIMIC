@@ -273,3 +273,6 @@ if __name__ == '__main__':
                 print '\t', name, "mean diff =", diff[name]
         weights = new_weights
     print "end trainning"
+
+    if "model_out" in setting:
+        model.save(setting['model_out']])
