@@ -11,7 +11,8 @@ from keras.layers import Input, merge
 from keras.models import Model, load_model
 from keras.optimizers import SGD, Adam 
 import theano
-from get_attention import get_event_attention, get_temporal_attention
+from get_attention import *
+from sklearn.decomposition import PCA
 
 
 
@@ -59,25 +60,27 @@ label1 = 0
 label2 = 1
 data = np.array([data1, data2])
 
-model.get_config()
 # for config in model.get_config()['layers']:
     # print "\t", config
 
 
-print model.predict(data)
+# print model.predict(data)
 # for i in range(2):
 #     model.fit(data, np.array([label1, label2]), nb_epoch=10, verbose = 0)
 #     print model.predict(data)
 
-model.save("test.model")
+# model.save("test.model")
 model2 = load_model("test.model", custom_objects = get_custom_objects())
-att = get_event_attention(model2, data)
-print att.shape
+name = "embedding"
+data = np.array([data2])
+att = get_event_attention(model2, data)[0]
 print att
-
-att = get_temporal_attention(model2, data)
-print att.shape
+print "-----"
+embeddings = get_embedding(model2, [6,7,8,7,8,7], name = 'embedding')
+output = get_event_output(model2, x = np.array(data[0:2,:]))
+att = get_event_attention_at_seg(model2, output, embeddings)
 print att
+print np_softmax(np.array([att[1:]]))
 
 # print model2.predict(x = data)
 # model3 = Model(input = model2.input, output = model2.get_layer("embedding").output)
