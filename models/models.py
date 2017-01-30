@@ -190,6 +190,23 @@ class EventAttentionLSTM(LSTM):
         base_config = super(EventAttentionLSTM, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
+    def get_attention_score(self, output, embeddings):
+        '''
+            args:
+                output: (output_dim, )
+                softmax_coeff: scala
+                embeddings: (nb_emd, input_dim)
+        '''
+        ea = np.dot(embeddings, K.get_value(self.Wea))  # (nb_emd, hidden_dim)
+        oa = np.dot(output, K.get_value(self.Woa))            # (hidden_dim)
+        att = oa + ea                                   # (nb_emd, hidden_dim)
+        att = np.tanh(att)                              # (nb_emd, hidden_dim)
+        att = np.dot(att, K.get_value(self.Wha))        # (nb_emd, )
+        return att
+
+
+        
+
     def test_process(self, x, output):
         '''
             args:
@@ -274,11 +291,7 @@ class EventAttentionLSTM(LSTM):
         self.attention = np.array(self.attention)
         self.attention = self.attention.transpose([1,0] + range(2, self.attention.ndim))
         
-        return self.attention
-
-
-
-
+        return outputs, self.attention
 
 
 
