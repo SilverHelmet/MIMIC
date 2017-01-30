@@ -103,7 +103,7 @@ def define_simple_seg_rnn(setting):
 
     if rnn_model == 'gru':
         masked = Masking(mask_value=0)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
+        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
@@ -114,7 +114,7 @@ def define_simple_seg_rnn(setting):
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "lstm":
         masked = Masking(mask_value=0)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'seg_event_embedding', 
+        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
         bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
@@ -124,7 +124,7 @@ def define_simple_seg_rnn(setting):
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
     elif rnn_model == "attlstm":
-        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim)(event_input)
+        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
             max_seg_length = setting['max_seg_length']
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')

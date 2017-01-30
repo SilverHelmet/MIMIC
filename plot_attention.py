@@ -1,13 +1,119 @@
 import sklearn
-from get_attention import get_event_output
+from get_attention import *
 import numpy as np
+from matplotlib.colors import ListedColormap
+from models.models import np_mask_softmax
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 
-def plot_event_attention(model, event_mat, time, event_map, plot_event_types,):
-    rnn_layer = model.get_layer("rnn")
+def attention_score_at_time(model, event_mat, time):
     if time == 0:
+        rnn_layer = model.get_layer('rnn')
         output = np.zeros(rnn_layer.output_dim)
     else:
         x = np.expand_dims(event_mat[:time, :], 0)
         output = get_event_output(model, x)[0]
+    event_seq = event_mat[time]
+    emds = get_embedding(model, event_seq, name = 'embedding')
+    scores = get_event_attention_score_at_seg(model, output, emds)
+    return scores, output
+
+
+def plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output):
+    emds = []
+    for event in event_seq:
+        if event_map[event] in plot_etype:
+            emds.append(event)
+    plot_etype_list = sorted(plot_etype)
+    labels = [plot_etype_list.index(event_map[event]) for event in emds] 
+    print labels
+    emds = get_embedding(model, np.array(emds))
+    X = pca.transform(emds)
+    x_min, x_max = X[:, 0].min() - .2, X[:, 0].max() + .2
+    y_min, y_max = X[:, 1].min() -  .2, X[:, 1].max() + .2
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                         np.arange(y_min, y_max, 0.02))
+    
+
+    cm = plt.cm.RdBu
+    cm_bright = ListedColormap([
+        '#16A085', 
+        "#27AE60", 
+        "#2980B9", 
+        "#8E44AD", 
+        "#2C3E50", 
+        "#F39C12",
+        "#D35400",
+        "#C0392B",
+        "#BDC3C7",
+        "#7F8C8D",
+        "#E67E22",
+        "#F1C40F"])
+    
+    emds = pca.inverse_transform(np.array([xx.reshape(-1), yy.reshape(-1)]).T)
+    scores = get_event_attention_score_at_seg(model, output, emds)
+    scores = scores.reshape(xx.shape)
+    ax.contourf(xx, yy, scores, cmap = cm, alpha = .8)
+    ax.scatter(X[:, 0], X[:, 1], c = labels, cmap = cm_bright, s= 40)
+    
+
+    
+    
+
+
+    ax.set_xlim(xx.min(), xx.max())
+    ax.set_ylim(yy.min(), yy.max())
+    ax.set_xticks(())
+    ax.set_yticks(())
+
+
+
         
+    
+def get_pca(model):
+    emd_layer = model.get_layer("embedding")
+    W = K.get_value(emd_layer.W)[2:,:]
+    pca = PCA(n_components = 2)
+    pca.fit(W)
+    return pca
+
+
+def plot_event_attention(model, event_mat, times, event_map):
+    scores = []
+    plot_etype = set()
+    indices = [-1,-2,0,1]
+    outputs = []
+    for time in times:
+        score, output = attention_score_at_time(model, event_mat, time)
+        scores.append(attention_score_at_time(model, event_mat, time))
+        outputs.append(output)
+        event_seq = event_mat[time]
+        sorted_indices = np.argsort(score)
+        sorted_indices = [index for index in sorted_indices if event_seq[index] != 0]
+        for index in indices:
+            plot_etype.add(event_map[event_seq[sorted_indices[index]]])
+    
+    i = 0
+    plt.style.use('ggplot')
+    print sorted(plot_etype)
+    pca = get_pca(model)
+    for time, score, output in zip(times, scores, outputs):
+        i += 1
+        ax = plt.subplot(1, len(times), i)
+        event_seq = event_mat[time, :]
+        plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output)
+
+
+if __name__ == "__main__":
+    
+    event_map = dict([(i,i/2+1) for i in range(10)])
+    data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
+    data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
+    model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
+    plot_event_attention(model, data1, [0,1,2], event_map)
+    plt.tight_layout()
+    plt.show()
+
+    
+
     

@@ -197,11 +197,13 @@ class EventAttentionLSTM(LSTM):
                 softmax_coeff: scala
                 embeddings: (nb_emd, input_dim)
         '''
-        ea = np.dot(embeddings, K.get_value(self.Wea))  # (nb_emd, hidden_dim)
-        oa = np.dot(output, K.get_value(self.Woa))            # (hidden_dim)
-        att = oa + ea                                   # (nb_emd, hidden_dim)
-        att = np.tanh(att)                              # (nb_emd, hidden_dim)
-        att = np.dot(att, K.get_value(self.Wha))        # (nb_emd, )
+        mask = np.any(np.not_equal(embeddings, 0.0), axis=-1)   # (nb_emd)
+        ea = np.dot(embeddings, K.get_value(self.Wea))          # (nb_emd, hidden_dim)
+        oa = np.dot(output, K.get_value(self.Woa))              # (hidden_dim)
+        att = oa + ea                                           # (nb_emd, hidden_dim)
+        att = np.tanh(att)                                      # (nb_emd, hidden_dim)
+        att = np.dot(att, K.get_value(self.Wha))                # (nb_emd, )
+        att = att * mask
         return att
 
 
