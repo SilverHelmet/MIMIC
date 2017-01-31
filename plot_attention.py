@@ -57,10 +57,6 @@ def plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_ma
     ax.scatter(X[:, 0], X[:, 1], c = labels, cmap = cm_bright, s= 40)
     
 
-    
-    
-
-
     ax.set_xlim(xx.min(), xx.max())
     ax.set_ylim(yy.min(), yy.max())
     ax.set_xticks(())
@@ -103,6 +99,68 @@ def plot_event_attention(model, event_mat, times, event_map):
         event_seq = event_mat[time, :]
         plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output)
 
+def plot_temporal_attention(model, event_mat, times):
+    x = np.expand_dims(event_mat, 0)
+    event_att = get_event_attention(model, x)[0]
+    temporal_att = get_temporal_attention(model, x)[0]
+    event_att = np.expand_dims(temporal_att, 1) + event_att
+
+    time_width = 2
+    bar_width = 0.4
+    left = []
+    height = []
+    labels = []
+    indices = [-1,-2,1,0]
+
+    plt.style.use('ggplot')
+    colors = []
+    plot_etypes = []
+    x_pos = 0 + bar_width / 2
+    xs = []
+    for time in times:
+        time_pos = x_pos
+        event_seq = event_mat[time]
+        att = event_att[time]
+        sorted_indices = np.argsort(att)
+        sorted_indices = [index for index in sorted_indices if event_seq[index] != 0]
+        if len(sorted_indices) <= 4:
+            used_indices = reversed(sorted_indices)
+        else:
+            used_indices = np.array(sorted_indices)[indices]
+
+        for index in used_indices:
+            event = event_seq[index]
+            if not event in plot_etypes:
+                plot_etypes.append(event)
+            height.append(att[index])
+            labels.append(event)
+            left.append(time_pos)
+            time_pos += bar_width
+            colors.append(plot_etypes.index(event))
+            
+        
+        xs.append((x_pos + time_pos) / 2)
+        x_pos += time_width
+
+    colors = np.array(colors, dtype = float)
+    colors /= colors.max() 
+    height = np.array(height)
+    left = np.array(left)
+    cmap = plt.cm.get_cmap('RdYlBu')
+    colors = cmap(colors)
+    plt.bar(left = left, height = height, width = bar_width, 
+        color = colors, tick_label = labels, align = 'center', alpha = 0.8)
+
+    
+    plt.plot(xs, temporal_att, color = 'k', marker = 'o')
+
+    ax =plt.gca()
+    ax.set_ylim(max(0, temporal_att.min() - 0.1), min(height.max() + 0.1, 2))
+    ax.set_xlim((0, left.max() + bar_width + 0.1))
+    plt.show()
+
+
+
 
 if __name__ == "__main__":
     
@@ -110,9 +168,14 @@ if __name__ == "__main__":
     data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
     data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
     model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
-    plot_event_attention(model, data1, [0,1,2], event_map)
-    plt.tight_layout()
-    plt.show()
+
+    # plot_event_attention(model, data1, [0,1,2], event_map)
+    # plt.tight_layout()
+    # plt.show()
+
+    plot_temporal_attention(model, data1, [0,1,2])
+    
+
 
     
 
