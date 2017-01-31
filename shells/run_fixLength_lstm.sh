@@ -7,7 +7,7 @@
 # python -u train_rnn.py settings/lstm.txt  settings/fixLength2.txt >& log/death_fixLength2_lstm.log1
 # python -u train_rnn.py settings/lstm.txt  settings/fixLength1.txt >& log/death_fixLength1_lstm.log1
 
-python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength1.txt >& log/death_fixLength1_catAtt_lstm.log1 
+# python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength1.txt >& log/death_fixLength1_catAtt_lstm.log1 
 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength2.txt >& log/death_fixLength2_catAtt_lstm.log1 
 # python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength4.txt >& log/death_fixLength4_catAtt_lstm.log1 
 # python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength8.txt >& log/death_fixLength8_catAtt_lstm.log1 
