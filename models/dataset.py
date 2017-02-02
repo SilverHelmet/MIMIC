@@ -1,6 +1,7 @@
 from util import *
 import os
 import h5py
+import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
 
 class Dataset:
@@ -42,6 +43,33 @@ class Dataset:
             self.max_segs = f['max_segs'].value
             self.max_seg_length = f['max_seg_length'].value
             f.close()
+
+    def sample(self, sample_list = None):
+        if sample_list is None:
+            sample_list = np.arange(1000, 2000, 1)
+        s_dataset = Dataset(file = None)
+        s_dataset.labels = self.labels[sample_list]
+        s_dataset.events = self.events[sample_list]
+        s_dataset.features = self.features[sample_list]
+        s_dataset.ids = self.ids[sample_list]
+        s_dataset.segs = self.segs[sample_list]
+        s_dataset.max_seg_length = self.max_seg_length
+        s_dataset.max_segs = self.max_segs
+        return s_dataset
+
+    def save(self, dataset_filepath, seg_filepath):
+        outf = h5py.File(dataset_filepath, 'w')        
+        outf['label'] = self.labels
+        outf['event'] = self.events
+        outf['feature'] = self.features
+        outf['sample_id'] = self.ids
+        outf.close()
+
+        outf = h5py.File(seg_filepath, "w")
+        outf['segment'] = self.segs
+        outf['max_segs'] = self.max_segs
+        outf['max_seg_length'] = self.max_seg_length
+        outf.close()
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)

@@ -2,9 +2,11 @@ import sklearn
 from get_attention import *
 import numpy as np
 from matplotlib.colors import ListedColormap
+from models.dataset import Dataset
 from models.models import np_mask_softmax
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+from util import *
 
 def attention_score_at_time(model, event_mat, time):
     if time == 0:
@@ -164,16 +166,15 @@ def plot_temporal_attention(model, event_mat, times):
 
 if __name__ == "__main__":
     
-    event_map = dict([(i,i/2+1) for i in range(10)])
-    data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
-    data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
-    model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
+    # event_map = dict([(i,i/2+1) for i in range(10)])
+    # data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
+    # data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
+    event_map = merge_event_map('result/event_des_text.tsv')
+    model = load_model("RNNmodels/death_timeAggre_catAtt.model", custom_objects = get_custom_objects())
+    dataset
+    times = [0, 2, 4, 6, 8, 10]
 
-    # plot_event_attention(model, data1, [0,1,2], event_map)
-    # plt.tight_layout()
-    # plt.show()
-
-    plot_temporal_attention(model, data1, [0,1,2])
+    plot_temporal_attention(model, data, [0,1,2])
     
 
 
