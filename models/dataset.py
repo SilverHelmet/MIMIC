@@ -57,6 +57,9 @@ class Dataset:
         s_dataset.max_segs = self.max_segs
         return s_dataset
 
+    def event_mat(self, row):
+        return gen_seged_event_seq(self.events[row], self.segs[row], self.max_seg_length)
+
     def save(self, dataset_filepath, seg_filepath):
         outf = h5py.File(dataset_filepath, 'w')        
         outf['label'] = self.labels

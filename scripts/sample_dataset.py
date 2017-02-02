@@ -10,7 +10,7 @@ out_seg = sys.argv[4]
 d = Dataset(dataset, seg)
 d.load()
 sample_d = d.sample()
-sample_d.save(out_dataset, out_seg)
+sample_d.save(out_dataset, out_segs)
 
 
 

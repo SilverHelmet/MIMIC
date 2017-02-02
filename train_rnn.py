@@ -111,7 +111,8 @@ def define_simple_seg_rnn(setting):
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "lstm":
         masked = Masking(mask_value=0)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
@@ -122,7 +123,8 @@ def define_simple_seg_rnn(setting):
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "attlstm":
         embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
@@ -132,7 +134,8 @@ def define_simple_seg_rnn(setting):
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, input_length = None, return_sequences = attention)(embedding)
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     else:
         print "error"
     if attention:
