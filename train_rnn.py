@@ -13,7 +13,7 @@ import numpy as np
 import h5py
 import sys
 from util import *
-from scripts import gen_fix_segs
+from scripts import gen_fix_segs, norm_feature
 from models.models import SimpleAttentionRNN, EventAttentionLSTM, SegMaskEmbedding
 
 def load_data(filepath, seg_filepath = None):
@@ -193,6 +193,11 @@ if __name__ == '__main__':
     train_file = setting["train_dataset"]
     valid_file = setting['valid_dataset']
     test_file = setting['test_dataset']
+
+    if setting.get('norm_feature', False):
+        train_file = norm_feature.infer_outpath(train_file)
+        valid_file = norm_feature.infer_outpath(valid_file)
+        test_file = norm_feature.infer_outpath(test_file)
     print "train dataset = %s" %train_file
     print "valid dataset = %s" %valid_file
     print "test dataset = %s" %test_file
@@ -209,6 +214,7 @@ if __name__ == '__main__':
             valid_seg_file = gen_fix_segs.infer_path(valid_file, seg_mode)
             test_seg_file = gen_fix_segs.infer_path(test_file, seg_mode)
 
+        
         print "train seg file = [%s]" %train_seg_file
         print "valid seg file = [%s]" %valid_seg_file
         print "test seg file = [%s]" %test_seg_file

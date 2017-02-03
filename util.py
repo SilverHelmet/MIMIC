@@ -164,7 +164,11 @@ def merge_event_map(filepath):
 def load_setting(filepath, default_setting):
     setting = default_setting if default_setting else {}
 
-    for line in file(filepath):
+    if filepath.startswith("#"):
+        lines = filepath[1:].split("|")
+    else:
+        lines = file(filepath).readlines()
+    for line in lines:
         line = line.rstrip()
         if line == "":
             continue
