@@ -10,11 +10,13 @@ do
     for hidden_dim in $hidden_args
     do
         for att_hidden_dim in $att_hidden_args
+        do
             args="embedding_dim=${embedding_dim}|hidden_dim=${hidden_dim}|att_hidden_dim=${att_hidden_dim}"
             if [ "$1" = "norm" ]; then
                 args="$args|norm_feature=True"
             fi
-            outfile="log/icu_timeAggre_attention_$args.log"
+            outfile="log/icu_timeAggre_attention_${args//|/_}.log"
             python -u train_rnn.py $settings "#$args" >& $outfile 
+        done
     done
 done
