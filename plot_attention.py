@@ -28,7 +28,6 @@ def plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_ma
             emds.append(event)
     plot_etype_list = sorted(plot_etype)
     labels = [plot_etype_list.index(event_map[event]) for event in emds] 
-    print labels
     emds = get_embedding(model, np.array(emds))
     X = pca.transform(emds)
     x_min, x_max = X[:, 0].min() - .2, X[:, 0].max() + .2
@@ -93,19 +92,22 @@ def plot_event_attention(model, event_mat, times, event_map):
     
     i = 0
     plt.style.use('ggplot')
-    print sorted(plot_etype)
     pca = get_pca(model)
     for time, score, output in zip(times, scores, outputs):
         i += 1
         ax = plt.subplot(1, len(times), i)
         event_seq = event_mat[time, :]
         plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output)
+    
+    plt.show()
 
 def plot_temporal_attention(model, event_mat, times):
+    times = np.array(times)
     x = np.expand_dims(event_mat, 0)
     event_att = get_event_attention(model, x)[0]
     temporal_att = get_temporal_attention(model, x)[0]
     event_att = np.expand_dims(temporal_att, 1) + event_att
+    temporal_att = temporal_att[times]
 
     time_width = 2
     bar_width = 0.4
@@ -151,7 +153,10 @@ def plot_temporal_attention(model, event_mat, times):
     cmap = plt.cm.get_cmap('RdYlBu')
     colors = cmap(colors)
     plt.bar(left = left, height = height, width = bar_width, 
-        color = colors, tick_label = labels, align = 'center', alpha = 0.8)
+        color = colors,  align = 'center', alpha = 0.8)
+    ax = plt.gca()
+    ax.set_xticks(left)
+    ax.set_xticklabels(labels, rotation = 25)
 
     
     plt.plot(xs, temporal_att, color = 'k', marker = 'o')
@@ -167,19 +172,19 @@ def plot_temporal_attention(model, event_mat, times):
 if __name__ == "__main__":
     
     # event_map = dict([(i,i/2+1) for i in range(10)])
-    # data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
-    # data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
+    data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
+    data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
     # event_map = merge_event_map('result/event_des_text.tsv')
-    model = load_model("RNNmodels/death_timeAggre_catAtt.model", custom_objects = get_custom_objects())
-    for config in model.get_config()['layers']:
-        print config
+    # model = load_model("RNNmodels/death_timeAggre_catAtt.model", custom_objects = get_custom_objects())
+    model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
     dataset = Dataset('sample_exper/sample_icu.h5py', 'sample_exper/sample_segs.h5py')
     print "load over"
     dataset.load()
     times = [0, 2, 4, 6, 8, 10]
     data = np.array(dataset.event_mat(5))
-    print data.shape
-    plot_temporal_attention(model, data, times)
+    # plot_temporal_attention(model, data, times)
+    # plot_event_attention(model, data, [0,4,10], event_map)
+    plot_temporal_attention(model, data1, [0, 2])
     
 
 
