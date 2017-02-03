@@ -14,7 +14,7 @@ do
         do
             for batch_size in $batch_args
             do
-                args="embedding_dim=${embedding_dim}|hidden_dim=${hidden_dim}\|att_hidden_dim=${att_hidden_dim}|batch_size=${batch_size}"
+                args="embedding_dim=${embedding_dim}|hidden_dim=${hidden_dim}|att_hidden_dim=${att_hidden_dim}|batch_size=${batch_size}"
                 if [ "$1" = "norm" ]; then
                     args="$args|norm_feature=True"
                 fi
