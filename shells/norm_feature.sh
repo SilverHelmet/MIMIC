@@ -13,9 +13,11 @@ wait
 python scripts/norm_feature.py \
     death_exper/death_train_1000.h5 \
     death_exper/death_valid_1000.h5 \
-    death_exper/death_test_1000.h5 >& log/norm_feature_death.log&
+    death_exper/death_test_1000.h5 >& log/norm_feature_death.log &
 
 python scripts/norm_feature.py \
     death_merged_exper/death_train_1000.h5 \
     death_merged_exper/death_valid_1000.h5 \
     death_merged_exper/death_test_1000.h5 >& log/norm_feature_deathMerged.log &
+
+wait
