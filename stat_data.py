@@ -255,21 +255,78 @@ def write_value_stat(value_stats, outpath):
         outf.write("%-35s %5f %d\n" %(key, value_stats[key][0], value_stats[key][1]))
     outf.close()
 
+class SimpleStat:
+    def __init__(self):
+        self.pid_event_cnt = {}
+        self.nb_event = 0
+        self.rtype_set = set()
+
+    def add_pid(self, pid):
+        if not pid in self.pid_event_cnt:
+            self.pid_event_cnt[pid] = 0
+            
+    
+    def add_data(self, line):
+        self.nb_event += 1
+        parts = extractor.parse_line(line)
+        pid = get_id(parts[0])
+        rtype = parts[2]
+        self.add_pid(pid)
+        self.rtype_set.add(rtype)
+        self.pid_event_cnt[pid] += 1
+
+    def print_info(self):
+        out_format = """
+        # of patients = {0}
+        # of events = {1}
+        Avg # of events per patient = {2}
+        Max # of events per patient = {3}
+        Min # of events per patient = {4}
+        # of unique events = {5}
+        """
+        nb_patients = len(self.pid_event_cnt)
+        nb_events = self.nb_event
+        ave_events = round((nb_events + 0.0) / nb_patients, 4)
+        max_events = reduce(max, self.pid_event_cnt.values())
+        min_events = reduce(min, self.pid_event_cnt.values())
+        nb_event_type = len(self.rtype_set)
+        print out_format.format(
+            nb_patients,
+            nb_events,
+            ave_events,
+            max_events,
+            min_events,
+            nb_event_type
+        )
+        
+
+
+
+def gather_statistics(filepath, stat):
+    print "gather info from %s" %filepath
+    for line in file(filepath):
+        stat.add_data(line)
+        
 
 
 
 if __name__ == '__main__':
     # process('data/chartevents_8.tsv', 'stat/test.stat')
 
-    value_stats = {}
-    for filename in glob.glob(data_dir + "/*tsv"):
-        stat_filename = os.path.join(stat_dir, os.path.basename(filename))
-        # if os.path.basename(filename) != "inputevents_mv.tsv":
-            # continue
-        process(filename, stat_filename, value_stats)
-    if len(value_stats) > 0:
-        write_value_stat(value_stats, os.path.join(result_dir, 'value_coverage_stat.tsv'))
+    # stat data
+    # value_stats = {}
+    # for filename in glob.glob(data_dir + "/*tsv"):
+    #     stat_filename = os.path.join(stat_dir, os.path.basename(filename))
+    #     process(filename, stat_filename, value_stats)
+    # if len(value_stats) > 0:
+    #     write_value_stat(value_stats, os.path.join(result_dir, 'value_coverage_stat.tsv'))
 
 
     # filepaths = glob.glob(data_dir + "/*tsv")
     # count_event(filepaths, os.path.join(result_dir, 'event_cnt.tsv'))
+
+    # print statistics
+    stat = SimpleStat()
+    for filename in glob.glob(data_dir + "/*tsv"):
+        gather_statistics(filename, stat)
+    stat.print_info()
