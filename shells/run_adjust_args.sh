@@ -4,7 +4,7 @@ hidden_dim=64
 embedding_args="64"
 hidden_args="64 128"
 att_hidden_args="64 128"
-batch_args="32 64"
+batch_args="32"
 settings="settings/fea_catAtt_lstm.txt settings/timeAggre.txt  settings/event_temporal.txt"
 for embedding_dim in $embedding_args
 do
