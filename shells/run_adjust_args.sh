@@ -1,5 +1,3 @@
-embedding_dim=64
-hidden_dim=64
 
 embedding_args="64"
 hidden_args="64 128"
