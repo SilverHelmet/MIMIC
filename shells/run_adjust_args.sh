@@ -16,7 +16,7 @@ do
                 if [ "$1" = "norm" ]; then
                     args="$args|norm_feature=True"
                 fi
-                outfile="log/icu_timeAggre_attention_${args//|/_}.log"
+                outfile="log/icu_timeAggre_attention2_${args//|/_}.log"
                 python -u train_rnn.py $settings "#$args" >& $outfile 
             done
         done

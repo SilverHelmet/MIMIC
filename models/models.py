@@ -24,6 +24,14 @@ def SimpleAttentionRNN(rnn):
     attention = merge([alpha, rnn], mode = 'dot', dot_axes = 1, name = 'attention')
     return attention
 
+def SimpleAttentionRNN2(rnn):
+    hidden = TimeDistributed(Dense(128))(rnn)
+    score = TimeDistributed(Dense(1))(hidden)
+    flatten_score = MaskFlatten(name = 'flatten_score')(score)
+    alpha = MaskLambda(function = mask_softmax, name = 'alpha')(flatten_score)
+    attention = merge([alpha, rnn], mode = 'dot', dot_axes = 1, name = 'attention')
+    return attention
+
 class EventAttentionLSTM(LSTM):
     
     def __init__(self, att_hidden_dim, **kwargs):

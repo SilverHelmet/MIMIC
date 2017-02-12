@@ -14,7 +14,7 @@ import h5py
 import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
-from models.models import SimpleAttentionRNN, EventAttentionLSTM, SegMaskEmbedding
+from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, SegMaskEmbedding
 
 def load_data(filepath, seg_filepath = None):
     f = h5py.File(filepath, 'r')
@@ -140,7 +140,7 @@ def define_simple_seg_rnn(setting):
         print "error"
     if attention:
         print "add attention"
-        rnn = SimpleAttentionRNN(rnn)
+        rnn = SimpleAttentionRNN2(rnn)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
