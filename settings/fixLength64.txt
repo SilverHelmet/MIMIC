@@ -1,6 +1,6 @@
-# train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=16_length=64.h5
-# valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=16_length=64.h5
-# test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=16_length=64.h5
-train_seg_file=death_exper/segs/death_train_1000_segmode=fixLength_maxchunk=16_length=64.h5
-valid_seg_file=death_exper/segs/death_valid_1000_segmode=fixLength_maxchunk=16_length=64.h5
-test_seg_file=death_exper/segs/death_test_1000_segmode=fixLength_maxchunk=16_length=64.h5
+train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=fixLength_maxchunk=16_length=64.h5
+valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=fixLength_maxchunk=16_length=64.h5
+test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=fixLength_maxchunk=16_length=64.h5
+#train_seg_file=death_exper/segs/death_train_1000_segmode=fixLength_maxchunk=16_length=64.h5
+#valid_seg_file=death_exper/segs/death_valid_1000_segmode=fixLength_maxchunk=16_length=64.h5
+#test_seg_file=death_exper/segs/death_test_1000_segmode=fixLength_maxchunk=16_length=64.h5
