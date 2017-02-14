@@ -140,7 +140,7 @@ def define_simple_seg_rnn(setting):
         print "error"
     if attention:
         print "add attention"
-        rnn = SimpleAttentionRNN2(rnn)
+        rnn = SimpleAttentionRNN(rnn)
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
