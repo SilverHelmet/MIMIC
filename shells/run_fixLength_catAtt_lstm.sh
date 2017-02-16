@@ -4,6 +4,7 @@ THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_l
 THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength8.txt >& log/icu_fixLength8_catAtt_lstm.log2  &
 wait 
 THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength16.txt >& log/icu_fixLength16_catAtt_lstm.log2  &
+THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength32.txt >& log/icu_fixLength32_catAtt_lstm.log2 &
 THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength64.txt >& log/icu_fixLength64_catAtt_lstm.log2 &
 wait
 THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt  settings/fixLength128.txt >& log/icu_fixLength128_catAtt_lstm.log2 &
