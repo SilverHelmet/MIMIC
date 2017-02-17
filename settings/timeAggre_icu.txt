@@ -1,0 +1,3 @@
+train_seg_file=ICU_exper/segs/ICUIn_train_1000_segmode=timeAggre_maxchunk=32.h5
+valid_seg_file=ICU_exper/segs/ICUIn_valid_1000_segmode=timeAggre_maxchunk=32.h5
+test_seg_file=ICU_exper/segs/ICUIn_test_1000_segmode=timeAggre_maxchunk=32.h5
