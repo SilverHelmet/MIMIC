@@ -21,11 +21,12 @@ def attention_score_at_time(model, event_mat, time):
     return scores, output
 
 
-def plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output):
+def plot_event_attention_at_time(model, event_mat, plot_etype, ax, pca, event_map, output):
     emds = []
-    for event in event_seq:
-        if event_map[event] in plot_etype:
-            emds.append(event)
+    for event_seq in event_mat:
+        for event in event_seq:
+            if event_map[event] in plot_etype:
+                emds.append(event)
     plot_etype_list = sorted(plot_etype)
     labels = [plot_etype_list.index(event_map[event]) for event in emds] 
     emds = get_embedding(model, np.array(emds))
@@ -97,7 +98,7 @@ def plot_event_attention(model, event_mat, times, event_map):
         i += 1
         ax = plt.subplot(1, len(times), i)
         event_seq = event_mat[time, :]
-        plot_event_attention_at_time(model, event_seq, plot_etype, ax, pca, event_map, output)
+        plot_event_attention_at_time(model, event_mat, plot_etype, ax, pca, event_map, output)
     
     plt.show()
 
@@ -171,10 +172,10 @@ def plot_temporal_attention(model, event_mat, times):
 
 if __name__ == "__main__":
     
-    event_map = dict([(i,i/2+1) for i in range(10)])
+    # event_map = dict([(i,i/2+1) for i in range(10)])
     data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
     data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
-    # event_map = merge_event_map('result/event_des_text.tsv')
+    event_map = merge_event_map('result/event_des_text.tsv')
     model = load_model("RNNmodels/death_timeAggre_catAtt.model", custom_objects = get_custom_objects())
     # model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
     dataset = Dataset('sample_exper/sample_icu.h5py', 'sample_exper/sample_segs.h5py')

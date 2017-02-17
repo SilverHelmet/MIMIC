@@ -1,6 +1,8 @@
 from util import *
 from build_event import Event
 import glob
+import os
+import datetime
 
 class SimpleStat:
     def __init__(self):
@@ -55,7 +57,23 @@ def gather_statistics(filepath, stat):
 
 
 if __name__ == '__main__':
-    stat = SimpleStat()
-    for filename in glob.glob(event_dir + "/*tsv"):
-        gather_statistics(filename, stat)
-    stat.print_info()
+    # stat event count
+    # stat = SimpleStat()
+    # for filename in glob.glob(event_dir + "/*tsv"):
+    #     gather_statistics(filename, stat)
+    # stat.print_info()
+
+    # hospital time duration
+    total = datetime.timedelta()
+    print total
+    cnt = 0
+    for line in file(os.path.join(static_data_dir, "single_admission.tsv")):
+        cnt += 1
+        parts = line.strip().split("\t")
+        st = parse_time(parts[2])
+        ed = parse_time(parts[3])
+        total += ed - st
+    # total /= cnt + 0.0
+    print total.total_seconds() / (cnt + 0.0) / 3600.0
+
+
