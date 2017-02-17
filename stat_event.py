@@ -1,5 +1,6 @@
-import util
+from util import *
 from build_event import Event
+import glob
 
 class SimpleStat:
     def __init__(self):
