@@ -16,7 +16,7 @@ def parse_result(line):
 max_auc = 0
 filename = None
 for filepath in glob.glob("log/icu_timeAggre_attention*"):
-    for line in os.system("grep round %s" %filepath):
+    for line in file(filepath)
         if line.startswith("round"):
             res = parse_result(line)
             if res[-2] > max_auc:
