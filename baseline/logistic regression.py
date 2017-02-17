@@ -11,10 +11,10 @@ import os
 
 
         
-# dataset_dir = ICU_exper_dir
-# files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
-dataset_dir=death_merged_exper_dir
-files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
+dataset_dir = ICU_exper_dir
+files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
+# dataset_dir=death_merged_exper_dir
+#files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
 add_feature = False
 # dataset_dir = death_exper_dir
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
