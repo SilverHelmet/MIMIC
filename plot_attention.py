@@ -169,7 +169,6 @@ def plot_temporal_attention(model, event_mat, times):
 
 
 
-
 if __name__ == "__main__":
     
     # event_map = dict([(i,i/2+1) for i in range(10)])
