@@ -76,7 +76,7 @@ def stat_sample(datasets):
     positive sample ratio = %.4f
     # of events = %d
     Avg # of events per sample = %.4f
-    Avg Time duration per sample = %.4f
+    Avg Time duration per sample = %.4f hours
     
     '''
     pos_ratio = nb_pos_samples / (nb_samples + 0.0)
