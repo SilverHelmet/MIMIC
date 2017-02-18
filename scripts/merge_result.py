@@ -13,8 +13,8 @@ def merge(p1, p2):
         term1 = float(term1)
         term2 = float(term2)
         term = (term1 + term2) / 2
-        delta = round(abs(term1 - term), 3)
-        term = round(term, 3)
+        delta = round(abs(term1 - term), 4)
+        term = round(term, 4)
         res.append(str(term) + "(" + str(delta) + ")")
     merged_res = []
     for i in range(3):
