@@ -55,26 +55,33 @@ def gather_statistics(filepath, stat):
     for line in file(filepath):
         stat.add_event(line)
         
-def stat_sample(dataset):
-    nb_samples = dataset.size
+def stat_sample(datasets):
+    nb_samples = 0
+    nb_pos_samples = 0
     nb_events = 0
     total_duration = datetime.timedelta()
-    for event_seq, time_seq in zip(dataset.events, dataset.times):
-        event_seq = [event for event in event_seq if event != 0]
-        fi = len(event_seq)
-        nb_events += fi
-        st = parse_time(time_seq[0])
-        ed = parse_time(time_seq[fi-1])
-        total_duration += ed - st
+    for dataset in datasets:
+        nb_samples += dataset.size
+        nb_pos_samples += (dataset.labels == 1).sum()
+        for event_seq, time_seq in zip(dataset.events, dataset.times):
+            event_seq = [event for event in event_seq if event != 0]
+            fi = len(event_seq)
+            nb_events += fi
+            st = parse_time(time_seq[0])
+            ed = parse_time(time_seq[fi-1])
+            total_duration += ed - st
 
     str_format = '''
     # of samples = %d
+    positive sample ratio = %.4f
     # of events = %d
     Avg # of events per sample = %.4f
     Avg Time duration per sample = %.4f
+    
     '''
+    pos_ratio = nb_pos_samples / (nb_samples + 0.0)
     avg_duration = total_duration.total_seconds()/3600.0/(nb_samples +0.0)
-    print str_format %(nb_samples, nb_events, nb_events / (nb_samples + 0.0), avg_duration)
+    print str_format %(nb_samples, pos_ratio, nb_events, nb_events / (nb_samples + 0.0), avg_duration)
         
 
 
@@ -100,8 +107,11 @@ if __name__ == '__main__':
 
 
     # stat samples
-    dataset = Dataset(sys.argv[1])
-    dataset.load(load_time = True)
-    stat_sample(dataset)
+    datasets = []
+    for file in sys.argv[1:]:
+        dst = Dataset(file)
+        dst.load(True)
+        datasets.append(dst)
+    stat_sample(datasets)
 
 
