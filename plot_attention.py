@@ -182,7 +182,7 @@ if __name__ == "__main__":
     print "load over"
     dataset.load()
     times = [0, 2, 4, 6, 8, 10]
-    data = np.array(dataset.event_mat(5))
+    data = np.array(dataset.event_mat(10))
     # plot_temporal_attention(model, data, times)
     plot_event_attention(model, data, [0,4,10], event_map)
     # plot_temporal_attention(model, data1, [0, 2])
