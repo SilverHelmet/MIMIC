@@ -60,6 +60,9 @@ class Dataset:
     def event_mat(self, row):
         return gen_seged_event_seq(self.events[row], self.segs[row], self.max_seg_length)
 
+    def feature_mat(self, row, feature_dim = 649):
+        return gen_seged_feature_seq(self.features[row], self.segs[row], self.max_seg_length, feature_dim)
+
     def save(self, dataset_filepath, seg_filepath):
         outf = h5py.File(dataset_filepath, 'w')        
         outf['label'] = self.labels

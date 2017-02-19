@@ -195,7 +195,7 @@ def load_type_features(filepath):
         type_features.append(TypeFeature.load_from_str(s))
     return type_features
 
-def gen_builders(type_features, text_map, build_des_file):
+def gen_builders(type_features, text_map, build_des_file, feature_des_file):
     '''
     event: event 0 is padding, event 1 is intervel 
     feature: feature 0 is during time feature
@@ -204,6 +204,7 @@ def gen_builders(type_features, text_map, build_des_file):
     event_dim = 2
     feature_dim = 1
     f = file(build_des_file, 'w')
+    fea_f = file(feature_des_file, 'w')
     for type_feature in type_features:
         builder = EventBuilder(type_feature, text_map)
         l = event_dim
@@ -211,9 +212,15 @@ def gen_builders(type_features, text_map, build_des_file):
         r = event_dim
         event_des = builder.builder_des()
         for i in range(l, r):
-            f.write("%d %s %s\n" %(i, type_feature.rtype, event_des[i - l]))
+            f.write("%d %s %s\n" %(i, type_feature.rtype, "\t".join(event_des[i - l])))
+        l = feature_dim
         feature_dim = builder.set_feature_base(feature_dim)
+        r = feature_dim 
+        if r > l:
+            fea_f.write("%s\t%s\n" %(type_feature.rtype, "\t".join(map(str, range(l,r)))))
         builders[type_feature.rtype] = builder
+    f.close()
+    fea_f.close()
     print "event_dim =", event_dim
     print "feature_dim =", feature_dim
     return builders
@@ -248,14 +255,15 @@ if __name__ == '__main__':
     text_map = load_value_type_text(os.path.join(result_dir, "value_type_text.tsv"))
     type_features = load_type_features(os.path.join(result_dir, 'selected_features.tsv'))
     event_des_file = os.path.join(result_dir, "event_des_text.tsv")
-    builders = gen_builders(type_features, text_map, event_des_file)
-    for filepath in glob.glob(data_dir + "/*tsv"):
-        name = os.path.basename(filepath)
-        # if name in ["labevents.tsv", "datetimeevents.tsv"]:
-        # if filepath.find("labevents") == -1:
-        #     continue
-        build_event(filepath, builders)
-    print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
+    feature_des_file = os.path.join(result_dir, "feature_des.tsv")
+    builders = gen_builders(type_features, text_map, event_des_file, feature_des_file)
+    # for filepath in glob.glob(data_dir + "/*tsv"):
+    #     name = os.path.basename(filepath)
+    #     # if name in ["labevents.tsv", "datetimeevents.tsv"]:
+    #     # if filepath.find("labevents") == -1:
+    #     #     continue
+    #     build_event(filepath, builders)
+    # print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
 
     # print_event(builders, "static_data/event_des.txt")
     # print builders['labevents.51294'].feature_texts

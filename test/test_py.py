@@ -1,30 +1,17 @@
 from sklearn.metrics import roc_auc_score, roc_curve, auc, precision_recall_curve, average_precision_score
 import numpy as np
 import sklearn.svm
+import matplotlib.pyplot as plt
 
-class A:
-    def __init__(self, pid):
-        self.pid = pid
+plt.style.use('ggplot')
+plt.figure(0)
+ax = plt.gca()
+s = "123"
+plt.text(1,2.5 ,"123\n12344", horizontalalignment = 'left', verticalalignment = "bottom", fontsize = 13)
+plt.bar([1,2, 3], [2,3,4], width=0.4)
+plt.grid()
+plt.show()
 
-    def ok(self):
-        print self.pid
-        self.ok2()
 
-    def ok2(self):
-        print "A"
-    
-class B(A):
-    def __init__(self, pid):
-        self.pid = pid
 
-    def ok2(self):
-        print "B"
-
-y_label = np.random.randint(0, 2, (10000,))
-y_pred = np.random.random((10000,))
-auc_value = roc_auc_score(y_label, y_pred)
-print auc_value
-precision, recall, thredholds = precision_recall_curve(y_label, y_pred)
-# print auc(precision, recall, reorder=True)
-print auc(recall, precision)
-print average_precision_score(y_label, y_pred)
+plt.close(0)

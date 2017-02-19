@@ -108,6 +108,18 @@ def load_id2event_value():
         ret[event_id] = event_type + '.' + value
     return ret
 
+def load_id2event_rtype():
+    ret = {}
+    for line in file(os.path.join(result_dir, "event_des_text.tsv")):
+        parts = line.strip("\n").split(" ")
+        event_id = int(parts[0])
+        event_type = parts[1]
+        value = " ".join(parts[2:])
+        ret[event_id] = event_type
+    return ret
+
+    
+
 def merge_prob(probs, ids, func):
     prob_map = {}
     assert len(probs) == len(ids)
@@ -160,6 +172,26 @@ def merge_event_map(filepath):
             new_idx_cnt += 1
         old2new[old_idx] = new_events_idx[rtype]
     return old2new
+
+def load_items(filepath):
+    items = {}
+    for line in file(filepath):
+        line = line.strip()
+        if line == "":
+            continue
+        p = line.split('\t')
+        code = int(p[0])
+        if len(p) == 1:
+            des = ""
+        else:
+            des = p[1]
+        items[code] = des
+    return items
+
+        
+
+
+    
 
 def load_setting(filepath, default_setting):
     setting = default_setting if default_setting else {}
@@ -217,8 +249,6 @@ graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
 if __name__ == "__main__":
-    old2new = merge_event_map('result/event_des_text.tsv')
-    print reduce(min, old2new.keys())
-    print reduce(max, old2new.keys())
-    print reduce(min, old2new.values())
-    print reduce(max, old2new.values())
+    event_des_pattern = load_event_des_pattern()
+    print event_des_pattern['inputevents_cv.30026']
+    

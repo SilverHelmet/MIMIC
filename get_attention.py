@@ -8,21 +8,24 @@ def load_attention_model(filepath):
     return model
 
 def get_event_attention(model, x):
-    emd_out =  get_embedding(model, x, name = 'embedding')
-    mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
-    mask = np.any(np.not_equal(mask, 0.0), axis=-1)
+    emd_out =  get_embedding(model, x)
+    mask = np.any(np.not_equal(x[0], 0.0), axis = -1)
+    # mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
+    # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
     rnn =  model.get_layer("rnn")
     _, attention = rnn.test_call(emd_out, mask)
     mask = np.expand_dims(mask, axis = -1)
+    # mask = np.not_equal(x[0], 0.0)
     return attention * mask
 
-def get_event_output(model, x):
-    emd_out =  get_embedding(model, x,  name = 'embedding')
-    mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
-    mask = np.any(np.not_equal(mask, 0.0), axis=-1)
+def get_event_output_at_time(model, x, time = -1):
+    emd_out =  get_embedding(model, x)
+    mask = np.any(np.not_equal(x[0], 0.0), axis = -1)
+    # mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
+    # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
     rnn =  model.get_layer("rnn")
     outputs, _ = rnn.test_call(emd_out, mask)
-    return outputs[:,-1]
+    return outputs[:,time]
 
 def get_temporal_attention(model, x):
     attention_model = Model(input = model.input, output = model.get_layer("alpha").output)
@@ -33,9 +36,13 @@ def get_event_attention_score_at_seg(model, output, embedding):
     score = rnn.get_attention_score(output, embedding)
     return score
 
-def get_embedding(model, x, name = 'embedding'):
-    emd_layer = model.get_layer(name)
-    return K.eval(K.gather(emd_layer.W, x))
+# def get_embedding(model, x, name = 'embedding'):
+#     emd_layer = model.get_layer(name)
+#     return K.eval(K.gather(emd_layer.W, x))
+
+def get_embedding(model, x, name = "embedding with feature"):
+    emd_model = Model(input = model.input, output = model.get_layer(name).output)
+    return emd_model.predict(x)
 
     
     

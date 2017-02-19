@@ -296,7 +296,7 @@ class EventAttentionLSTM(LSTM):
             successive_states.append(states)
 
         outputs = np.array(successive_outputs)
-        outputs =outputs.transpose([1,0] + range(2, outputs.ndim))
+        outputs = outputs.transpose([1,0] + range(2, outputs.ndim))
 
         self.attention = np.array(self.attention)
         self.attention = self.attention.transpose([1,0] + range(2, self.attention.ndim))
