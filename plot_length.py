@@ -5,9 +5,12 @@ from scipy.stats import t
 import sys
 
 class Data:
-    def __init__(self, data, errors, label):
+    def __init__(self, data, errors, label, reverse = False):
         self.data = data
         self.errors = errors
+        if reverse:
+            self.data.reverse()
+            self.errors.reverse()
         self.label = label
  
 def plot_length(results, names, ylabel):
@@ -48,7 +51,7 @@ def load_data(filepath):
             errors = []
         elif line == "":
             if len(data) > 0:
-                result = Data(data, errors, label)
+                result = Data(data, errors, label, reverse = True)
                 if not group in data_group:
                     data_group[group] = []
                     groups.append(group)
@@ -70,7 +73,7 @@ if __name__ == "__main__":
     data_group, groups = load_data(sys.argv[1])
     plt.style.use('ggplot')
     plot_label = ['event', 'event & category attr']
-    # plot_label = ['event', 'event & category attr & numerical attr']
+    plot_label = ['event', 'event & category attr & numerical attr']
     idx = 1
     names = ["length=4", 'length=8','length=16', 'length=32', 'length=64', 'length=128', 'length=256']
     names = [4, 8, 16, 32, 64, 128, 256]

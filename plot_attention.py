@@ -7,6 +7,7 @@ from models.models import np_mask_softmax
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from util import *
+import sys
 
 def attention_score_at_time(model, event_mat, time):
     if time == 0:
@@ -175,7 +176,10 @@ if __name__ == "__main__":
     data1 = np.array([[1,2,3,5,4],[3,1,2,2,0], [7,8,2,4,5]])
     data2 = np.array([[3,1,2,1,1],[1,1,7,8,0], [7,8,7,8,7]])
     event_map = merge_event_map('result/event_des_text.tsv')
-    model = load_model("RNNmodels/death_timeAggre_catAtt.model", custom_objects = get_custom_objects())
+    model = load_model("RNNmodels/death_timeAggre_fea_catAtt.model", custom_objects = get_custom_objects())
+    for layer in model.get_config()['layers']:
+        print "\t", layer
+    sys.exit(0)
     # model = load_model("RNNmodels/test.model", custom_objects = get_custom_objects())
     dataset = Dataset('sample_exper/sample_icu.h5py', 'sample_exper/sample_segs.h5py')
     print "load over"
