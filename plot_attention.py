@@ -189,6 +189,7 @@ def plot_temporal_attention(model, event_mat, feature_mat, times):
     ax = plt.gca()
     ax.set_xticks(left)
     ax.set_xticklabels(labels, rotation = 25)
+    ax.set_ylabel("")
 
     
     plt.plot(xs, temporal_att, color = 'k', marker = 'o')
@@ -212,24 +213,25 @@ if __name__ == "__main__":
     dataset = Dataset('sample_exper/death_sample.h5', 'sample_exper/death_seg.h5')
     print "load over"
     dataset.load()
-    times = range(3, 3 + 3*5, 3)
-    # data_e = np.array(dataset.event_mat(12))
-    # data_f = np.array(dataset.feature_mat(12))
+    
+    
 
 
 
     plt.style.use('ggplot')
-    
-    # plot_temporal_attention(model, data_e, data_f, times)
+    times = range(3, 3 + 3*5, 3)
+    data_e = np.array(dataset.event_mat(12))
+    data_f = np.array(dataset.feature_mat(12))
+    plot_temporal_attention(model, data_e, data_f, times)
     # plot_event_attention(model, data_e, data_f, [0, 10, 20], event_map)
-    for idx in range(0, 1000, 5):
-        data_e = np.array(dataset.event_mat(idx))
-        data_f = np.array(dataset.feature_mat(idx))
-        times = [0, 3, 6]
-        out_path = os.path.join(graph_dir, "event_attention")
-        out_path = os.path.join(out_path, "%d_%s.png" %(idx, times))
+    # for idx in range(0, 1000, 5):
+    #     data_e = np.array(dataset.event_mat(idx))
+    #     data_f = np.array(dataset.feature_mat(idx))
+    #     times = [0, 3, 6]
+    #     out_path = os.path.join(graph_dir, "event_attention")
+    #     out_path = os.path.join(out_path, "%d_%s.png" %(idx, times))
         
-        plot_event_attention(model, data_e, data_f, times, event_map, out_path)
+    #     plot_event_attention(model, data_e, data_f, times, event_map, out_path)
 
     # plot_temporal_attention(model, data1, [0, 2])
     
