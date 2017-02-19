@@ -126,6 +126,7 @@ for ds_cnt, ds in enumerate(datasets):
 
         # Put the result into a color plot
         Z = Z.reshape(xx.shape)
+        Z += Z.min()
         ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
 
         # Plot also the training points

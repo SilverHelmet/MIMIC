@@ -44,6 +44,8 @@ def plot_event_attention_at_time(model, event_mat, feature_mat, plot_etype, ax, 
     pos = X[indices[-1]]
     event_des = EventDescription()
     des = event_des.get_des(event_list[indices[-1]], feas[indices[-1]])
+    print "\n".join(des)
+    print pos
     # ax.text(pos[0], pos[1], "\n".join(des), horizontalalignment = 'center', verticalalignment = "bottom", fontsize = 13)
 
     x_min, x_max = X[:, 0].min() - 1.0, X[:, 0].max() + 1.0
@@ -72,6 +74,9 @@ def plot_event_attention_at_time(model, event_mat, feature_mat, plot_etype, ax, 
     scores = scores.reshape(xx.shape)
     ax.contourf(xx, yy, scores, cmap = cm, alpha = .8)
     ax.scatter(X[:, 0], X[:, 1], c = labels, cmap = cm_bright, s= 40)
+    print '-' * 50
+    for idx, event in enumerate(event_list):
+        print X[idx, 0], X[idx, 1], event, event_map[event]
     
     
 
@@ -172,7 +177,7 @@ def plot_temporal_attention(model, event_mat, feature_mat, times):
 
             if add_text:
                 des = event_des.get_des(event, feature_mat[time][index])
-                plt.text(pos_x, pos_y + 0.001, "\n".join(des), horizontalalignment = 'center', verticalalignment = "bottom", fontsize = 13)
+                plt.text(pos_x  - bar_width *2, pos_y + 0.001, "\n".join(des), horizontalalignment = 'left', verticalalignment = "bottom", fontsize = 13)
                 add_text = False
             
         
@@ -189,12 +194,12 @@ def plot_temporal_attention(model, event_mat, feature_mat, times):
     ax = plt.gca()
     ax.set_xticks(left)
     ax.set_xticklabels(labels, rotation = 25)
-    ax.set_ylabel("")
+    ax.set_xlabel("Time")
 
     
     plt.plot(xs, temporal_att, color = 'k', marker = 'o')
 
-    ax.set_ylim(max(0, temporal_att.min() - 0.1), height.max() + 0.1)
+    ax.set_ylim(max(0, temporal_att.min() - 0.1), height.max() + 0.4)
     ax.set_xlim((0, left.max() + bar_width + 1))
     plt.grid()
     plt.show()
@@ -220,9 +225,9 @@ if __name__ == "__main__":
 
     plt.style.use('ggplot')
     times = range(3, 3 + 3*5, 3)
-    data_e = np.array(dataset.event_mat(12))
-    data_f = np.array(dataset.feature_mat(12))
-    plot_temporal_attention(model, data_e, data_f, times)
+    # data_e = np.array(dataset.event_mat(12))
+    # data_f = np.array(dataset.feature_mat(12))
+    # plot_temporal_attention(model, data_e, data_f, times)
     # plot_event_attention(model, data_e, data_f, [0, 10, 20], event_map)
     # for idx in range(0, 1000, 5):
     #     data_e = np.array(dataset.event_mat(idx))
@@ -233,5 +238,8 @@ if __name__ == "__main__":
         
     #     plot_event_attention(model, data_e, data_f, times, event_map, out_path)
 
-    # plot_temporal_attention(model, data1, [0, 2])
+    data_e = np.array(dataset.event_mat(600))
+    data_f = np.array(dataset.feature_mat(600))
+    times = [0, 3, 6]
+    plot_event_attention(model, data_e, data_f, times, event_map)
     

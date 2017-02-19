@@ -100,7 +100,7 @@ class EventDescription:
         text_idx = 0
         num_idx = 0
         features = []
-        ret = ["name = " + pattern['des']]
+        ret = ["event = " + pattern['des'], '{']
         for feature_type in pattern['feature']:
             if feature_type == "text":
                 features.append(text_features[text_idx])
@@ -112,7 +112,8 @@ class EventDescription:
         for idx, feature in enumerate(features):
             name = names[idx]
             ret.append(name + " = " + str(feature))
-        return ret
+        ret.append('}')
+        return ret 
             
         
 
