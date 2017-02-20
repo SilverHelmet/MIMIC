@@ -24,9 +24,9 @@ An example setting file is as follows.
 
 
         # dataset
-        train_dataset=death_exper/death_train_1000.h5
-        valid_dataset=death_exper/death_valid_1000.h5
-        test_dataset=death_exper/death_test_1000.h5
+        train_dataset=train.h5
+        valid_dataset=valid.h5
+        test_dataset=test.h5
 
         # segment
         aggregation=sum
@@ -67,6 +67,18 @@ An complete dataset file should have following attributres:
                 A vector of length max_feature_len discribe numeric features of a event. the vector is in format index1, value1, index2, value2 ...
                 0 is considered as padding.
         sample_id: ID of samples, shape (nb_samples, )
+                If you don't use this attr, just set it as `range(0, nb_samples)`
+
+### Segmentation format
+The segmentation files are also in HDF5 format.
+
+An complete segmentation file should have following attributres:
+
+        segment: segmentation of event sequences, shape(nb_sample, max_segs)
+                0 is considered as padding, so first 0 are omitted
+        max_segs: max number of segments of an event sequence
+        max_seg_length: max length of an segment
+
 
 
 
