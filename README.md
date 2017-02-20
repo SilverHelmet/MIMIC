@@ -1,19 +1,35 @@
-## build ICU In samples
-`python scripts/patient.py`
+## Usage
+`python train_rnn.py setting_1 setting_2 ... setting_n`
 
-        generate event_seq info of each patient/hospital 
-        read from `event/*.tsv` write to `result/event_seq.dat`
----
-`python scripts/stat_event_seq.py`
+setting_1, setting_2, ..., setting_n are setting files of the model. 
+The model will load arguments in these files sequentially， 
+Here are an example setting file.
+        # model
+        disturbance=False
 
-        generate event_seq stat
-        read from `result/event_seq.dat` write to `event_seq_stat/event_seq_stat.result`
----
-`python scripts/sample_setting.py`
+        #model args
+        embedding_dim=64
+        hidden_dim=64
+        att_hidden_dim=64
 
-        generate ICUIn sample setting 
-        read from `event_seq_stat/event_seq_stat.result` 
-        write to `event_seq_stat/patient_setting.txt` and `event_seq_stat/ICUIn_sample_setting.txt`
+
+        # model training 
+        batch_size=32
+        nb_epoch=10
+        l2_reg_cof=0.0001
+        lr=0.001
+
+
+        # dataset
+        train_dataset=death_exper/death_train_1000.h5
+        valid_dataset=death_exper/death_valid_1000.h5
+        test_dataset=death_exper/death_test_1000.h5
+
+        # segment
+        aggregation=sum
+seg_mode=custom
+
+
 
 
 
