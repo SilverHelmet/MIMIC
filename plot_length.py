@@ -76,14 +76,18 @@ if __name__ == "__main__":
     plot_label = ['event', 'event & category attr & numerical attr']
     idx = 1
     names = ["length=4", 'length=8','length=16', 'length=32', 'length=64', 'length=128', 'length=256']
-    names = [4, 8, 16, 32, 64, 128, 256]
+    names = [1, 4, 8, 16, 32, 64, 128, 256]
     for group in groups:
         data = data_group[group]
         for res in data:
             print res.label
         data = [res for res in data if res.label in plot_label]
+        for res in data:
+            if res.label == plot_label[1]:
+                res.label = "event with attr"
         plt.subplot(1, len(groups), idx)
         idx += 1
+
         plot_length(data, names, group)
     
     plt.show()
