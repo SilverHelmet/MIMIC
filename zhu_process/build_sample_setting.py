@@ -85,6 +85,7 @@ class DiagnosisSampleSetting:
             "pid": self.pid, 
             "ed": str(self.ed),
             "label": self.label,
+            "sample_id": self.sample_id,
         }
         return json.dumps(obj)
 
