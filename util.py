@@ -71,6 +71,11 @@ def parse_time(time_str):
             return datetime.datetime.strptime(time_str, '%Y-%m-%d')
         except Exception, e:
             return None
+    elif len(time_str) in [12, 13, 14]:
+        try:
+            return datetime.datetime.strptime(time_str, '%m/%d/%y %H:%M')
+        except Exception, e:
+            return None
     return None
 
 def parse_number(number_str):
@@ -249,6 +254,7 @@ graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
 if __name__ == "__main__":
-    event_des_pattern = load_event_des_pattern()
-    print event_des_pattern['inputevents_cv.30026']
+    s = "01/3/14 00:00"
+    print parse_time(s)
+    # print event_des_pattern['inputevents_cv.30026']
     
