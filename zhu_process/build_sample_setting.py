@@ -65,6 +65,7 @@ class PatientDiagnosis:
                 ed += 1
             label = int(max_grade >= 7)
             range_diag.append(RangeDiagnosis(self.diags[ed-1].time, label))
+            st = ed
         self.diags = range_diag
 
 
