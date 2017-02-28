@@ -74,10 +74,11 @@ class PatientDiagnosis:
     
 
 class DiagnosisSampleSetting:
-    def __init__(self, pid, ed, label):
+    def __init__(self, pid, ed, label, sample_id):
         self.pid = pid
         self.ed = ed
         self.label = label
+        self.sample_id = sample_id
 
     def to_json(self):
         obj = {
@@ -93,7 +94,8 @@ class DiagnosisSampleSetting:
         pid = obj['pid']
         ed = parse_time(obj[ed])
         label = obj['label']
-        return DiagnosisSampleSetting(pid, ed, label)
+        sample_id = obj['sample_id']
+        return DiagnosisSampleSetting(pid, ed, label, sample_id)
 
         
 
@@ -117,7 +119,9 @@ def load_diagnosis():
         p_diag.finish()
     return patient_diagnosis_map
 
+sample_id = 0
 def build_patient_sample_setting(patient_diag, pid):
+    global sample_id
     pred_bias_time = datetime.timedelta(days = 0.5)
     interval_time = datetime.timedelta(days = 1.0)
     settings = []
@@ -128,9 +132,10 @@ def build_patient_sample_setting(patient_diag, pid):
             ed = diag.time - pred_bias_time - i * interval_time
             label = diag.label
             if last_diag_time is None or last_diag_time < ed:
-                sample_setting = DiagnosisSampleSetting(pid, ed, label)
+                sample_setting = DiagnosisSampleSetting(pid, ed, label, sample_id)
                 settings.append(sample_setting)
         last_diag_time = diag.time
+        sample_id += 1
     return settings
         
 
