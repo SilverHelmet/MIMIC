@@ -116,7 +116,7 @@ def load_diagnosis():
         p_diag.finish()
     return patient_diagnosis_map
 
-def build_patient_sample_setting(self, patient_diag, pid):
+def build_patient_sample_setting(patient_diag, pid):
     pred_bias_time = datetime.timedelta(days = 0.5)
     interval_time = datetime.timedelta(days = 1.0)
     settings = []
