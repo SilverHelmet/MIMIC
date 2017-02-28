@@ -155,7 +155,7 @@ def build_sample_setting(patient_diagnosis_map):
 if __name__ == "__main__":
     patient_diagnosis_map = load_diagnosis()
     settings = build_sample_setting(patient_diagnosis_map)
-    outf = file("zhu_data/sample_settings.json")
+    outf = file("zhu_data/sample_settings.json", 'w')
     for setting in settings:
         outf.write(setting.to_json() + "\n")
     outf.close()
