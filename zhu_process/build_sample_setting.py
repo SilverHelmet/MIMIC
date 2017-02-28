@@ -93,7 +93,8 @@ class DiagnosisSampleSetting:
     def load_from_json(obj_str):
         obj = json.loads(obj_str)
         pid = obj['pid']
-        ed = parse_time(obj[ed])
+        ed = parse_time(obj['ed'])
+        assert ed
         label = obj['label']
         sample_id = obj['sample_id']
         return DiagnosisSampleSetting(pid, ed, label, sample_id)
