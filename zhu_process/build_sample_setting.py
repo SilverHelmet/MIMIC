@@ -47,7 +47,8 @@ class PatientDiagnosis:
 
 
     def add_diag(self, time, diag):
-        if time in ["4期","3期","2期"]:
+        global grade_map
+        if time in ["4期","3期","2期"] or diag not in grade_map:
             return
         diag =  Diagnosis(diag, time)
         self.diags.append(diag)
