@@ -254,7 +254,8 @@ graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
 if __name__ == "__main__":
-    s = "01/3/14 00:00"
-    print parse_time(s)
+    s = "01/3/14 10:50"
+    t = parse_time(s)
+    print str(t)
     # print event_des_pattern['inputevents_cv.30026']
     

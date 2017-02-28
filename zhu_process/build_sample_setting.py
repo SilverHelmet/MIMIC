@@ -81,7 +81,7 @@ class DiagnosisSampleSetting:
     def to_json(self):
         obj = {
             "pid": self.pid, 
-            "ed": self.ed,
+            "ed": str(self.ed),
             "label": self.label,
         }
         return json.dumps(obj)
