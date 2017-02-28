@@ -133,7 +133,7 @@ def buld_patient_sample_setting(self, patient_diag, pid):
     return settings
         
 
-def build_sample_setting(self, patient_diagnosis_map):
+def build_sample_setting(patient_diagnosis_map):
     settings = []
     cnt = 0
     for pid in sorted(patient_diagnosis_map.keys()):
