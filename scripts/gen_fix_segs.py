@@ -107,7 +107,7 @@ def get_timeAggre(times, max_chunk, chunk_length):
             r = mid
         else:
             l = mid
-    seg = check_valid(times, r, max_chunk, chunk_length)
+    seg = check_valid(times, r+eps, max_chunk, chunk_length)
     assert seg is not None
     return seg
 
