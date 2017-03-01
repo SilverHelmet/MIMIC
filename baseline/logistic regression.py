@@ -25,13 +25,19 @@ f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
 labels = f['label'][:]
 events = f['event'][:]
-features = f['feature'][:]
+if "feature" in f:
+    features = f['feature'][:]
+else:
+    features = None
 event_len = events.shape[1]
 sids = f['sample_id'][:]
 merged_labels = merge_label(labels, sids)
 test_labels = t['label'][:]
 test_events = t['event'][:]
-test_features = t['feature'][:]
+if "feature" in t:
+    test_features = t['feature'][:]
+else:
+    test_features = None
 test_sids = t['sample_id'][:]
 merged_test_labels = merge_label(test_labels, test_sids)
 
