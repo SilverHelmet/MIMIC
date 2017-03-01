@@ -259,9 +259,6 @@ graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
 if __name__ == "__main__":
-    s = "2014/09/25 00:00"
-    print len(s)
-    t = parse_time(s)
-    print str(t)
+    print datetime.datetime.min 
 
     

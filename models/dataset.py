@@ -212,7 +212,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
 
 def sample_generator(dataset, setting):
     labels = dataset.labels
-    features = dataset.features
+    features = dataset.features if dataset.hasattr("features") else None
     events = dataset.events
     segs = dataset.segs
     nb_sample = len(labels)
