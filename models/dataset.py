@@ -34,7 +34,7 @@ class Dataset:
         if 'feature' in f:
             self.features = f['feature'][:]
         else:
-            self.features = None
+            self.features = np.zeros((1,1))
         self.ids = f['sample_id'][:]
         self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
