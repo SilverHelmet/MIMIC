@@ -5,7 +5,7 @@
 # files="death_test_1000.h5 death_train_1000.h5 death_valid_1000.h5"
 # seg_dir=death_exper/segs
 dir=zhu_data
-files="train.h5 valid.h5 test.h5"
+files="test.h5 train.h5 valid.h5"
 seg_dir=zhu_data/segs
 
 for file in $files
