@@ -35,6 +35,7 @@ class Dataset:
         f['event'] = np.array(self.event)
         f['sample_id'] = np.array(self.sample_id)
         f['label'] = np.array(self.label)
+        f['time'] = np.array(self.time)
         f.close()
         
 
