@@ -31,7 +31,10 @@ class Dataset:
         self.labels = f['label'][:]
         self.size = len(self.labels)
         self.events = f['event'][:]
-        self.features = f['feature'][:]
+        if 'feature' in f:
+            self.features = f['feature'][:]
+        else:
+            self.features = None
         self.ids = f['sample_id'][:]
         self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
@@ -212,7 +215,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
 
 def sample_generator(dataset, setting):
     labels = dataset.labels
-    features = dataset.features if dataset.hasattr("features") else None
+    features = dataset.features
     events = dataset.events
     segs = dataset.segs
     nb_sample = len(labels)
