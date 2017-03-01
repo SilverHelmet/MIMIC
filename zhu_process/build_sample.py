@@ -23,6 +23,8 @@ class Dataset:
         self.max_len = max(self.max_len, len(event))
         assert len(event) <= Dataset.max_event_len
         event.extend([0] * (Dataset.max_event_len - len(event)))
+        time = map(str, time)
+        time.extend([""] * (Dataset.max_event_len - len(time)))
         self.event.append(event)
         self.label.append(label)
         self.sample_id.append(sample_id)
