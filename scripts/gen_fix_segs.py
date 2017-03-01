@@ -100,6 +100,11 @@ def get_timeAggre(times, max_chunk, chunk_length):
     global eps
     l = 0
     r = times[-1] + eps * 2
+    if check_valid(times, r, max_chunk, chunk_length) is None:
+        print times[:10]
+        print times[-10:]
+        print max_chunk
+        print chunk_length
     assert check_valid(times, r, max_chunk, chunk_length) is not None
     while l + eps < r:
         mid = (l + r) / 2
