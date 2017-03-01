@@ -7,6 +7,43 @@ import h5py
 import os
 
 
+#input is the input string
+#time is the number you want to split your data
+#we delete all 1s and 0s and then split them into the number you want
+#if the num of your string is too short, we will only use every element as input
+
+def treatLongDat(input,time):
+    output=[]
+    if len(input)<=time:
+        for i in input:
+            output.append([i])
+        return output
+    else:
+        length=len(input)/time
+        for i in range(time):
+            if i!=time-1:
+                output.append(input[i*length:(i+1)*length])
+            else:
+                output.append(input[i*length:])
+        return output
+
+
+
+    for i in test_event:
+        all_test_event.append(treatLongDat(stripList(i),20))
+
+    all_test_label=[]
+    for i in test_label:
+        all_test_label.append(i)
+
+    f=open("./50data/visit.test",'wb')
+    cPickle.dump(all_test_event,f,cPickle.HIGHEST_PROTOCOL)
+    f.close()
+    f=open("./50data/label.test",'wb')
+    cPickle.dump(all_test_label,f,cPickle.HIGHEST_PROTOCOL)
+    f.close()
+    hf_test.close()
+
 
 
 def makeFile(dataset, out_dir, tag, prefix):
