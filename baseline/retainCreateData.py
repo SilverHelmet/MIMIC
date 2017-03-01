@@ -7,43 +7,6 @@ import h5py
 import os
 
 
-#input is the input string
-#time is the number you want to split your data
-#we delete all 1s and 0s and then split them into the number you want
-#if the num of your string is too short, we will only use every element as input
-
-def treatLongDat(input,time):
-    output=[]
-    if len(input)<=time:
-        for i in input:
-            output.append([i])
-        return output
-    else:
-        length=len(input)/time
-        for i in range(time):
-            if i!=time-1:
-                output.append(input[i*length:(i+1)*length])
-            else:
-                output.append(input[i*length:])
-        return output
-
-
-
-    for i in test_event:
-        all_test_event.append(treatLongDat(stripList(i),20))
-
-    all_test_label=[]
-    for i in test_label:
-        all_test_label.append(i)
-
-    f=open("./50data/visit.test",'wb')
-    cPickle.dump(all_test_event,f,cPickle.HIGHEST_PROTOCOL)
-    f.close()
-    f=open("./50data/label.test",'wb')
-    cPickle.dump(all_test_label,f,cPickle.HIGHEST_PROTOCOL)
-    f.close()
-    hf_test.close()
-
 
 
 def makeFile(dataset, out_dir, tag, prefix):
@@ -90,12 +53,19 @@ out_dir = os.path.join(os.path.join(script_dir, "baseline"), 'retainData')
 # prefix = "icu"
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 
-dataset_dir = death_merged_exper_dir
-prefix = "death"
+# dataset_dir = death_merged_exper_dir
+# prefix = "death"
 # dataset_dir = death_exper_dir
+
 # prefix = "death_catAtt"
-files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
+# files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
+# datasets = [os.path.join(dataset_dir, file) for file in files]
+
+prefix = "zhu"
+files = ['train.h5', 'valid.h5', 'test.h5']
+dataset_dir = "zhu_data"
 datasets = [os.path.join(dataset_dir, file) for file in files]
+
 
 makeFile(datasets[0], out_dir, "train", prefix)
 makeFile(datasets[1], out_dir, "valid", prefix)
