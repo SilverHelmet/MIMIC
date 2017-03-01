@@ -120,9 +120,14 @@ for pid, event_list, time_list in zip(patients, events, times):
     event_list = [e for e in event_list if e != 0]
     time_list = time_list[:len(event_list)]
     time_list = [parse_time(time) for time in time_list]
-    for i in range(len(time_list)):
+    for i in range(1, len(time_list)):
         if time_list[i] == None:
             time_list[i] = time_list[i-1]
+    for i in range(len(time_list)-1, -1, -1):
+        if time_list[i] == None:
+            time_list[i] = time_list[i+1]
+    for time in time_list:
+        assert time
     # time_list = [time if time else datetime.datetime.min for time in time_list]
     # time_list = [parse_time(time) for time in time_list]
 
