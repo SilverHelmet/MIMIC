@@ -14,9 +14,10 @@ class Dataset:
         self.event = []
         self.sample_id = []
         self.label = []
+        self.time = []
         self.max_len = 0
 
-    def add_sample(self, sample_id, event, label):
+    def add_sample(self, sample_id, event, label, time):
         if len(event) <= 10:
             return
         self.max_len = max(self.max_len, len(event))
@@ -25,6 +26,7 @@ class Dataset:
         self.event.append(event)
         self.label.append(label)
         self.sample_id.append(sample_id)
+        self.time.append(time)
 
     def save(self):
         print 'size', len(self.label)
@@ -48,7 +50,8 @@ def build_sample(event_list, time_list, setting):
     fi = find_point(time_list, ed)
     st = max(0, fi - Dataset.max_event_len)
     event = event_list[st:fi]
-    return event
+    time = time_list[st:fi]
+    return event, time
 
     
         
@@ -114,14 +117,17 @@ for pid, event_list, time_list in zip(patients, events, times):
     event_list = [e for e in event_list if e != 0]
     time_list = time_list[:len(event_list)]
     time_list = [parse_time(time) for time in time_list]
-    time_list = [time if time else datetime.datetime.min for time in time_list]
+    for i in range(len(time_list)):
+        if time_list[i] == None:
+            time_list[i] = time_list[i-1]
+    # time_list = [time if time else datetime.datetime.min for time in time_list]
     # time_list = [parse_time(time) for time in time_list]
 
 
     for setting in settings:
-        sample_event = build_sample(event_list, time_list, setting)
+        sample_event, sample_time = build_sample(event_list, time_list, setting)
 
-        ds[setting.did].add_sample(setting.sample_id, sample_event, setting.label)
+        ds[setting.did].add_sample(setting.sample_id, sample_event, setting.label, sample_time)
 
 for d in ds:
     d.save()
