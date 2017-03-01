@@ -11,3 +11,6 @@
 # dir="baseline/retainData/death."
 # THEANO_FLAGS=device=gpu1,floatX=float32 python -u  baseline/retain.py --verbose "${dir}visit" 951 "${dir}label" "${dir}weight" >& log/retain_death.log2 &
 # wait
+
+dir="baseline/retainData/zhu."
+python -u  baseline/retain.py --verbose "${dir}visit" 3000 "${dir}label" "${dir}weight" >& log/retain_zhu.log1
