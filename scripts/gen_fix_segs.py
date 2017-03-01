@@ -101,11 +101,7 @@ def get_timeAggre(times, max_chunk, chunk_length):
     l = 0
     r = times[-1] + eps * 2
     if check_valid(times, r, max_chunk, chunk_length) is None:
-        print times[:10]
-        print times[-10:]
-        print max_chunk
-        print chunk_length
-    assert check_valid(times, r, max_chunk, chunk_length) is not None
+        return -1
     while l + eps < r:
         mid = (l + r) / 2
         seg = check_valid(times, mid, max_chunk, chunk_length)
@@ -192,6 +188,9 @@ if __name__ == "__main__":
             seg = split_by_length(event_seq, max_chunks, chunk_length = chunk_length)
         elif mode == "timeAggre":
             seg = split_by_timeAggre(event_seq, times[idx], max_chunks, chunk_length)
+            if seg == -1:
+                print idx
+            assert seg != -1
         else:
             print "error"
             break
