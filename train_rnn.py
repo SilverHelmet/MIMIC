@@ -14,7 +14,7 @@ import h5py
 import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
-from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, SegMaskEmbedding
+from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding
 
 def load_data(filepath, seg_filepath = None):
     f = h5py.File(filepath, 'r')
@@ -68,7 +68,7 @@ def make_input(setting):
     max_segs = setting['max_segs']
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
-    if rnn_model == 'attlstm':
+    if rnn_model == 'attlstm' or rnn_model == "attgru:
         max_seg_length = setting['max_seg_length']
         return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
     else:
@@ -125,6 +125,18 @@ def define_simple_seg_rnn(setting):
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+    elif rnn_model == "attgru":
+        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
+        if disturbance:
+            max_seg_length = setting['max_seg_length']
+            feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
+            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+            inputs = [event_input, feature_input]
+        rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+        
     elif rnn_model == "attlstm":
         embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
