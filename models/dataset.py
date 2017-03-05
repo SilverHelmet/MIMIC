@@ -234,7 +234,7 @@ def sample_generator(dataset, setting):
             # print st, ed
             label = labels[st:ed]
             event = events[st:ed]
-            if rnn == 'attlstm':
+            if rnn == 'attlstm' or rnn == 'attgru':
                 # output shape (nb_sample, max_segs, max_seg_length)
                 seged_event = []
                 for j in range(st, ed):
