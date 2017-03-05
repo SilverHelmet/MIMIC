@@ -68,7 +68,7 @@ def make_input(setting):
     max_segs = setting['max_segs']
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
-    if rnn_model == 'attlstm' or rnn_model == "attgru:
+    if rnn_model == 'attlstm' or rnn_model == "attgru":
         max_seg_length = setting['max_seg_length']
         return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
     else:
