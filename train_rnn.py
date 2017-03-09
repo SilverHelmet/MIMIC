@@ -81,7 +81,7 @@ def define_simple_seg_rnn(setting):
     embedding_dim = setting['embedding_dim']
     att_hidden_dim = setting['att_hidden_dim']
     disturbance = setting['disturbance']
-    feature_dim = setting['feature_dim']
+    feature_dim = setting.get('feature_dim', 0)
     
 
     print "define simple seg rnn"

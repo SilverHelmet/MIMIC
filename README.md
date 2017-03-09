@@ -14,14 +14,13 @@ An example setting file is as follows:
         embedding_dim=64
         hidden_dim=64
         att_hidden_dim=64
-
+        feature_dim=120
 
         # model training 
         batch_size=32
         nb_epoch=10
         l2_reg_cof=0.0001
         lr=0.001
-
 
         # dataset
         train_dataset=train.h5
@@ -50,6 +49,7 @@ The argument `disturbance` controls whether using numeric feature.
 
 The argument `embedding_dim` corresponds the dimension of embedding layer in the model. `hidden_dim` is the dimension of the hidden layer of RNN. 
 `att_hidden_dim` is the dimension of  hidden layer in event-attention, which is only useful when you set `rnn` as 'attlstm'.
+`feature_dim` is the dimentsion of numeric feature, which is only useful when you set `disturbance` as `True`.
 
 
 
