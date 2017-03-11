@@ -589,7 +589,7 @@ def parse_arguments(parser):
     parser.add_argument('--alpha_hidden_dim_size', type=int, default=64, help='The size of the hidden layers of the GRU responsible for generating alpha weights (default value: 128)')
     parser.add_argument('--beta_hidden_dim_size', type=int, default=64, help='The size of the hidden layers of the GRU responsible for generating beta weights (default value: 128)')
     parser.add_argument('--batch_size', type=int, default=100, help='The size of a single mini-batch (default value: 100)')
-    parser.add_argument('--n_epochs', type=int, default=10, help='The number of training epochs (default value: 10)')
+    parser.add_argument('--n_epochs', type=int, default=20, help='The number of training epochs (default value: 20)')
     parser.add_argument('--L2_output', type=float, default=0.001, help='L2 regularization for the final classifier weight w (default value: 0.001)')
     parser.add_argument('--L2_emb', type=float, default=0.001, help='L2 regularization for the input embedding weight W_emb (default value: 0.001)')
     parser.add_argument('--L2_alpha', type=float, default=0.001, help='L2 regularization for the alpha generating weight w_alpha (default value: 0.001).')
