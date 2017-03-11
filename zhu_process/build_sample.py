@@ -15,9 +15,10 @@ class Dataset:
         self.sample_id = []
         self.label = []
         self.time = []
+        self.feature = []
         self.max_len = 0
 
-    def add_sample(self, sample_id, event, label, time):
+    def add_sample(self, sample_id, event, label, time, feature):
         if len(event) <= 10:
             return
         self.max_len = max(self.max_len, len(event))
@@ -25,10 +26,15 @@ class Dataset:
         event.extend([0] * (Dataset.max_event_len - len(event)))
         time = map(str, time)
         time.extend([""] * (Dataset.max_event_len - len(time)))
+        f_len = feature.shape[1]
+        feature = list(feature)
+        feature.extend([[0] * f_len for i in range(Dataset.max_event_len - len(feature))])
+
         self.event.append(event)
         self.label.append(label)
         self.sample_id.append(sample_id)
         self.time.append(time)
+        self.feature.extend(feature)
 
     def save(self):
         print 'size', len(self.label)
@@ -38,6 +44,7 @@ class Dataset:
         f['sample_id'] = np.array(self.sample_id)
         f['label'] = np.array(self.label)
         f['time'] = np.array(self.time)
+        f['feature'] = np.array(self.feature)
         f.close()
         
 
@@ -48,13 +55,14 @@ def find_point(time_list, point):
     return len(time_list)
         
 
-def build_sample(event_list, time_list, setting):
+def build_sample(event_list, time_list, feature_list, setting):
     ed = setting.ed
     fi = find_point(time_list, ed)
     st = max(0, fi - Dataset.max_event_len)
     event = event_list[st:fi]
     time = time_list[st:fi]
-    return event, time
+    feature = feature_list[st:fi]
+    return event, time, feature
 
     
         
@@ -100,32 +108,34 @@ def load_data(filepath):
     patients = f['patient'][:]
     events = f['event'][:]
     times = f['time'][:]
-    return patients, events, times
+    features = f['feature'][:]
+    return patients, events, times, features
 
 
 
 setting_map = load_setting("zhu_data/sample_settings.json")
-patients, events, times = load_data("zhu_data/HeartDisease.h5")
+patients, events, times, features = load_data("zhu_data/HeartDisease.h5")
 
 
-dataset_train = Dataset("zhu_data/train.h5")
-dataset_valid = Dataset("zhu_data/valid.h5")
-dataset_test = Dataset("zhu_data/test.h5")
+dataset_train = Dataset("zhu_data/zhu_merged_train.h5")
+dataset_valid = Dataset("zhu_data/zhu_merged_valid.h5")
+dataset_test = Dataset("zhu_data/zhu_merged_test.h5")
 ds = [dataset_train, dataset_valid, dataset_test]
 ratios = [0.7, 0.1, 0.2]
 split_setting(setting_map, ratios)
 
-for pid, event_list, time_list in zip(patients, events, times):
+for pid, event_list, time_list, feature_list in zip(patients, events, times, features):
     settings = setting_map.get(pid, [])
     event_list = [e for e in event_list if e != 0]
     time_list = time_list[:len(event_list)]
+    feature_list = feature_list[:len(event_list)]
     time_list = [parse_time(time) for time in time_list]
-    for i in range(1, len(time_list)):
-        if time_list[i] == None:
-            time_list[i] = time_list[i-1]
-    for i in range(len(time_list)-1, -1, -1):
-        if time_list[i] == None:
-            time_list[i] = time_list[i+1]
+    # for i in range(1, len(time_list)):
+    #     if time_list[i] == None:
+    #         time_list[i] = time_list[i-1]
+    # for i in range(len(time_list)-1, -1, -1):
+    #     if time_list[i] == None:
+    #         time_list[i] = time_list[i+1]
     for time in time_list:
         assert time
     # time_list = [time if time else datetime.datetime.min for time in time_list]
@@ -133,9 +143,9 @@ for pid, event_list, time_list in zip(patients, events, times):
 
 
     for setting in settings:
-        sample_event, sample_time = build_sample(event_list, time_list, setting)
+        sample_event, sample_time, sample_feature = build_sample(event_list, time_list, feature_list, setting)
 
-        ds[setting.did].add_sample(setting.sample_id, sample_event, setting.label, sample_time)
+        ds[setting.did].add_sample(setting.sample_id, sample_event, setting.label, sample_time, sample_feature)
 
 for d in ds:
     d.save()

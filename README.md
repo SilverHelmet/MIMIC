@@ -52,7 +52,6 @@ The argument `embedding_dim` corresponds the dimension of embedding layer in the
 `feature_dim` is the dimentsion of numeric feature, which is only useful when you set `disturbance` as `True`.
 
 
-
 Arguments in `model args` section control the process of model training.
 
 If the value of `model_out` is set, the program will output the final model to local at last.
