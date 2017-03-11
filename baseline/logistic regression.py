@@ -19,7 +19,7 @@ add_feature = False
 # dataset_dir = death_exper_dir
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 
-dataset_dir = "zhu_data"
+dataset_dir = "zhu_exper"
 files = ['train.h5', 'valid.h5', 'test.h5']
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
@@ -46,7 +46,7 @@ merged_test_labels = merge_label(test_labels, test_sids)
 nb_samples = len(labels)
 nb_test = len(test_labels)
 event_dim = events.max() + 1
-feature_dim = 649
+feature_dim = 19
 
 count_events = [[0 for col in range(event_dim)] for row in range(nb_samples)]
 count_test_events = [[0 for col in range(event_dim)] for row in range(nb_test)]

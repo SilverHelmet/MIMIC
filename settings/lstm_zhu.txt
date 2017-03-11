@@ -9,27 +9,24 @@ rnn=lstm
 embedding_dim=64
 hidden_dim=64
 att_hidden_dim=64
+feature_dim=19
 
 
 # model training 
 batch_size=32
-nb_epoch=10
+nb_epoch=15
 l2_reg_cof=0.0001
 lr=0.001
 
 
 # dataset
-train_dataset=zhu_data/train.h5
-valid_dataset=zhu_data/valid.h5
-test_dataset=zhu_data/test.h5
+train_dataset=zhu_exper/train.h5
+valid_dataset=zhu_exper/valid.h5
+test_dataset=zhu_exper/test.h5
 
 # segment
 aggregation=sum
 seg_mode=custom
 
-
-# embedding 
-# embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
-# embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
 
 

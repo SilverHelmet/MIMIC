@@ -1,2 +1,2 @@
 attention=False
-rnn=attgru
+rnn=attlstm
