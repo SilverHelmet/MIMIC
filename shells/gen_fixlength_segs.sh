@@ -7,9 +7,9 @@ length=1
 # dir=death_exper
 # files="death_test_1000.h5 death_train_1000.h5 death_valid_1000.h5"
 # seg_dir=death_exper/segs
-dir=zhu_data
+dir=zhu_exper
 files="train.h5 valid.h5 test.h5"
-seg_dir=zhu_data/segs
+seg_dir=${dir}/segs
 
 while  [ $length -le $max_length ]
 do

@@ -106,7 +106,7 @@ def split_setting(setting_map, ratios):
 def load_data(filepath):
     f = h5py.File(filepath)
     patients = f['patient'][:]
-    events = f['event'][:]
+    events = f['event_catAtt'][:]
     times = f['time'][:]
     features = f['feature'][:]
     return patients, events, times, features
@@ -117,9 +117,9 @@ setting_map = load_setting("zhu_data/sample_settings.json")
 patients, events, times, features = load_data("zhu_data/HeartDisease.h5")
 
 
-dataset_train = Dataset("zhu_exper/train.h5")
-dataset_valid = Dataset("zhu_exper/valid.h5")
-dataset_test = Dataset("zhu_exper/test.h5")
+dataset_train = Dataset("zhu_exper/train_catAtt.h5")
+dataset_valid = Dataset("zhu_exper/valid_catAtt.h5")
+dataset_test = Dataset("zhu_exper/test_catAtt.h5")
 ds = [dataset_train, dataset_valid, dataset_test]
 ratios = [0.7, 0.1, 0.2]
 split_setting(setting_map, ratios)
