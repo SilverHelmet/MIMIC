@@ -13,6 +13,7 @@ BOWLR_log
 # data
 RNNmodels
 zhu_data
+zhu_exper
 data
 event
 exper
