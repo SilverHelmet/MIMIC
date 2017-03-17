@@ -25,7 +25,7 @@ def SimpleAttentionRNN(rnn):
     return attention
 
 def SimpleAttentionRNN2(rnn):
-    hidden = TimeDistributed(Dense(128))(rnn)
+    hidden = TimeDistributed(Dense(128, activation = 'tanh'))(rnn)
     score = TimeDistributed(Dense(1))(hidden)
     flatten_score = MaskFlatten(name = 'flatten_score')(score)
     alpha = MaskLambda(function = mask_softmax, name = 'alpha')(flatten_score)
@@ -550,10 +550,13 @@ class EventAttentionLSTM(LSTM):
         outputs = np.array(successive_outputs)
         outputs = outputs.transpose([1,0] + range(2, outputs.ndim))
 
+        states = np.array(successive_states)
+        states = states.transpose([1,0] + range(2, states.ndim))
+
         self.attention = np.array(self.attention)
         self.attention = self.attention.transpose([1,0] + range(2, self.attention.ndim))
         
-        return outputs, self.attention
+        return outputs, self.attention, states
 
 
 

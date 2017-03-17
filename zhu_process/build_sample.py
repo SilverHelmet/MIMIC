@@ -34,7 +34,7 @@ class Dataset:
         self.label.append(label)
         self.sample_id.append(sample_id)
         self.time.append(time)
-        self.feature.extend(feature)
+        self.feature.append(feature)
 
     def save(self):
         print 'size', len(self.label)
