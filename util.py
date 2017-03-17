@@ -1,4 +1,4 @@
-from pg import DB
+# from pg import DB
 from pandas import DataFrame
 import sys
 import os
@@ -8,13 +8,13 @@ import re
 import numpy as np
 
 
-def connect():
-    host = '162.105.146.245'
-    host = 'localhost'
-    schema = 'mimiciii'
-    db = DB(host = host, user = 'mimic', passwd = 'mimic')
-    db.query('set search_path to %s' %(schema))
-    return db
+# def connect():
+#     host = '162.105.146.245'
+#     host = 'localhost'
+#     schema = 'mimiciii'
+#     db = DB(host = host, user = 'mimic', passwd = 'mimic')
+#     db.query('set search_path to %s' %(schema))
+#     return db
 
 class Patient():
 
