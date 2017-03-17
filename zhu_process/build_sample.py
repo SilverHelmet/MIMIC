@@ -29,7 +29,7 @@ class Dataset:
         f_len = feature.shape[1]
         feature = list(feature)
         feature.extend([[0] * f_len for i in range(Dataset.max_event_len - len(feature))])
-
+        print np.array(feature).shape
         self.event.append(event)
         self.label.append(label)
         self.sample_id.append(sample_id)
