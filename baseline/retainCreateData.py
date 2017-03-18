@@ -98,8 +98,10 @@ out_dir = os.path.join(os.path.join(script_dir, "baseline"), 'retainData')
 # files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
 # datasets = [os.path.join(dataset_dir, file) for file in files]
 
-prefix = "zhu"
-files = ['train.h5', 'valid.h5', 'test.h5']
+# prefix = "zhu"
+# files = ['train.h5', 'valid.h5', 'test.h5']
+prefix = 'zhu_catAtt'
+files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
 dataset_dir = "zhu_exper"
 datasets = [os.path.join(dataset_dir, file) for file in files]
 
