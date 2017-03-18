@@ -117,7 +117,7 @@ result.append(auROC)
 print("auROC =", auROC)
 precision, recall,  thresholds = precision_recall_curve(test_labels, c[:, 1])
 auPRC = auc(recall, precision)
-result.append('auPRC')
+result.append(auPRC)
 print ("auPRC =", auPRC)
 
 merged_labels_pred = merge_prob(labels_pred, test_sids, max)
@@ -136,8 +136,6 @@ result.append(merged_auPRC)
 print "merged auPRC =", merged_auPRC
 
 from models.dataset import print_eval
-print result
-print map(float, result)
 print_eval("result", map(float, result))
 
 
