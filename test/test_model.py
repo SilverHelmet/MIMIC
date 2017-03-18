@@ -76,7 +76,7 @@ print model.predict(data)
 emd_out = emd_model.predict(data)
 # mask = np.array([[True, True, False], [True, True, True]])
 mask = np.any(np.not_equal(data, 0), axis=-1)
-output, att, states = rnnn.test_call(emd_out, mask)
+output, att = rnnn.test_call(emd_out, mask)
 print output - states[:,:,0,:]
 print output.shape
 print output[:, -1]
