@@ -20,9 +20,15 @@ import os
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 
 dataset_dir = "zhu_exper"
-files = ['train.h5', 'valid.h5', 'test.h5']
-# files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
-add_feature = sys.argv[1] == "addFeature"
+ori_files = ['train.h5', 'valid.h5', 'test.h5']
+catAtt_files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
+if sys.argv[1] == "ori":
+    files = ori_files
+    print "using origin files"
+else:
+    files = catAtt_files
+    print "using category files"
+add_feature = sys.argv[2] == "add_feature"
 print "add_feature = %s" %add_feature
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
