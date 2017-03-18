@@ -13,4 +13,7 @@
 # wait
 
 dir="baseline/retainData/zhu."
-python -u  baseline/retain.py --verbose "${dir}visit" 3000 "${dir}label" "${dir}weight" >& log/retain_zhu.log1
+THEANO_FLAGS=device=gpu2,floatX=float32 python -u  baseline/retain.py --verbose "${dir}visit" 2995 "${dir}label" "${dir}weight" >& log/retain_zhu.log1
+
+dir="baseline/retainData/zhu_catAtt."
+THEANO_FLAGS=device=gpu2,floatX=float32 python -u  baseline/retain.py --verbose "${dir}visit" 2995 "${dir}label" "${dir}weight" >& log/retain_zhu_catAtt.log1
