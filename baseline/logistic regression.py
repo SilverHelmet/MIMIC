@@ -136,6 +136,8 @@ result.append(merged_auPRC)
 print "merged auPRC =", merged_auPRC
 
 from models.dataset import print_eval
+print result
+print map(float, result)
 print_eval("result", map(float, result))
 
 
