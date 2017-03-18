@@ -15,13 +15,15 @@ import os
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 # dataset_dir=death_merged_exper_dir
 # files = ["death_train_1000.h5", "death_valid_1000.h5", "death_test_1000.h5"]
-add_feature = False
+
 # dataset_dir = death_exper_dir
 # files = ['ICUIn_train_1000.h5', 'ICUIn_valid_1000.h5', 'ICUIn_test_1000.h5']
 
 dataset_dir = "zhu_exper"
 files = ['train.h5', 'valid.h5', 'test.h5']
-files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
+# files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
+add_feature = sys.argv[1] == "addFeature"
+print "add_feature = %s" %add_feature
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
 labels = f['label'][:]
@@ -128,6 +130,6 @@ result.append(merged_auPRC)
 print "merged auPRC =", merged_auPRC
 
 from models.dataset import print_eval
-print_eval("result", map(result, float))
+print_eval("result", map(float, result))
 
 
