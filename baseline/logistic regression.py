@@ -21,6 +21,7 @@ add_feature = False
 
 dataset_dir = "zhu_exper"
 files = ['train.h5', 'valid.h5', 'test.h5']
+files = ['train_catAtt.h5', 'valid_catAtt.h5', 'test_catAtt.h5']
 f = h5py.File(os.path.join(dataset_dir, files[0]), 'r')
 t = h5py.File(os.path.join(dataset_dir, files[2]), 'r')
 labels = f['label'][:]
@@ -127,6 +128,6 @@ result.append(merged_auPRC)
 print "merged auPRC =", merged_auPRC
 
 from models.dataset import print_eval
-print_eval("result", result)
+print_eval("result", map(result, float))
 
 
