@@ -178,7 +178,6 @@ def default_setting():
         'segment_flag': True,  # split event seq to event segment
         'aggregation': 'sum',    # only useful when segment_flag is True
 
-        'feature_dim': 649,
         'embedding_dim': 128, 
         'hidden_dim': 128,
         'event_len': 1000,
