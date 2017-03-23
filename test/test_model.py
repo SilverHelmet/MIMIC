@@ -7,7 +7,7 @@ from keras.layers.core import Activation, Dense, Masking, Merge, TimeDistributed
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
-from keras.layers import Input, merge
+from keras.layers import Input, merge, Convolution1D
 from keras.models import Model, load_model
 from keras.optimizers import SGD, Adam 
 import theano

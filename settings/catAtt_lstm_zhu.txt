@@ -6,6 +6,7 @@ disturbance=False
 embedding_dim=64
 hidden_dim=64
 att_hidden_dim=64
+feature_dim=19
 
 
 # model training 
