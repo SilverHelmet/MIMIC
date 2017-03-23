@@ -701,7 +701,7 @@ def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0):
     cnn_layers = []
     for nb_filter, filter_length in zip(feature_maps, filter_lengths):
         cnn = MaskCNN1D(nb_filter = nb_filter, filter_length = filter_length, 
-             W_regularizer = l2(l2_reg_cof), U_regularizer = l2(l2_reg_cof),
+             W_regularizer = l2(l2_reg_cof), b_regularizer = l2(l2_reg_cof),
              name = 'cnn_%d*%d' %(nb_filter, filter_length))(emd)
         mask_cnn = MaskMaxFilter()(cnn)
         pooling = MaxPooling1D(pool_length = max_segs - filter_length + 1)(mask_cnn)
