@@ -105,7 +105,7 @@ def define_simple_seg_rnn(setting):
         masked = Masking(mask_value=0.)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
-        cnn = make_CNN1D(filter_lengths = (3,4,5,6,7), feature_maps = (30, 30, 30, 30, 30), 
+        cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
                         emd = embedding, max_segs = setting['max_segs'])
         # lazy 
         rnn = cnn

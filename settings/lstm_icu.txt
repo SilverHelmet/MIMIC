@@ -13,7 +13,7 @@ att_hidden_dim=64
 
 # model training 
 batch_size=32
-nb_epoch=10
+nb_epoch=20
 l2_reg_cof=0.0001
 lr=0.001
 
