@@ -106,7 +106,7 @@ def define_simple_seg_rnn(setting):
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
         cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
-                        emd = embedding, max_segs = setting['max_segs'])
+                        emd = embedding, max_segs = setting['max_segs'], l2_ref_conf = l2_reg_cof)
         # lazy 
         rnn = cnn
     elif rnn_model == 'gru':

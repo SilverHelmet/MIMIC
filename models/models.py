@@ -4,6 +4,7 @@ from keras.layers import merge, InputSpec, Layer, Convolution1D, MaxPooling1D, M
 from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
+from keras.regularizers import l2
 import numpy as np
 from keras_model import my_rnn
 
@@ -696,10 +697,12 @@ def mask_max(x, mask):
     z = y * (-999999) + x
     return z
 
-def make_CNN1D(filter_lengths, feature_maps, emd, max_segs):
+def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0):
     cnn_layers = []
     for nb_filter, filter_length in zip(feature_maps, filter_lengths):
-        cnn = MaskCNN1D(nb_filter = nb_filter, filter_length = filter_length, name = 'cnn_%d*%d' %(nb_filter, filter_length))(emd)
+        cnn = MaskCNN1D(nb_filter = nb_filter, filter_length = filter_length, 
+             W_regularizer = l2(l2_reg_cof), U_regularizer = l2(l2_reg_cof),
+             name = 'cnn_%d*%d' %(nb_filter, filter_length))(emd)
         mask_cnn = MaskMaxFilter()(cnn)
         pooling = MaxPooling1D(pool_length = max_segs - filter_length + 1)(mask_cnn)
         cnn_layers.append(pooling)
