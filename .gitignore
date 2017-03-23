@@ -22,10 +22,12 @@ ICU_merged_exper
 death_exper
 death_merged_exper
 baseline/retainData
-test
 sample_exper
 RNNmodels
 
 # backup
 result_backup
 data_bk
+
+# test
+test
