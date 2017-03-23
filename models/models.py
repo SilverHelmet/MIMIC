@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.layers.core import  Flatten, Lambda, Dense
-from keras.layers import merge, InputSpec
+from keras.layers import merge, InputSpec, Layer, Convolution1D, MaxPooling1D, Merge
 from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
@@ -625,6 +625,39 @@ class SegMaskEmbedding(Embedding):
         base_config = super(SegMaskEmbedding, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
+class MaskCNN1D(Convolution1D):
+    def __init__(self, **kwargs):
+        self.supports_masking = True
+        super(MaskCNN1D, self).__init__(**kwargs)
+
+    def compute_mask(self, x, mask = None):
+        output_length = x.shape[1] - self.filter_length + 1
+        return mask[:, :output_length]
+
+
+class MaskMaxFilter(Layer):
+    def call(self, x, mask = None):
+        mask = K.expand_dims(mask, -1)
+        y = K.ones_like(mask) - K.cast(mask, K.floatx())
+        z = y * (-999999999) + x
+        return K.cast(z, K.floatx())
+
+
+    def compute_mask(self, x, mask):
+        return None  
+
+class MaskOutput(Layer):
+    def __init__(self, **kwargs):
+        self.supports_masking = True
+        super(MaskOutput, self).__init__(**kwargs)
+
+    def call(self, x, mask = None):
+        return mask
+    
+    def compute_mask(self, x, mask = None):
+        return mask
+
+
 def np_switch(condition, x1, x2):
     return np.select([condition, np.not_equal(condition, True)], [x1, x2])
 
@@ -657,5 +690,19 @@ def mask_softmax(x, mask):
     z = K.softmax(z)
     return K.cast(z, K.floatx())
 
-
+def mask_max(x, mask):
     
+    y = K.ones_like(mask) - K.cast(mask, K.floatx())
+    z = y * (-999999) + x
+    return z
+
+def make_CNN1D(filter_lengths, feature_maps, emd, max_segs):
+    cnn_layers = []
+    for nb_filter, filter_length in zip(feature_maps, filter_lengths):
+        cnn = MaskCNN1D(nb_filter = nb_filter, filter_length = filter_length, name = 'cnn_%d*%d' %(nb_filter, filter_length))(emd)
+        mask_cnn = MaskMaxFilter()(cnn)
+        pooling = MaxPooling1D(pool_length = max_segs - filter_length + 1)(mask_cnn)
+        cnn_layers.append(pooling)
+
+    cnn_output = merge(inputs = cnn_layers , mode = 'concat', concat_axis = 2)
+    return Flatten()(cnn_output)

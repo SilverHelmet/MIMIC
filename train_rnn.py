@@ -14,7 +14,7 @@ import h5py
 import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
-from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding
+from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D
 
 def load_data(filepath, seg_filepath = None):
     f = h5py.File(filepath, 'r')
@@ -101,7 +101,15 @@ def define_simple_seg_rnn(setting):
     rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
 
-    if rnn_model == 'gru':
+    if rnn_model == "cnn":
+        masked = Masking(mask_value=0.)(event_input)
+        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
+            bias = False), name = "event_embedding")(masked)
+        cnn = make_CNN1D(filter_lengths = (3,4,5,6,7), feature_maps = (30, 30, 30, 30, 30), 
+                        emd = embedding, max_segs = setting['max_segs'])
+        # lazy 
+        rnn = cnn
+    elif rnn_model == 'gru':
         masked = Masking(mask_value=0)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
@@ -148,11 +156,11 @@ def define_simple_seg_rnn(setting):
         rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-    else:
-        print "error"
+
     if attention:
         print "add attention"
         rnn = SimpleAttentionRNN(rnn)
+    
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
