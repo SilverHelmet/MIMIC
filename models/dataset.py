@@ -225,7 +225,7 @@ def sample_generator(dataset, setting):
     max_seg_length = setting['max_seg_length']
     event_dim = setting['event_dim']
     rnn = setting['rnn']
-    feature_dim = setting['feature_dim']
+    feature_dim = setting.get('feature_dim', None)
     while  True:
         i = 0
         while i < nb_sample:
