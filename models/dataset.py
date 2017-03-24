@@ -227,7 +227,7 @@ def sample_generator(dataset, setting, shuffle = False):
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
     if shuffle:
-        indices = np.random.permunation(nb_sample)
+        indices = np.random.permutation(nb_sample)
     else:
         indices = np.arange(nb_sample)
     while  True:
@@ -237,7 +237,7 @@ def sample_generator(dataset, setting, shuffle = False):
             ed = min(i + batch_size, nb_sample)
             # print st, ed
             batch_indices = indices[st:ed]
-            
+
             label = labels[batch_indices]
             event = events[batch_indices]
             seg = segs[batch_indices]
