@@ -1,5 +1,5 @@
 from keras import backend as K
-from keras.layers.core import  Flatten, Lambda, Dense
+from keras.layers.core import  Flatten, Lambda, Dense, Dropout
 from keras.layers import merge, InputSpec, Layer, Convolution1D, MaxPooling1D, Merge
 from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
@@ -697,7 +697,7 @@ def mask_max(x, mask):
     z = y * (-999999) + x
     return z
 
-def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0):
+def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0, drop_rate = .0):
     cnn_layers = []
     for nb_filter, filter_length in zip(feature_maps, filter_lengths):
         cnn = MaskCNN1D(nb_filter = nb_filter, filter_length = filter_length, 
@@ -708,4 +708,9 @@ def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0):
         cnn_layers.append(pooling)
 
     cnn_output = merge(inputs = cnn_layers , mode = 'concat', concat_axis = 2)
-    return Flatten()(cnn_output)
+    flatten_cnn = Flatten()(cnn_output)
+    if drop_rate > .0:
+        return Dropout(p = drop_rate)(flatten_cnn)
+    else:
+        return flatten_cnn
+        

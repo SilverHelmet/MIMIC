@@ -213,7 +213,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
             st = ed
     return seg_fea_matrix
 
-def sample_generator(dataset, setting):
+def sample_generator(dataset, setting, shuffle = False):
     labels = dataset.labels
     features = dataset.features
     events = dataset.events
@@ -226,44 +226,51 @@ def sample_generator(dataset, setting):
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
+    if shuffle:
+        indices = np.random.permunation(nb_sample)
+    else:
+        indices = np.arange(nb_sample)
     while  True:
         i = 0
         while i < nb_sample:
             st = i
             ed = min(i + batch_size, nb_sample)
             # print st, ed
-            label = labels[st:ed]
-            event = events[st:ed]
+            batch_indices = indices[st:ed]
+            
+            label = labels[batch_indices]
+            event = events[batch_indices]
+            seg = segs[batch_indices]
             if rnn == 'attlstm' or rnn == 'attgru':
                 # output shape (nb_sample, max_segs, max_seg_length)
                 seged_event = []
-                for j in range(st, ed):
-                    split_seg = segs[j]
-                    seged_event.append(gen_seged_event_seq(events[j], split_seg, max_seg_length))                    
+                for j in range(ed - st):
+                    split_seg = seg[j]
+                    seged_event.append(gen_seged_event_seq(event[j], split_seg, max_seg_length))                    
                 seged_event = np.array(seged_event)
 
                 # output shape (nb_sample, max_segs, max_seg_length, feature_dim)
                 if disturbance:
                     seg_feature_matrixes = []
-                    for j in range(st, ed):
-                        split_seg = segs[j]
-                        seg_feature_matrixes.append(gen_seged_feature_seq(features[j], split_seg, max_seg_length, feature_dim))
+                    for j in range(ed - st):
+                        split_seg = seg[j]
+                        seg_feature_matrixes.append(gen_seged_feature_seq(features[batch_indices[j]], split_seg, max_seg_length, feature_dim))
                     seg_feature_matrixes = np.array(seg_feature_matrixes)
             else:
                 aggre_mode = setting['aggregation']
                 # output shape (nb_sample, max_segs, event_dim)
                 seged_event = []
-                for j in range(st, ed):
-                    split_seg = segs[j]
-                    seged_event.append(merge_event_by_seg(events[j], split_seg, event_dim, aggre_mode))
+                for j in range(ed - st):
+                    split_seg = seg[j]
+                    seged_event.append(merge_event_by_seg(event[j], split_seg, event_dim, aggre_mode))
                 seged_event = np.array(seged_event)
 
                 # output shape (nb_sample, max_segs, feature_dim)
                 if disturbance:
                     seg_feature_matrixes = []
-                    for j in range(st, ed):
-                        split_seg = segs[j]
-                        seg_feature_matrixes.append(merge_fea_by_seg(features[j], split_seg, feature_dim))
+                    for j in range(ed - st):
+                        split_seg = seg[j]
+                        seg_feature_matrixes.append(merge_fea_by_seg(features[batch_indices[j]], split_seg, feature_dim))
                     seg_feature_matrixes = np.array(seg_feature_matrixes)
             if disturbance:
                 yield ([seged_event, seg_feature_matrixes], label)

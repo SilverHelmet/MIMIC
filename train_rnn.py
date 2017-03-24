@@ -106,7 +106,7 @@ def define_simple_seg_rnn(setting):
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
         cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
-                        emd = embedding, max_segs = setting['max_segs'], l2_reg_cof = l2_cof)
+                        emd = embedding, max_segs = setting['max_segs'], l2_reg_cof = l2_cof, drop_rate = setting['cnn_drop_rate'])
         # lazy 
         rnn = cnn
     elif rnn_model == 'gru':
@@ -196,6 +196,7 @@ def default_setting():
         
         'rnn': 'lstm',
         'nb_epoch': 100,
+        'cnn_drop_rate': 0.5,
     }
     return setting
 
