@@ -7,14 +7,14 @@ sys.path.append(os.path.dirname(os.path.dirname(scripts_dir)))
 
  
 
-admit_text = ["NEWBORN", "URGENT", "ELECTIVE", "EMERGENCY"]
-admit = [3, 4, 5, 6]
-emerg_admit = [4, 6]
-disch = [2]
+admit_text = ["ELECTIVE", "EMERGENCY", "NEWBORN", "URGENT"]
+admit = [2, 3, 4, 5]
+emerg_admit = [3, 5]
+disch = [6]
 icu = [7]
-death = [2004]
-icu_leave = [3391]
-black_list = [2004]
+death = [2371]
+icu_leave = [3418]
+black_list = [2371]
 
 def is_admit(event):
     global admit
