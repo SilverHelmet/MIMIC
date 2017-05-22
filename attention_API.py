@@ -20,11 +20,11 @@ if __name__ == "__main__":
 
     data_e = np.array(dataset.event_mat(12))
     data_f = np.array(dataset.feature_mat(12))
-    print data_e.shape(), data_f.shape()
+    print data_e.shape, data_f.shape
     X = [np.expand_dims(data_e, 0), np.expand_dims(data_f, 0)]
     event_attention = get_event_attention(model, X)[0]
     emds = get_embedding(model, X)[0]
     outputs, states = get_RNN_result(model, X)[0]
-    print event_attention.shape(), emds.shape(), outputs.shape(), states.shape()
+    print event_attention.shape, emds.shape, outputs.shape, states.shape
 
 
