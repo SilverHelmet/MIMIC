@@ -24,7 +24,9 @@ if __name__ == "__main__":
     X = [np.expand_dims(data_e, 0), np.expand_dims(data_f, 0)]
     event_attention = get_event_attention(model, X)[0]
     emds = get_embedding(model, X)[0]
-    outputs, states = get_RNN_result(model, X)[0]
+    outputs, states = get_RNN_result(model, X)
+    outputs = outputs[0]
+    states = states[0]
     print event_attention.shape, emds.shape, outputs.shape, states.shape
 
 
