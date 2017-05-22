@@ -1,1 +1,1 @@
-THEANO_FLAGS=device=gpu0,floatX=float32 python -u train_rnn.py settings/fea_catAtt_lstm.txt settings/timeAggre.txt settings/event_temporal.txt settings/out_model.txt >& log/death_timeAggre_fea_cat_model_out.log
+THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/fea_catAtt_lstm_icu.txt settings/timeAggre_icu.txt settings/event_temporal.txt settings/out_model.txt >& log/icu_timeAggre_fea_cat_model_out.log

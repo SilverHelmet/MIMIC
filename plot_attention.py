@@ -218,15 +218,18 @@ if __name__ == "__main__":
     dataset = Dataset('sample_exper/death_sample.h5', 'sample_exper/death_seg.h5')
     print "load over"
     dataset.load()
-    
-    
-
-
 
     plt.style.use('ggplot')
     times = range(3, 3 + 3*5, 3)
-    # data_e = np.array(dataset.event_mat(12))
-    # data_f = np.array(dataset.feature_mat(12))
+    data_e = np.array(dataset.event_mat(12))
+    data_f = np.array(dataset.feature_mat(12))
+    X = [np.expand_dims(data_e, 0), np.expand_dims(data_f, 0)]
+    event_attention = get_event_attention(model, X)[0]
+    emds = get_embedding(model, X)[0]
+    outputs, states = get_RNN_result(model, X)[0]
+    print event_attention.shape(), emds.shape(), outputs.shape(), states.shape()
+
+
     # plot_temporal_attention(model, data_e, data_f, times)
     # plot_event_attention(model, data_e, data_f, [0, 10, 20], event_map)
     # for idx in range(0, 1000, 5):
@@ -238,8 +241,8 @@ if __name__ == "__main__":
         
     #     plot_event_attention(model, data_e, data_f, times, event_map, out_path)
 
-    data_e = np.array(dataset.event_mat(600))
-    data_f = np.array(dataset.feature_mat(600))
-    times = [0, 3, 6]
-    plot_event_attention(model, data_e, data_f, times, event_map)
+    # data_e = np.array(dataset.event_mat(600))
+    # data_f = np.array(dataset.feature_mat(600))
+    # times = [0, 3, 6]
+    # plot_event_attention(model, data_e, data_f, times, event_map)
     

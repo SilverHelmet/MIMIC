@@ -7,16 +7,27 @@ def load_attention_model(filepath):
     model = load_model(filepath, custom_objects = get_custom_objects())
     return model
 
+def get_RNN_result(model, x):
+    emd_out =  get_embedding(model, x)
+    mask = np.any(np.not_equal(x[0], 0.0), axis = -1)
+    # mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
+    # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
+    rnn =  model.get_layer("rnn")
+    outputs, attention, states = rnn.test_call(emd_out, mask)
+    mask = np.expand_dims(mask, axis = -1)
+    return outputs*mask, states*mask
+
+
 def get_event_attention(model, x):
     emd_out =  get_embedding(model, x)
     mask = np.any(np.not_equal(x[0], 0.0), axis = -1)
     # mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
     # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
     rnn =  model.get_layer("rnn")
-    _, attention = rnn.test_call(emd_out, mask)
+    _, attention, _ = rnn.test_call(emd_out, mask)
     mask = np.expand_dims(mask, axis = -1)
-    # mask = np.not_equal(x[0], 0.0)
     return attention * mask
+
 
 def get_event_output_at_time(model, x, time = -1):
     emd_out =  get_embedding(model, x)

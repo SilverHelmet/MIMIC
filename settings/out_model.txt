@@ -1,1 +1,1 @@
-model_out=RNNmodels/death_timeAggre_fea_catAtt.model
+model_out=RNNmodels/icu_timeAggre_fea_catAtt.model
