@@ -26,7 +26,7 @@ if __name__ == "__main__":
     emds = get_embedding(model, X)[0]
     outputs, states = get_RNN_result(model, X)
     outputs = outputs[0]
-    states = states[0]
+    states = states[0][1]
     print event_attention.shape, emds.shape, outputs.shape, states.shape
 
 

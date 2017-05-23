@@ -544,7 +544,6 @@ class EventAttentionLSTM(LSTM):
             for state, new_state in zip(states, new_states):
                 kept_states.append(np_switch(mask[i], new_state, state))
             states = kept_states
-
             successive_outputs.append(output)
             successive_states.append(states)
 
@@ -552,7 +551,7 @@ class EventAttentionLSTM(LSTM):
         outputs = outputs.transpose([1,0] + range(2, outputs.ndim))
 
         states = np.array(successive_states)
-        states = states.transpose([1,0] + range(2, states.ndim))
+        states = states.transpose([2, 1, 0] + range(3, states.ndim))
 
         self.attention = np.array(self.attention)
         self.attention = self.attention.transpose([1,0] + range(2, self.attention.ndim))
