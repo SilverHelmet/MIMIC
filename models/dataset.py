@@ -60,6 +60,9 @@ class Dataset:
         s_dataset.max_segs = self.max_segs
         return s_dataset
 
+    def label_at(self, i):
+        return self.labels[i]
+
     def event_mat(self, row):
         return np.array(gen_seged_event_seq(self.events[row], self.segs[row], self.max_seg_length))
 
