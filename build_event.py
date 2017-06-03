@@ -3,6 +3,7 @@ from select_feature import load_value_type_text, TypeFeature
 from extractor import parse_line
 import glob
 import itertools
+from tqdm import tqdm
 
 class Feature():
     def __init__(self, index, value):
@@ -229,7 +230,7 @@ def build_event(filepath, builders):
     name = ".".join(os.path.basename(filepath).split(".")[:-1])
     print "build event =", name
     outf = file(os.path.join(event_dir, name + ".tsv"), 'w')
-    for line in file(filepath):
+    for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
         line = line.strip()
         parts = parse_line(line)
         rtype = parts[2]
@@ -257,13 +258,11 @@ if __name__ == '__main__':
     event_des_file = os.path.join(result_dir, "event_des_text.tsv")
     feature_des_file = os.path.join(result_dir, "feature_des.tsv")
     builders = gen_builders(type_features, text_map, event_des_file, feature_des_file)
-    # for filepath in glob.glob(data_dir + "/*tsv"):
-    #     name = os.path.basename(filepath)
-    #     # if name in ["labevents.tsv", "datetimeevents.tsv"]:
-    #     # if filepath.find("labevents") == -1:
-    #     #     continue
-    #     build_event(filepath, builders)
-    # print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
+    for filepath in glob.glob(data_dir + "/*tsv"):
+        name = os.path.basename(filepath)
+        build_event(filepath, builders)
+    print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
+
 
     # print_event(builders, "static_data/event_des.txt")
     # print builders['labevents.51294'].feature_texts

@@ -7,3 +7,8 @@ nfeature = 954
 event dim = 3416+2(0 and 1)
 feature dim = 648 + 1 ( 0 is interval)
 nfeature = 949
+
+______________
+feature dim = 1286 + 1
+event dim = 5982 + 2
+nfeature = 1797

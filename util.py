@@ -6,6 +6,7 @@ import datetime
 import time
 import re
 import numpy as np
+import commands
 
 def connect():
     host = '162.105.146.245'
@@ -235,6 +236,10 @@ def load_setting(filepath, default_setting):
                 print "load arg %s = %s" %(key, value)
     return setting
 
+def get_nb_lines(filepath):
+    return_code, output = commands.getstatusoutput('wc -l %s' %filepath)
+    p = int(output.split(" ")[0])
+    return p
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
