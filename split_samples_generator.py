@@ -4,6 +4,7 @@ from scripts.sample_setting import Sample
 import json
 import h5py
 import numpy as np
+from tqdm import tqdm
 
 def add_padding(l, max_len, padding_value = 0):
     assert max_len >= len(l)
@@ -20,8 +21,9 @@ def s_generator(filepath, index_set):
             yield Sample.load_from_json(json.loads(line))
         
 max_feature_len = 6
-def print_to_local_generator(generator, filepath, max_len, event_map):
+def print_to_local_generator(generator, filepath, max_len, event_map, total):
     global max_feature_len
+    print "write to %s" %filepath
     f = h5py.File(filepath, 'w')
     labels = []
     events = []
@@ -32,7 +34,7 @@ def print_to_local_generator(generator, filepath, max_len, event_map):
     predicting_times = []
     label_times = []
     feature_padding = [0] * max_feature_len
-    for sample in generator:
+    for sample in tqdm(generator, total = total):
         label = sample.sample_setting.label
         predicting_time = sample.sample_setting.ed
         label_time = sample.sample_setting.label_time
@@ -132,14 +134,14 @@ if __name__ == "__main__":
     print valid_limits
     print test_limits
     # out_dir = ICU_merged_exper_dir
+    out_dir = ICU_exper_dir
     # out_dir = death_exper_dir
+    # out_dir = death_merged_exper_dir
+    # out_prefix = "death/"
 
-    out_dir = death_merged_exper_dir
-    out_prefix = "death/"
-
-    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(out_dir, "ICUIn_valid_%d.h5" %max_len), max_len, event_map)
-    print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(out_dir, "ICUIn_train_%d.h5" %max_len), max_len, event_map)
-    print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(out_dir, "ICUIn_test_%d.h5" %max_len), max_len, event_map)
+    print_to_local_generator(s_generator(sample_file, valid_idx), os.path.join(out_dir, "ICUIn_valid_%d.h5" %max_len), max_len, event_map, len(valid_idx))
+    print_to_local_generator(s_generator(sample_file, train_idx), os.path.join(out_dir, "ICUIn_train_%d.h5" %max_len), max_len, event_map, len(train_idx))
+    print_to_local_generator(s_generator(sample_file, test_idx), os.path.join(out_dir, "ICUIn_test_%d.h5" %max_len), max_len, event_map, len(test_idx))
 
         
         
