@@ -15,9 +15,9 @@ def s_generator(filepath, index_set):
     cnt = 0
     for idx, line in enumerate(file(sample_file)):
         if idx in index_set:
-            if cnt % 10000 == 0:
-                print "\t%s generator %d" %(now(), cnt)
-            cnt += 1
+            # if cnt % 10000 == 0:
+            #     print "\t%s generator %d" %(now(), cnt)
+            # cnt += 1
             yield Sample.load_from_json(json.loads(line))
         
 max_feature_len = 6
