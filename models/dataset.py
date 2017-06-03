@@ -31,6 +31,8 @@ class Dataset:
         self.labels = f['label'][:]
         self.size = len(self.labels)
         self.events = f['event'][:]
+        self.label_times = f['label_time'][:]
+        self.predicting_times = f['predicting_time'][:]
         if 'feature' in f:
             self.features = f['feature'][:]
         else:
@@ -59,6 +61,12 @@ class Dataset:
         s_dataset.max_seg_length = self.max_seg_length
         s_dataset.max_segs = self.max_segs
         return s_dataset
+
+    def label_time_at(self, i):
+        return self.label_times[i]
+    
+    def predicting_time_at(self, i):
+        return self.predicting_times[i]
 
     def label_at(self, i):
         return self.labels[i]

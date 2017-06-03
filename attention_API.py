@@ -12,12 +12,14 @@ import sys
 
 if __name__ == "__main__":
     
-    model = load_model("RNNmodels/death_timeAggre_fea_catAtt.model", custom_objects = get_custom_objects())
-    dataset = Dataset('sample_exper/death_sample.h5', 'sample_exper/death_seg.h5')
+    model = load_model("RNNmodels/icu_timeAggre_fea_catAtt.model", custom_objects = get_custom_objects())
+    # dataset = Dataset('sample_exper/death_sample.h5', 'sample_exper/death_seg.h5')
+    dataset = Dataset("ICU_exper/ICUIn_valid_1000.h5", 'ICU_exper/segs/ICUIn_valid_1000_segmode=timeAggre_maxchunk=32.h5')
     print "load over"
     dataset.load()
 
-
+    print "predicting time is %s" %dataset.predicting_time_at(12)
+    print "label time is %s" %dataset.label_time_at(12)
     data_e = np.array(dataset.event_mat(12))
     data_f = np.array(dataset.feature_mat(12))
     label = dataset.label_at(12)
