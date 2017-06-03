@@ -236,7 +236,7 @@ if __name__ == '__main__':
     text_map = load_value_type_text(os.path.join(result_dir, "value_type_text.tsv"))
     value_stat_map = load_value_type_stat(os.path.join(result_dir, "value_type_stat.tsv"))
     stat_file = os.path.join(result_dir, "sorted_stat.tsv")
-    feature_limit = 1000
+    feature_limit = 2000
     features = select_feature(stat_file, feature_limit, text_map, value_stat_map)
     write_features(features, os.path.join(result_dir, "selected_features.tsv"))
 
