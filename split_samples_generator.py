@@ -29,9 +29,13 @@ def print_to_local_generator(generator, filepath, max_len, event_map):
     features = []
     max_feature_len = 6
     sample_ids = []
+    predicting_times = []
+    label_times = []
     feature_padding = [0] * max_feature_len
     for sample in generator:
         label = sample.sample_setting.label
+        predicting_time = sample.sample_setting.ed
+        label_time = sample.sample_setting.label_time
         sid = sample.sample_setting.sample_id
         event_seq = []
         event_time_seq = []
@@ -58,12 +62,17 @@ def print_to_local_generator(generator, filepath, max_len, event_map):
         features.append(feature_seqs)
         labels.append(label)
         sample_ids.append(sid)
+        predicting_times.append(str(predicting_time))
+        label_times.append((str(label_time)))
+        
 
     f['label'] = np.array(labels)
     f['feature'] = np.array(features)
     f['event'] = np.array(events)
     f['time'] = np.array(event_times)
     f['sample_id'] = np.array(sample_ids)
+    f['predicting_time'] = predicting_times
+    f['label_time'] = label_times
     f.close()
 
 def adjust(limits, ratio):
@@ -124,6 +133,7 @@ if __name__ == "__main__":
     print test_limits
     # out_dir = ICU_merged_exper_dir
     # out_dir = death_exper_dir
+
     out_dir = death_merged_exper_dir
     out_prefix = "death/"
 

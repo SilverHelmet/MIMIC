@@ -182,6 +182,11 @@ class Sample:
     def load_label(obj):
         sample_setting = SampleSetting.load_from_json(obj['sample_setting'])
         return sample_setting.label
+
+    @staticmethod
+    def load_info(obj):
+        sample_setting = SampleSetting.load_from_json(obj['sample_setting'])
+        return sample_setting.label, sample_setting.ed, sample_setting.label_time
         
         
 
