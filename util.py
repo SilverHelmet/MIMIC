@@ -1,4 +1,4 @@
-from pg gimport DB
+from pg import DB
 from pandas import DataFrame
 import sys
 import os
