@@ -218,7 +218,7 @@ if __name__ == "__main__":
         patient_event_map = init_patient(admissions, valid_pids)
         Print("#patients = %d" %(len(patient_event_map)))
 
-        nb_files = int(commands.getoutput('ls event_2000/*tsv|wc -l'))
+        nb_files = int(commands.getoutput('ls event/*tsv|wc -l'))
         for cnt, filepath in enumerate(glob.glob(event_dir + "/*tsv"), start = 1):
             Print("loading %d/%d %s" %(cnt, nb_files, os.path.basename(filepath)))
             load_event(filepath, patient_event_map)
