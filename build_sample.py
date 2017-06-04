@@ -47,7 +47,7 @@ def build_sample(sample_setting_path, out_path, max_event_len, load_func):
         Print("#patients = %d" %(len(sample_setting_map)))
 
         sample_map = init_sample(sample_setting_map, max_event_len)
-        nb_files = int(commands.getoutput('wc -l |ls %s/*.tsv' %event_dir))
+        nb_files = int(commands.getoutput('ls %s/*.tsv|wc -l' %event_dir))
         for idx, filepath in enumerate(glob.glob(event_dir + '/*.tsv'), start = 1):
             Print("loading %d/%d %s" %(idx, nb_files, os.path.basename(filepath)))
             load_event(filepath, sample_map)
