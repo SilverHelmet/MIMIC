@@ -2,7 +2,7 @@ import sys
 import os
 from scripts_util import *
 
-
+from tqdom import tqdm 
 from util import *
 from gather_static_data import SingleAdmission
 import glob
@@ -175,7 +175,7 @@ def load_event(filepath, patient_event_map):
     print "load event from %s" %filename
     is_icu = filename == "icustays.tsv"
     cnt = 0
-    for line in file(filepath):
+    for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
         cnt += 1
         if cnt % 100000 == 0:
             print "\tcnt = %d" %cnt

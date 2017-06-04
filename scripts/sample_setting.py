@@ -394,19 +394,19 @@ def simple_count(sample_setting_map):
 
 if __name__ == "__main__":
     # generate patient settings
-    # event_seq_stat_result_path = os.path.join(event_seq_stat_dir, "event_seq_stat.result")
-    # patient_cnt_map = load(event_seq_stat_result_path)
-    # setting_map = gen_settings(patient_cnt_map)
-    # result_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
-    # write(result_path, setting_map)
+    event_seq_stat_result_path = os.path.join(event_seq_stat_dir, "event_seq_stat.result")
+    patient_cnt_map = load(event_seq_stat_result_path)
+    setting_map = gen_settings(patient_cnt_map)
+    result_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
+    write(result_path, setting_map)
 
     # load patient setting
-    # setting_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
-    # patient_setting_map = load_patient_setting(setting_path)
+    setting_path = os.path.join(event_seq_stat_dir, "patient_setting.txt")
+    patient_setting_map = load_patient_setting(setting_path)
 
     # generate icu entrance prediciton sample settings 
-    # sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt")
-    # gen_ICU_sample_setting(sample_setting_path, patient_setting_map)
+    sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt")
+    gen_ICU_sample_setting(sample_setting_path, patient_setting_map)
 
     # generate death prediction sample settings
     sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
@@ -416,8 +416,8 @@ if __name__ == "__main__":
     gen_death_sample_setting(sample_setting_path, patient_setting_map, admission_map)
 
     # load icu sample setting & count
-    # sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
-    # simple_count(sample_setting_map)
+    sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
+    simple_count(sample_setting_map)
 
     # load death sample setting & count
     sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
