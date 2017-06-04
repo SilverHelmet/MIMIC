@@ -241,6 +241,9 @@ def get_nb_lines(filepath):
     p = int(output.split(" ")[0])
     return p
 
+def Print(*l):
+    l = map(str, l)
+    print now() + "\t" + " ".join(l)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(script_dir, 'data')

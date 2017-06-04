@@ -157,10 +157,13 @@ def load_admission():
         admissions.append(admission)
     return admissions
 
-def init_patient(admissions):
+def init_patient(admissions, valid_pids = None):
     patient_map = {}
     for admission in admissions:
         pid = admission.pid
+        if valid_pids is not None and pid not in valid_pids:
+            continue
+
         if not pid in patient_map:
             patient_map[pid] = PatientEvent(pid)
         patient_map[pid].add_hospital(admission)
@@ -173,12 +176,13 @@ def init_patient(admissions):
 
 def load_event(filepath, patient_event_map):
     filename = os.path.basename(filepath)
-    print "load event from %s" %filename
     is_icu = filename == "icustays.tsv"
     for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
         parts = line.strip().split('\t')
         eid = int(parts[0])
         pid = int(parts[1])
+        if not pid in patient_event_map:
+            continue
         time = parse_time(parts[3])
         if is_icu:
             duration = float(parts[2].split(":")[1])
@@ -201,23 +205,34 @@ def load_event(filepath, patient_event_map):
 if __name__ == "__main__":
     admissions = load_admission()
     patient_event_map = init_patient(admissions)
+    pids = list(sorted(patient_event_map.keys()))
+    cnts = len(pids)
+    print "#pid = %d" %cnts
+    boundary = [0, int(cnts * 0.2),  int(cnts * 0.4), int(cnts * 0.6), int(cnts * 0.8), cnts]
+    starts = boundary[:-1]
+    ends = boundary[1:]
+    for st, ed in zip(starts, ends):
+        valid_pids = set(pids[st:ed])
+        print "-" * 50
+        Print("processing %d - %d" %(st, ed))
+        patient_event_map = init_patient(admissions, valid_pids)
+        Print("#patients = %d" %(len(patient_event_map)))
 
+        nb_files = int(commands.getoutput('ls event_2000/*tsv|wc -l'))
+        for cnt, filepath in enumerate(glob.glob(event_dir + "/*tsv"), start = 1):
+            Print("loading %d/%d %s" %(cnt, nb_files, os.path.basename(filepath)))
+            load_event(filepath, patient_event_map)
+        for pid in patient_event_map:
+            patient_event_map[pid].closeup_add_event()
 
-    nb_files = int(commands.getoutput('ls event_2000/*tsv|wc -l'))
-    for cnt, filepath in enumerate(glob.glob(event_dir + "/*tsv"), start = 1):
-        print "loading %d/%d" %(cnt, nb_files)
-        load_event(filepath, patient_event_map)
-    for pid in patient_event_map:
-        patient_event_map[pid].closeup_add_event()
-
-    writer = file(os.path.join(result_dir, "event_seq.dat"), 'w')
-    error_cnt = 0
-    for pid in sorted(patient_event_map.keys()):
-        if patient_event_map[pid].is_valid():
-            patient_event_map[pid].write(writer)
-        else:
-            error_cnt += 1
-    print "error patient cnt = %d" %error_cnt
+        writer = file(os.path.join(result_dir, "event_seq.dat"), 'r')
+        error_cnt = 0
+        for pid in sorted(patient_event_map.keys()):
+            if patient_event_map[pid].is_valid():
+                patient_event_map[pid].write(writer)
+            else:
+                error_cnt += 1
+        print "error patient cnt = %d" %error_cnt
 
         
 
