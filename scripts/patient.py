@@ -204,7 +204,7 @@ def load_event(filepath, patient_event_map):
 
 if __name__ == "__main__":
     admissions = load_admission()
-    patient_event_map = init_patient(admissions)i
+    patient_event_map = init_patient(admissions)
     pids = list(sorted(patient_event_map.keys()))
     cnts = len(pids)
     print "#pid = %d" %cnts
