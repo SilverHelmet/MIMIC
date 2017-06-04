@@ -6,7 +6,8 @@ result
 event_stat
 
 graph
-log
+/log
+/logs
 event2vec
 BOWLR_log
 
