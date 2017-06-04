@@ -7,6 +7,7 @@ from util import *
 from gather_static_data import SingleAdmission
 import glob
 import datetime
+import commands
 
 
 
@@ -201,7 +202,10 @@ if __name__ == "__main__":
     admissions = load_admission()
     patient_event_map = init_patient(admissions)
 
-    for filepath in glob.glob(event_dir + "/*tsv"):
+
+    nb_files = int(commands.getoutput('ls event_2000/*tsv|wc -l'))
+    for cnt, filepath in enumerate(glob.glob(event_dir + "/*tsv"), start = 1):
+        print "loading %d/%d" %(cnt, nb_files)
         load_event(filepath, patient_event_map)
     for pid in patient_event_map:
         patient_event_map[pid].closeup_add_event()

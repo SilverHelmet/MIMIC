@@ -4,6 +4,7 @@ from gather_from_event_seq_count import load
 import json
 from build_event import Event
 import gather_static_data
+from tqdm import tqdm 
 
 class PatientSample:
     '''
@@ -340,8 +341,9 @@ def load_patient_setting(setting_path):
     return patient_setting_map
 
 def gen_ICU_sample_setting(setting_out_path, patient_setting_map):
+    print "gen icu sample setting"
     writer = file(setting_out_path, 'w')
-    for pid in sorted(patient_setting_map.keys()):
+    for pid in tqdm(sorted(patient_setting_map.keys()), total = len(patient_setting_map)):
         sample_setting = PatientICUInSampleSetting(pid)
         sample_setting.gen_sample_setting(patient_setting_map[pid])
         obj = sample_setting.to_json()
@@ -349,8 +351,9 @@ def gen_ICU_sample_setting(setting_out_path, patient_setting_map):
     writer.close()
 
 def gen_death_sample_setting(setting_out_path, patient_setting_map, ad_map):
+    print "gen death sample setting"
     writer = file(setting_out_path, 'w')
-    for pid in sorted(patient_setting_map.keys()):
+    for pid in tqdm(sorted(patient_setting_map.keys()), total = len(patient_setting_map)):
         death_label = ad_map[pid].death
         sample_setting = PatientDeathSampleSetting(pid)
         sample_setting.gen_sample_setting(patient_setting_map[pid], death_label)
@@ -416,10 +419,10 @@ if __name__ == "__main__":
     gen_death_sample_setting(sample_setting_path, patient_setting_map, admission_map)
 
     # load icu sample setting & count
-    sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
-    simple_count(sample_setting_map)
+    # sample_setting_map = load_ICUIn_sample_setting(sample_setting_path)
+    # simple_count(sample_setting_map)
 
     # load death sample setting & count
-    sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
-    sample_setting_map = load_death_sample_setting(sample_setting_path)
-    simple_count(sample_setting_map)
+    # sample_setting_path = os.path.join(event_seq_stat_dir, "death_sample_setting.txt")
+    # sample_setting_map = load_death_sample_setting(sample_setting_path)
+    # simple_count(sample_setting_map)

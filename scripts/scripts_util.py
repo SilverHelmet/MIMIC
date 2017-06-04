@@ -13,7 +13,7 @@ emerg_admit = [3, 5]
 disch = [6]
 icu = [7]
 death = [2371]
-icu_leave = [3418]
+icu_leave = [5984]
 black_list = [2371]
 
 def is_admit(event):
