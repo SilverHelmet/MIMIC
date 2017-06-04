@@ -2,7 +2,7 @@ import sys
 import os
 from scripts_util import *
 
-from tqdom import tqdm 
+from tqdm import tqdm 
 from util import *
 from gather_static_data import SingleAdmission
 import glob
