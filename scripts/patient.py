@@ -225,7 +225,7 @@ if __name__ == "__main__":
         for pid in patient_event_map:
             patient_event_map[pid].closeup_add_event()
 
-        writer = file(os.path.join(result_dir, "event_seq.dat"), 'r')
+        writer = file(os.path.join(result_dir, "event_seq.dat"), 'a')
         error_cnt = 0
         for pid in sorted(patient_event_map.keys()):
             if patient_event_map[pid].is_valid():
