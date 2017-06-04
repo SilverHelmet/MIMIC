@@ -174,11 +174,7 @@ def load_event(filepath, patient_event_map):
     filename = os.path.basename(filepath)
     print "load event from %s" %filename
     is_icu = filename == "icustays.tsv"
-    cnt = 0
     for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
-        cnt += 1
-        if cnt % 100000 == 0:
-            print "\tcnt = %d" %cnt
         parts = line.strip().split('\t')
         eid = int(parts[0])
         pid = int(parts[1])
