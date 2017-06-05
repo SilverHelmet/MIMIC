@@ -82,7 +82,7 @@ if __name__ == "__main__":
     item_des = ItemDes()
     event_cnt = get_top_freq_event()
 
-    for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True):
+    for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True)[:10]:
         print event, event_cnt[event], item_des.get_event_des(event)
 
 
