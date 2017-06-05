@@ -62,10 +62,10 @@ if __name__ == "__main__":
     max_event_len = 5000
 
     # ICU sample
-    Print("generate ICU samples")
-    sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt") 
-    out_path = os.path.join(ICU_exper_dir, "ICU_samples_len=%d.txt" %max_event_len)
-    build_sample(sample_setting_path, out_path, max_event_len, load_ICUIn_sample_setting)
+    # Print("generate ICU samples")
+    # sample_setting_path = os.path.join(event_seq_stat_dir, "ICUIn_sample_setting.txt") 
+    # out_path = os.path.join(ICU_exper_dir, "ICU_samples_len=%d.txt" %max_event_len)
+    # build_sample(sample_setting_path, out_path, max_event_len, load_ICUIn_sample_setting)
 
 
     # death sample
