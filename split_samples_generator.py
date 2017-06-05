@@ -88,7 +88,7 @@ if __name__ == "__main__":
         python split_samples_generator.py sample_file [merge]
         split samples into train valid test with ratio (0.7 0.2 0.1)
     '''
-    max_len = 1000
+    max_len = 5000
     sample_file = sys.argv[1] 
     if len(sys.argv) >= 3:
         print "----- merge event to no text retyping event -----"
