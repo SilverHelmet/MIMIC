@@ -1,4 +1,3 @@
-import scripts_util
 import os
 import glob
 from ..util import *
