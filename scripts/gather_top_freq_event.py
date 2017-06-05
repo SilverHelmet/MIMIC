@@ -72,6 +72,8 @@ def get_top_freq_event():
         break
     return event_cnt
 
+def 
+
 
 
 
@@ -81,6 +83,6 @@ if __name__ == "__main__":
     event_cnt = get_top_freq_event()
 
     for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True):
-        print event, event_cnt[event], item_des.get_des(event)
+        print event, event_cnt[event], item_des.get_event_des(event)
 
 
