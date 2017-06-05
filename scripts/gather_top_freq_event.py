@@ -71,7 +71,6 @@ def get_top_freq_event():
     for idx, filepath in enumerate(glob.glob(data_dir + "/*tsv"), start = 1):
         Print("process %d/%d %s" %(idx, nb_files, os.path.basename(filepath)))
         load_data(filepath, event_cnt)
-        break
     return event_cnt
 
 def count_coverage(filepath, event_cnt):
@@ -93,7 +92,6 @@ def get_coverage(top_events):
     for idx, filepath in enumerate(glob.glob(data_dir + "/*tsv"), start = 1):
         Print("process %d/%d %s" %(idx, nb_files, os.path.basename(filepath)))
         count_coverage(filepath, event_cnt)
-        break
     return event_cnt
 
 
