@@ -3,7 +3,7 @@ import os
 import glob
 from ..util import *
 from tqdm import tqdm
-from extractor import parse_line
+from ..extractor import parse_line
 
 class ItemDes:
     def __init__(self):
