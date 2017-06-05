@@ -88,7 +88,7 @@ def get_coverage(top_events):
     event_cnt = {}
     for e in top_events:
         event_cnt[e] = set()
-    for idx, filepath in enumerate(glob.glob(data_dir + "/tsv"), start = 1):
+    for idx, filepath in enumerate(glob.glob(data_dir + "/*tsv"), start = 1):
         Print("process %d/%d %s" %(idx, nb_files, os.path.basename(filepath)))
         count_coverage(filepath, event_cnt)
         break
