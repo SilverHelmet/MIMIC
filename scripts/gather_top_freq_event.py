@@ -4,6 +4,8 @@ import glob
 from util import *
 from tqdm import tqdm
 from extractor import parse_line
+import json
+from event_des import column_name_map
 
 class ItemDes:
     def __init__(self):
@@ -103,14 +105,30 @@ if __name__ == "__main__":
     item_des = ItemDes()
     event_cnt = get_top_freq_event()
     top_events = []
-    for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True)[:10]:
+    for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True)[:2000]:
         print event, event_cnt[event], item_des.get_event_des(event)
         top_events.append(event)
 
 
-    event_cnt = get_coverage(top_events)
+    event_p_cnt = get_coverage(top_events)
     nb_patients = 46520
+    outf = file(os.path.join(result_dir, "top_freq_event.json"), 'w')
+    column_map = column_name_map()
     for e in top_events:
-        print e, len(event_cnt[e])
+        coverage = round((event_p_cnt[e] + 0.0)/ nb_patients, 3)
+        table = e.split('.')[0]
+        attrs = column_map.get(table, [])
+        if len(attrs) == 0: 
+            attrs = column_map.get(e, [])
+        obj = {
+            'event': e,
+            'description': item_des.get_event_des(e),
+            'table': table,
+            'attrs': attrs,
+            'frequency': event_cnt[e],
+            'coverage': coverage
+        }
+        outf.write(json.dumps(obj) + "\n")
+    outf.close()
 
 
