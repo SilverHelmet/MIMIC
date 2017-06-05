@@ -106,7 +106,7 @@ if __name__ == "__main__":
     event_cnt = get_top_freq_event()
     top_events = []
     for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True)[:2000]:
-        print event, event_cnt[event], item_des.get_event_des(event)
+        # print event, event_cnt[event], item_des.get_event_des(event)
         top_events.append(event)
 
 
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     outf = file(os.path.join(result_dir, "top_freq_event.json"), 'w')
     column_map = column_name_map()
     for e in top_events:
-        coverage = round((event_p_cnt[e] + 0.0)/ nb_patients, 3)
+        coverage = round((len(event_p_cnt[e]) + 0.0)/ nb_patients, 3)
         table = e.split('.')[0]
         attrs = column_map.get(table, [])
         if len(attrs) == 0: 
