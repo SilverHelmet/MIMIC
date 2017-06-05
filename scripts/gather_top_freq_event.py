@@ -72,7 +72,28 @@ def get_top_freq_event():
         break
     return event_cnt
 
-def 
+def count_coverage(filepath, event_cnt):
+    for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
+        p = parse_line(line)
+        
+        event = p[2]
+        if event in event_cnt:
+            pid = int(p[0].split("_")[0])
+            event_cnt[event].add(pid)
+
+def get_coverage(top_events):
+    
+    Print('get coverage')
+    nb_files = get_nb_files(data_dir + "/*tsv")
+    event_cnt = {}
+    for e in top_events:
+        event_cnt[e] = set()
+    for idx, filepath in enumerate(glob.glob(data_dir + "/tsv"), start = 1):
+        Print("process %d/%d %s" %(idx, nb_files, os.path.basename(filepath)))
+        count_coverage(filepath, event_cnt)
+        break
+    return event_cnt
+
 
 
 
@@ -81,8 +102,15 @@ if __name__ == "__main__":
     
     item_des = ItemDes()
     event_cnt = get_top_freq_event()
-
+    top_events = []
     for event in sorted(event_cnt.keys(), key = lambda x:event_cnt[x], reverse = True)[:10]:
         print event, event_cnt[event], item_des.get_event_des(event)
+        top_events.append(event)
+
+
+    event_cnt = get_coverage(top_events)
+    nb_patients = 46520
+    for e in top_events:
+        print e, len(event_cnt[e])
 
 
