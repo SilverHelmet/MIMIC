@@ -28,7 +28,7 @@ if __name__ == "__main__":
     event_attention = get_event_attention(model, X)[0]
     temporal_attention = get_temporal_attention(model, X)[0]
     print "temporal attention shape", temporal_attention.shape
-    emds = get_embedd1ing(model, X)[0]
+    emds = get_embedding(model, X)[0]
     outputs, states = get_RNN_result(model, X)
     outputs = outputs[0]
     states = states[0][1]
