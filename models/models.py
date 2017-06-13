@@ -467,9 +467,6 @@ class EventAttentionLSTM(LSTM):
         att = att * mask
         return att
 
-
-        
-
     def test_process(self, x, output):
         '''
             args:
@@ -504,10 +501,10 @@ class EventAttentionLSTM(LSTM):
         z2 = z[:, 2 * self.output_dim: 3 * self.output_dim]
         z3 = z[:, 3 * self.output_dim:]
 
-        i = np_sigmoid(z0)
-        f = np_sigmoid(z1)
+        i = np_hard_sigmoid(z0)
+        f = np_hard_sigmoid(z1)
         c = f * c_tm1 + i * np_sigmoid(z2)
-        o = np_sigmoid(z3)
+        o = np_hard_sigmoid(z3)
      
 
         h = o * np_sigmoid(c)
@@ -663,6 +660,9 @@ def np_switch(condition, x1, x2):
 
 def np_sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
+
+def np_hard_sigmoid(x):
+    return np.clip(x * 0.2 + 0.5, 0, 1)
 
 def np_softmax(x):
     x = x - np.max(x, axis = 1, keepdims = True)
