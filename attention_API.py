@@ -42,4 +42,6 @@ if __name__ == "__main__":
 
     print "prediction", model.predict(X)
 
+    print "predict of all outputs", score_of_outputs(model, np.dot(temporal_attention, outputs))
+
 
