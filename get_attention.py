@@ -4,7 +4,7 @@ from keras import backend as K
 import numpy as np
 
 def sigmoid(x):                                        
-    return 1 / (1 + np.exp(-x)))
+    return 1 / (1 + np.exp(-x))
 
 def load_attention_model(filepath):
     model = load_model(filepath, custom_objects = get_custom_objects())
