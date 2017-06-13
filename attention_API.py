@@ -38,4 +38,6 @@ if __name__ == "__main__":
     print "output score", scores.shape
     print scores
 
+    print "prediction", model.predict(X)
+
 
