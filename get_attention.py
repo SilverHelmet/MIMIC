@@ -10,6 +10,10 @@ def load_attention_model(filepath):
     model = load_model(filepath, custom_objects = get_custom_objects())
     return model
 
+def get_mask(x):
+    mask  = np.any(np.not_equal(x[0], 0.0), axis = -1)
+    return mask
+
 def get_RNN_result(model, x):
     emd_out =  get_embedding(model, x)
     mask = np.any(np.not_equal(x[0], 0.0), axis = -1)
