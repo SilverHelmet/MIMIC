@@ -21,8 +21,9 @@ def get_RNN_result(model, x):
     # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
     rnn =  model.get_layer("rnn")
     outputs, attention, states = rnn.test_call(emd_out, mask)
-    mask = np.expand_dims(mask, axis = -1)
-    return outputs*mask, states*mask
+    return outputs, states
+    # mask = np.expand_dims(mask, axis = -1)
+    # return outputs*mask, states*mask
 
 def score_of_outputs(model, outputs):
     layer = model.get_layer(name = 'prediction')
