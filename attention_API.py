@@ -18,11 +18,11 @@ if __name__ == "__main__":
     print "load over"
     dataset.load()
 
-    print "predicting time is %s" %dataset.predicting_time_at(12)
-    print "label time is %s" %dataset.label_time_at(12)
-    data_e = np.array(dataset.event_mat(12))
-    data_f = np.array(dataset.feature_mat(12))
-    label = dataset.label_at(12)
+    print "predicting time is %s" %dataset.predicting_time_at(15)
+    print "label time is %s" %dataset.label_time_at(15)
+    data_e = np.array(dataset.event_mat(15))
+    data_f = np.array(dataset.feature_mat(15))
+    label = dataset.label_at(15)
     print 'label is %d' %label
     print data_e.shape, data_f.shape
     X = [np.expand_dims(data_e, 0), np.expand_dims(data_f, 0)]
