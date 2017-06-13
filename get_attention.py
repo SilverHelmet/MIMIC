@@ -3,6 +3,9 @@ from models.models import get_custom_objects
 from keras import backend as K
 import numpy as np
 
+def sigmoid(x):                                        
+    return 1 / (1 + np.exp(-x)))
+
 def load_attention_model(filepath):
     model = load_model(filepath, custom_objects = get_custom_objects())
     return model
@@ -16,6 +19,11 @@ def get_RNN_result(model, x):
     outputs, attention, states = rnn.test_call(emd_out, mask)
     mask = np.expand_dims(mask, axis = -1)
     return outputs*mask, states*mask
+
+def score_of_outputs(model, outputs):
+    layer = model.get_layer(name = 'prediction')
+    W, b = layer.get_weights()
+    return sigmoid(np.dot(outputs, W) + b)
 
 
 def get_event_attention(model, x):

@@ -23,6 +23,7 @@ if __name__ == "__main__":
     data_e = np.array(dataset.event_mat(12))
     data_f = np.array(dataset.feature_mat(12))
     label = dataset.label_at(12)
+    print 'label is %d' %label
     print data_e.shape, data_f.shape
     X = [np.expand_dims(data_e, 0), np.expand_dims(data_f, 0)]
     event_attention = get_event_attention(model, X)[0]
@@ -33,5 +34,8 @@ if __name__ == "__main__":
     outputs = outputs[0]
     states = states[0][1]
     print event_attention.shape, emds.shape, outputs.shape, states.shape
+    scores = score_of_outputs(model, outputs)
+    print "output score", scores.shape
+    print scores
 
 
