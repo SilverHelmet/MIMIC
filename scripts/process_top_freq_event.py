@@ -32,7 +32,7 @@ def process(top_evnt_filepath, out_dir):
     
     for events in table2events.values():
         add_rank_attr(events, 'frequency', 'frequency-rank-table')
-        add_rank_attr(events, 'coverage', 'coverage-rank-all')
+        add_rank_attr(events, 'coverage', 'coverage-rank-table')
     
     for table, events in table2events.iteritems():
         outf = file(os.path.join(out_dir, 'top_events_in_%s' %table), 'w')
