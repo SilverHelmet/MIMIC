@@ -20,7 +20,7 @@ def get_RNN_result(model, x):
     # mask = np.any(np.not_equal(emd_out, 0.0), axis=-1)
     # mask = np.any(np.not_equal(mask, 0.0), axis=-1)
     rnn =  model.get_layer("rnn")
-    outputs, attention, states = rnn.test_call(emd_out, mask)
+    outputs, attention, states = rnn.test_call(emd_out, mask)l
     mask = np.expand_dims(mask, axis = -1)
     return outputs*mask, states*mask
 
