@@ -11,7 +11,7 @@ def build_feature_maps(feature_stat):
             continue
         for value in sorted(values):
             table_feature_value = table_feature + "#" + value
-            feature_map[table_feature_value] = len(feature_maps)
+            feature_map[table_feature_value] = len(feature_map)
     return feature_map
 
 
