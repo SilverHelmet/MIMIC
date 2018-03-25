@@ -156,6 +156,18 @@ def load_admission():
         admissions.append(admission)
     return admissions
 
+def load_admission_map():
+    admission_map = {}
+    single_admission_path = os.path.join(static_data_dir, "single_admission.tsv")
+    for line in file(single_admission_path):
+        p = line.split('\t')
+        
+        obj_line = "\t".join(p[1:])
+        admission = SingleAdmission.load_from_line(obj_line)
+        hid = int(p[0])
+        admission_map[hid] = admission
+    return admission_map
+
 def init_patient(admissions):
     patient_map = {}
     for admission in admissions:
