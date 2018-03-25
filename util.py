@@ -9,7 +9,7 @@ import numpy as np
 import commands
 
 def connect():
-    host = '162.105.146.245'
+    host = '162.105.146.246'
     host = 'localhost'
     schema = 'mimiciii'
     db = DB(host = host, user = 'mimic', passwd = 'mimic')
