@@ -18,7 +18,7 @@ def build_feature_maps(feature_stat):
 if __name__ == "__main__":
     feature_stat = stat_static_feature()
     feature_map = build_feature_maps(feature_stat)
-    outf = file(os.path.join(static_data_dir, 'static_feature_map.tsv'))
+    outf = file(os.path.join(static_data_dir, 'static_feature_map.tsv'), 'w')
     for key in sorted(feature_map.keys(), key = lambda x: feature_map[x]):
         outf.write("%s\t%d\n" %(key, feature_map[key]))
     outf.close()
