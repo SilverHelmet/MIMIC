@@ -24,6 +24,7 @@ death_merged_exper
 baseline/retainData
 sample_exper
 RNNmodels
+static_data
 
 # backup
 result_backup
