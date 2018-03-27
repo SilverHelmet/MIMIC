@@ -24,7 +24,7 @@ def load_sample_info(filepath):
             sid = setting['sample_id']
             hid = setting['hid']
             st = parse_time(setting['st'])
-            sample_info_map[sid] = {'pid': pid, hid': hid, 'st': st}
+            sample_info_map[sid] = {'pid': pid, 'hid': hid, 'st': st}
     return sample_info_map
 
 

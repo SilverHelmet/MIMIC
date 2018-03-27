@@ -192,7 +192,6 @@ class Sample:
         return sample_setting.label, sample_setting.ed, sample_setting.label_time
         
         
-
 class SampleSetting:
     '''
         label: 1 means enter icu, 0 means not 

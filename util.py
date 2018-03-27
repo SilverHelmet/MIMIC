@@ -273,6 +273,8 @@ graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
 
 if __name__ == "__main__":
-    print datetime.datetime.min 
+    st = parse_time("2101-10-20 19:08:00")
+    dob = parse_time("2025-04-11 00:00:00")
+    print st - dob
 
     

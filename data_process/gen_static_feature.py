@@ -1,8 +1,10 @@
 import os
-from util import Print, event_seq_stat_dir, static_data_dir, parse_time
+from util import Print, event_seq_stat_dir, static_data_dir, parse_time, death_exper_dir, ICU_exper_dir
 from .data_util import load_feature_map, load_sample_info
 import glob
 import json
+import h5py
+import numpy as np
 
 class StaticFeature:
     def __init__(self, feature_map, feature_size, base_dir):
@@ -38,36 +40,65 @@ class StaticFeature:
                 info_map[key] = {}
             info = info_map[key]
             for name in obj:
-                if not name in self.feature_name_set:
+                feature_name = table + '#' + name
+                if not feature_name in self.feature_name_set:
                     continue
-                if obj[name] != ""
-                    info[table + "#" + name] = obj[name]
+                if obj[name] != "":
+                    info[feature_name] = obj[name]
 
     def get_static_feature(self, info, vec, sample_info):
-
+        print info
         for name in info:
-            value = info[value]
+            value = info[name]
             if name == 'patients#dob':
                 idx = self.feature_map[name]
-                x = sample_info['st'] - 
+                x = (sample_info['st'] - parse_time(value)).days / 365.0
+                if x > 90:
+                    x = 90
+                x /= 90.0
             else:
-                idx = self.feature_map[name + "#" + value]
+                name_value = name + "#" + value
+                if name_value in self.feature_map:
+                    idx = self.feature_map[name_value]
+                else:
+                    idx = -1
                 x = 1 
-            
-            
-            feature = name + "#" + value
+            if idx >= 0:
+                print "%s = %s, %d = %f" %(name, value, idx, x)
+                vec[idx] = x
+
 
     def gen_feature_of_sample(self, sample_info):
         vec = [0] * self.feature_size
+        pid = sample_info['pid']
+        hid = sample_info['hid']
         self.get_static_feature(self.p_info_map[pid], vec, sample_info)
         self.get_static_feature(self.h_info_map[hid], vec, sample_info)
         return vec
+    
+def generate_static_feature(samples_h5, sample_info_map, static_feature):
+    f = h5py.File(samples_h5)
+    sample_ids = f['sample_id'][:]
+    vecs = []
+    for sid in sample_ids:
+        info = sample_info_map[sid]
+        vec = static_feature.gen_feature_of_sample(info)
+        vecs.append(vec)
+    f.cloes()
+
+    outpath = os.path.dirname(samples_h5) + os.path.basename(samples_h5).split('.') + "_static_" + '.h5'
+    outf = h5py.File(outpath, 'w')
+    outf['static'] = vecs
+    outf.close()
+
+
 
 if __name__ == "__main__":
     death_sample_setting_path = os.path.join(event_seq_stat_dir, 'death_sample_setting.txt')
     icu_sample_setting_path = os.path.join(event_seq_stat_dir, 'ICUIn_sample_setting.txt')
 
     sample_setting_path = death_sample_setting_path
+    exper_dir = death_exper_dir
 
     feature_map, n_features = load_feature_map()
     sample_info_map = load_sample_info(sample_setting_path)
@@ -75,12 +106,6 @@ if __name__ == "__main__":
     static_feature = StaticFeature(feature_map, n_features, os.path.join(static_data_dir, 'static_feature'))
     static_feature.load()
 
-    sample_info = {
-        'pid': 2,
-        'hid': 163353,
-        'st': parse_time('2138-07-17 19:04:00')
-    }
-
-    static_feature.gen_feature_of_sample(sample_info)
-
+    generate_static_feature(exper_dir + 'death_valid_1000.h5', sample_info_map, static_feature)
+    
 
