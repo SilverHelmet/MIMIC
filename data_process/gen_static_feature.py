@@ -108,6 +108,6 @@ if __name__ == "__main__":
     static_feature = StaticFeature(feature_map, n_features, os.path.join(static_data_dir, 'static_feature'))
     static_feature.load()
 
-    generate_static_feature(exper_dir + 'death_valid_1000.h5', sample_info_map, static_feature)
+    generate_static_feature(os.path.join(exper_dir, 'death_valid_1000.h5'), sample_info_map, static_feature)
     
 
