@@ -48,7 +48,6 @@ class StaticFeature:
                     info[feature_name] = obj[name]
 
     def get_static_feature(self, info, vec, sample_info):
-        print info
         for name in info:
             value = info[name]
             if name == 'patients#dob':
