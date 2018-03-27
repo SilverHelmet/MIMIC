@@ -118,12 +118,12 @@ if __name__ == "__main__":
     static_feature.load()
 
     dataset_info_pairs = [
-        os.path.join(death_exper_dir, 'death_train_1000.h5'), death_sample_info_map,
-        os.path.join(death_exper_dir, 'death_valid_1000.h5'), death_sample_info_map,
-        os.path.join(death_exper_dir, 'death_test_1000.h5'), death_sample_info_map,
-        os.path.join(ICU_exper_dir, 'ICUIn_train_1000.h5'), icu_sample_info_map,
-        os.path.join(ICU_exper_dir, 'ICUIn_valid_1000.h5'), icu_sample_info_map,
-        os.path.join(ICU_exper_dir, 'ICUIn_test_1000.h5'), icu_sample_info_map,
+        (os.path.join(death_exper_dir, 'death_train_1000.h5'), death_sample_info_map),
+        (os.path.join(death_exper_dir, 'death_valid_1000.h5'), death_sample_info_map),
+        (os.path.join(death_exper_dir, 'death_test_1000.h5'), death_sample_info_map),
+        (os.path.join(ICU_exper_dir, 'ICUIn_train_1000.h5'), icu_sample_info_map),
+        (os.path.join(ICU_exper_dir, 'ICUIn_valid_1000.h5'), icu_sample_info_map),
+        (os.path.join(ICU_exper_dir, 'ICUIn_test_1000.h5'), icu_sample_info_map),
     ]
 
     for dataset, sample_info_map in dataset_info_pairs:
