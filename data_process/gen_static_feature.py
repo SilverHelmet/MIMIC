@@ -86,7 +86,7 @@ def generate_static_feature(samples_h5, sample_info_map, static_feature):
         vecs.append(vec)
     f.close()
 
-    outpath = os.path.dirname(samples_h5) + os.path.basename(samples_h5).split('.') + "_static_" + '.h5'
+    outpath = os.path.dirname(samples_h5) + '/' +  os.path.basename(samples_h5).split('.')[0] + "_static_" + '.h5'
     outf = h5py.File(outpath, 'w')
     outf['static'] = vecs
     outf.close()
