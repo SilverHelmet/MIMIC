@@ -5,6 +5,7 @@ import glob
 import json
 import h5py
 import numpy as np
+from tqdm import tqdm
 
 class StaticFeature:
     def __init__(self, feature_map, feature_size, base_dir):
@@ -77,10 +78,11 @@ class StaticFeature:
         return vec
     
 def generate_static_feature(samples_h5, sample_info_map, static_feature):
+    Print('generate static feature of [%s]' %(os.path.basename(samples_h5)))
     f = h5py.File(samples_h5)
     sample_ids = f['sample_id'][:]
     vecs = []
-    for sid in sample_ids:
+    for sid in tqdm(sample_ids, total = len(sample_ids)):
         info = sample_info_map[sid]
         vec = static_feature.gen_feature_of_sample(info)
         vecs.append(vec)
