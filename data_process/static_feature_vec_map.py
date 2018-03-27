@@ -4,6 +4,7 @@ import os
 
 def build_feature_maps(feature_stat):
     feature_map = {}
+    feature_map['patients#dob'] = 0
     for table_feature in feature_stat.dict:
         values = feature_stat.dict[table_feature]
         size = len(values)
