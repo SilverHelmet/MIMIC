@@ -8,7 +8,7 @@ def build_feature_maps(feature_stat):
     for table_feature in feature_stat.dict:
         values = feature_stat.dict[table_feature]
         size = len(values)
-        if size > 3000:
+        if size > 1000:
             continue
         for value in sorted(values):
             table_feature_value = table_feature + "#" + value
