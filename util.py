@@ -201,11 +201,6 @@ def load_items(filepath):
         items[code] = des
     return items
 
-        
-
-
-    
-
 def load_setting(filepath, default_setting):
     setting = default_setting if default_setting else {}
 
@@ -251,6 +246,11 @@ def get_nb_files(pattern):
 def Print(*l):
     l = map(str, l)
     print now() + "\t" + " ".join(l)
+
+def add_to_cnt_dict(d, key):
+    if not key in d:
+        d[key] = 0
+    d[key] += 1
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(script_dir, 'data')

@@ -47,7 +47,7 @@ class StaticFeature:
                 if obj[name] != "":
                     info[feature_name] = obj[name]
 
-    def get_static_feature(self, info, vec, sample_info):
+    def get_static_feature(self, info, vec, sample_info, sparse):
         for name in info:
             value = info[name]
             if name == 'patients#dob':
@@ -64,15 +64,27 @@ class StaticFeature:
                     idx = -1
                 x = 1 
             if idx >= 0:
-                vec[idx] = x
+                if sparse:
+                    vec.append(idx)
+                    vec.append(x)
+                else:
+                    vec[idx] = x
 
 
     def gen_feature_of_sample(self, sample_info):
         vec = [0] * self.feature_size
         pid = sample_info['pid']
         hid = sample_info['hid']
-        self.get_static_feature(self.p_info_map[pid], vec, sample_info)
-        self.get_static_feature(self.h_info_map[hid], vec, sample_info)
+        self.get_static_feature(self.p_info_map[pid], vec, sample_info, False)
+        self.get_static_feature(self.h_info_map[hid], vec, sample_info, False)
+        return vec
+
+    def gen_sparse_feature_of_sample(self, sample_info):
+        vec = []
+        pid = sample_info['pid']
+        hid = sample_info['hid']
+        self.get_static_feature(self.p_info_map[pid], vec, sample_info, True)
+        self.get_static_feature(self.h_info_map[hid], vec, sample_info, True)
         return vec
     
 def generate_static_feature(samples_h5, sample_info_map, static_feature):
@@ -82,15 +94,13 @@ def generate_static_feature(samples_h5, sample_info_map, static_feature):
     vecs = []
     for sid in tqdm(sample_ids, total = len(sample_ids)):
         info = sample_info_map[sid]
-        vec = static_feature.gen_feature_of_sample(info)
+        vec = static_feature.gen_sparse_feature_of_sample(info)
         vecs.append(vec)
     f.close()
 
-    outpath = os.path.dirname(samples_h5) + '/' +  os.path.basename(samples_h5).split('.')[0] + "_static_" + '.h5'
-    Print('write static to [%s]' %os.path.basename(outpath))
-    outf = h5py.File(outpath, 'w')
-    outf['static'] = vecs
-    outf.close()
+    outpath = os.path.dirname(samples_h5) + '/' +  os.path.basename(samples_h5).split('.')[0] + "_static"
+    Print('write static feature to [%s]' %os.path.basename(outpath))
+    np.save(outpath, np.array(vecs))
 
 
 
@@ -99,14 +109,25 @@ if __name__ == "__main__":
     icu_sample_setting_path = os.path.join(event_seq_stat_dir, 'ICUIn_sample_setting.txt')
 
     sample_setting_path = death_sample_setting_path
-    exper_dir = death_exper_dir
 
     feature_map, n_features = load_feature_map()
-    sample_info_map = load_sample_info(sample_setting_path)
+    death_sample_info_map = load_sample_info(death_sample_setting_path)
+    icu_sample_info_map = load_sample_info(icu_sample_setting_path)
 
     static_feature = StaticFeature(feature_map, n_features, os.path.join(static_data_dir, 'static_feature'))
     static_feature.load()
 
-    generate_static_feature(os.path.join(exper_dir, 'death_valid_1000.h5'), sample_info_map, static_feature)
+    dataset_info_pairs = [
+        os.path.join(death_exper_dir, 'death_train_1000.h5'), death_sample_info_map,
+        os.path.join(death_exper_dir, 'death_valid_1000.h5'), death_sample_info_map,
+        os.path.join(death_exper_dir, 'death_test_1000.h5'), death_sample_info_map,
+        os.path.join(ICU_exper_dir, 'ICUIn_train_1000.h5'), icu_sample_info_map,
+        os.path.join(ICU_exper_dir, 'ICUIn_valid_1000.h5'), icu_sample_info_map,
+        os.path.join(ICU_exper_dir, 'ICUIn_test_1000.h5'), icu_sample_info_map,
+    ]
+
+    for dataset, sample_info_map in dataset_info_pairs:
+        generate_static_feature(dataset, death_sample_info_map, static_feature)
+
     
 
