@@ -113,6 +113,7 @@ if __name__ == "__main__":
     feature_map, n_features = load_feature_map()
     death_sample_info_map = load_sample_info(death_sample_setting_path)
     icu_sample_info_map = load_sample_info(icu_sample_setting_path)
+    print icu_sample_info_map[403]
 
     static_feature = StaticFeature(feature_map, n_features, os.path.join(static_data_dir, 'static_feature'))
     static_feature.load()
