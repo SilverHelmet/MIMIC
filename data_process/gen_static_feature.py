@@ -64,7 +64,6 @@ class StaticFeature:
                     idx = -1
                 x = 1 
             if idx >= 0:
-                print "%s = %s, %d = %f" %(name, value, idx, x)
                 vec[idx] = x
 
 
@@ -85,7 +84,7 @@ def generate_static_feature(samples_h5, sample_info_map, static_feature):
         info = sample_info_map[sid]
         vec = static_feature.gen_feature_of_sample(info)
         vecs.append(vec)
-    f.cloes()
+    f.close()
 
     outpath = os.path.dirname(samples_h5) + os.path.basename(samples_h5).split('.') + "_static_" + '.h5'
     outf = h5py.File(outpath, 'w')
