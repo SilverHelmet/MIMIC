@@ -96,7 +96,7 @@ def define_simple_seg_rnn(setting):
     u_reg = l2(l2_cof)
     
     event_input = make_input(setting)
-    inputs = event_input
+    inputs = [event_input]
     attention = setting["attention"]
     rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
