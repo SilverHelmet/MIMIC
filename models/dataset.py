@@ -58,7 +58,8 @@ class Dataset:
 
             Print('load static feature from [%s]' %static_feature_path)
             self.static_features = np.load(static_feature_path)
-
+        else:
+            self.static_features = np.zeros((1,1))
 
     def sample(self, sample_list = None):
         if sample_list is None:
@@ -235,6 +236,18 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
             st = ed
     return seg_fea_matrix
 
+def parse_sparse_static_feature(static_feature, size):
+    vec = np.zeros((size, ))
+    i = 0
+    length = len(static_feature)
+    while i < length:
+        idx = static_feature[i]
+        value = static_feature[i+1]
+        vec[idx] += value
+        i += 2
+    return vec
+
+
 def sample_generator(dataset, setting, shuffle = False):
     labels = dataset.labels
     features = dataset.features
@@ -248,6 +261,10 @@ def sample_generator(dataset, setting, shuffle = False):
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
+
+    static_features = dataset.static_features
+    use_static_feature = setting['static_feature']
+    static_feature_size = setting.get('static_feature_size', 0)
     if shuffle:
         indices = np.random.permutation(nb_sample)
     else:
@@ -294,10 +311,23 @@ def sample_generator(dataset, setting, shuffle = False):
                         split_seg = seg[j]
                         seg_feature_matrixes.append(merge_fea_by_seg(features[batch_indices[j]], split_seg, feature_dim))
                     seg_feature_matrixes = np.array(seg_feature_matrixes)
+
+            if use_static_feature:
+                static_feature_mat = []
+                for j in range(ed - st):
+                    static_feature = static_features[batch_indices[j]]
+                    static_feature_mat.append(parse_sparse_static_feature(static_feature, static_feature_size))
+
+            inputs = [seged_event]
             if disturbance:
-                yield ([seged_event, seg_feature_matrixes], label)
-            else:
-                yield (seged_event, label)
+                inputs.append(seg_feature_matrixes)
+            if use_static_feature:
+                inputs.append(static_feature_mat)
+
+            if len(inputs) == 1:
+                inputs = inputs[0]
+                
+            yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:
                 i = 0

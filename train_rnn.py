@@ -160,8 +160,16 @@ def define_simple_seg_rnn(setting):
     if attention:
         print "add attention"
         rnn = SimpleAttentionRNN(rnn)
+
+    if setting['static_feature']:
+        static_feature_input = Input(shape = (setting['static_feature_size'], ), name = 'static feature input')
+        inputs.append(static_feature_input)
+        linear_features = merge(inputs = [rnn, static_feature_input], mode = 'concat', name = 'rnn_and_staticfeature')
+        print "add static feature with size = %d" %(setting['static_feature_size'])
+    else:
+        linear_features = rnn
     
-    pred = Dense(1, activation = "sigmoid", name = 'prediction')(rnn)
+    pred = Dense(1, activation = "sigmoid", name = 'prediction')(linear_features)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
@@ -231,9 +239,11 @@ if __name__ == '__main__':
             valid_seg_file = setting['valid_seg_file']
             test_seg_file = setting["test_seg_file"]
         else:
-            train_seg_file = gen_fix_segs.infer_path(train_file, seg_mode)
-            valid_seg_file = gen_fix_segs.infer_path(valid_file, seg_mode)
-            test_seg_file = gen_fix_segs.infer_path(test_file, seg_mode)
+            # train_seg_file = gen_fix_segs.infer_path(train_file, seg_mode)
+            # valid_seg_file = gen_fix_segs.infer_path(valid_file, seg_mode)
+            # test_seg_file = gen_fix_segs.infer_path(test_file, seg_mode)
+            Print('error in seg_mode')
+            sys.exit()
 
         
         print "train seg file = [%s]" %train_seg_file
@@ -242,6 +252,8 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:
             dataset.load(load_static_feature = setting['static_feature'])
+
+
         setting['event_dim'] = int(datasets[0].events.max() + 1)
         print "get event_dim from dateset as %d" %setting['event_dim']
         max_segs = datasets[0].segs.shape[1]
@@ -307,3 +319,8 @@ if __name__ == '__main__':
     print "end trainning"
 
 
+
+for feature in features:
+    for idx, x in enumerate(feature):
+        if idx % 2 == 0:
+            idxs.add(x)

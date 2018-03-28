@@ -1,0 +1,3 @@
+# use static feature
+static_feature=True
+static_feature_size=1145
