@@ -26,7 +26,7 @@ class Dataset:
             datasets.append(Dataset(file, seg))
         return tuple(datasets)
 
-    def load(self, load_time = False):
+    def load(self, load_time = False, load_static_feature = False):
         f = h5py.File(self.dataset_file, 'r')
         self.labels = f['label'][:]
         self.size = len(self.labels)
@@ -48,6 +48,19 @@ class Dataset:
             self.max_segs = f['max_segs'].value
             self.max_seg_length = f['max_seg_length'].value
             f.close()
+        
+        # load static feature
+        if load_static_feature:
+            base_dir = os.path.dirname(self.dataset_file)
+            last_dir = os.path.dirname(last_dir)
+            last_dir = last_dir.repalce("_merged_", "")
+            base_dir = os.path.join(os.path.dirname(base_dir), last_dir)
+            static_filename = os.path.basename(self.dataset_file).replace('.h5', '_static.npy')
+            static_feature_path = os.path.join(base_dir, static_filename)
+
+            Print('load static feature from [%s]' %static_feature_path)
+            self.static_features = np.load(static_feature_path)
+
 
     def sample(self, sample_list = None):
         if sample_list is None:
@@ -289,4 +302,9 @@ def sample_generator(dataset, setting, shuffle = False):
                 yield (seged_event, label)
             i += batch_size 
             if i >= nb_sample:
-                i = 0           
+                i = 0
+
+
+if __name__ == "__main__":
+    dataset = Dataset('death_merged_exper/death_valid_1000.h5')
+    dataset.load(load_static_feature = True)

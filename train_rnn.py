@@ -185,6 +185,7 @@ def default_setting():
         'disturbance': False,   # add feature disturbance
         'segment_flag': True,  # split event seq to event segment
         'aggregation': 'sum',    # only useful when segment_flag is True
+        'static_feature': False,
 
         'embedding_dim': 128, 
         'hidden_dim': 128,
@@ -240,7 +241,7 @@ if __name__ == '__main__':
         print "test seg file = [%s]" %test_seg_file
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         for dataset in datasets:
-            dataset.load()
+            dataset.load(load_static_feature = setting['static_feature'])
         setting['event_dim'] = int(datasets[0].events.max() + 1)
         print "get event_dim from dateset as %d" %setting['event_dim']
         max_segs = datasets[0].segs.shape[1]
