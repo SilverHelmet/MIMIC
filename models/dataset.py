@@ -317,6 +317,7 @@ def sample_generator(dataset, setting, shuffle = False):
                 for j in range(ed - st):
                     static_feature = static_features[batch_indices[j]]
                     static_feature_mat.append(parse_sparse_static_feature(static_feature, static_feature_size))
+                    static_feature_mat = np.array(static_feature_mat)
 
             inputs = [seged_event]
             if disturbance:
@@ -326,7 +327,6 @@ def sample_generator(dataset, setting, shuffle = False):
 
             if len(inputs) == 1:
                 inputs = inputs[0]
-                
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:

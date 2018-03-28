@@ -169,6 +169,8 @@ def define_simple_seg_rnn(setting):
     else:
         linear_features = rnn
     
+    if len(inputs) == 0:
+        inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction')(linear_features)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
