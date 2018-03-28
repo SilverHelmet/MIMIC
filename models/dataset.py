@@ -52,7 +52,7 @@ class Dataset:
         # load static feature
         if load_static_feature:
             base_dir = os.path.dirname(self.dataset_file)
-            last_dir = os.path.dirname(last_dir)
+            last_dir = os.path.dirname(base_dir)
             last_dir = last_dir.repalce("_merged_", "")
             base_dir = os.path.join(os.path.dirname(base_dir), last_dir)
             static_filename = os.path.basename(self.dataset_file).replace('.h5', '_static.npy')
