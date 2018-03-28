@@ -320,9 +320,3 @@ if __name__ == '__main__':
         weights = new_weights
     print "end trainning"
 
-
-
-for feature in features:
-    for idx, x in enumerate(feature):
-        if idx % 2 == 0:
-            idxs.add(x)
