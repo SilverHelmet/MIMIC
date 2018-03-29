@@ -163,7 +163,7 @@ def define_simple_seg_rnn(setting):
 
     if setting['static_feature']:
         static_feature_input = Input(shape = (setting['static_feature_size'], ), name = 'static feature input')
-        static_feature = Dense(128, activation = "tanh", name = 'W', W_regularizer = w_reg, b_regularizer = b_reg)(static_feature_input)
+        static_feature = Dense(128, activation = "tanh", name = 'W', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(static_feature_input)
         inputs.append(static_feature_input)
         linear_features = merge(inputs = [rnn, static_feature], mode = 'concat', name = 'rnn_and_staticfeature')
         print "add static feature with size = %d" %(setting['static_feature_size'])
@@ -172,7 +172,7 @@ def define_simple_seg_rnn(setting):
     
     if len(inputs) == 0:
         inputs = inputs[0]
-    pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = w_reg, b_regularizer = b_reg)(linear_features)
+    pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
