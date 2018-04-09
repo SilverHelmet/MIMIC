@@ -117,7 +117,7 @@ def define_simple_seg_rnn(setting):
             feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
-        rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
+        rnn = GRU(hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "lstm":
@@ -129,7 +129,7 @@ def define_simple_seg_rnn(setting):
             feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
-        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+        rnn = LSTM(hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "attgru":
@@ -172,7 +172,7 @@ def define_simple_seg_rnn(setting):
     if len(inputs) == 0:
         inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
-    model = Model(input = inputs, output = pred)
+    model = Model(inputs = inputs, outputs = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
     model.compile(optimizer = opt,
