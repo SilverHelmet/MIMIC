@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers.core import Activation, Dense, Masking, Merge, TimeDistributedDense
+from keras.layers.core import Activation, Dense, Masking, TimeDistributedDense
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
