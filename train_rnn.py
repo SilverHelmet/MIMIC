@@ -5,7 +5,7 @@ from keras.layers.recurrent import LSTM, SimpleRNN, GRU
 from keras.layers import Input, merge, TimeDistributed
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
-from keras.regularizers import l2, activity_l2
+from keras.regularizers import l2
 from keras.optimizers import SGD, Adam 
 from models.dataset import Dataset, sample_generator, print_eval
 import numpy as np
