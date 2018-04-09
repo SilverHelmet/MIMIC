@@ -1,8 +1,9 @@
 from keras.models import Sequential
-from keras.layers.core import Activation, Dense, Masking
+from keras.layers.core import Activation, Dense, Masking, TimeDistributedDense, TimeDistributed
+from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
-from keras.layers import Input, merge, TimeDistributed
+from keras.layers import Input, merge
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
@@ -114,7 +115,7 @@ def define_simple_seg_rnn(setting):
             bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
@@ -126,7 +127,7 @@ def define_simple_seg_rnn(setting):
         bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -137,7 +138,7 @@ def define_simple_seg_rnn(setting):
         if disturbance:
             max_seg_length = setting['max_seg_length']
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributed(Dense(embedding_dim), name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -149,7 +150,7 @@ def define_simple_seg_rnn(setting):
         if disturbance:
             max_seg_length = setting['max_seg_length']
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributed(Dense(embedding_dim), name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
