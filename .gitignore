@@ -29,6 +29,7 @@ static_data
 # backup
 result_backup
 data_bk
+/backup
 
 # test
 test
