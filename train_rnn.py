@@ -129,9 +129,9 @@ def define_simple_seg_rnn(setting):
             feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
-        rnn = LSTM(hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+        rnn = LSTM(hidden_dim, recurrent_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            kernel_regularizer = w_reg, recurrent_regularizer = u_reg, bias_regularizer = b_reg, 
+            return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "attgru":
         embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
