@@ -8,6 +8,7 @@ import re
 import numpy as np
 import commands
 
+
 def connect():
     host = '162.105.146.246'
     # host = 'localhost'
