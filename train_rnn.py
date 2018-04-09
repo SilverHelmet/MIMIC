@@ -1,11 +1,12 @@
 from keras.models import Sequential
-from keras.layers.core import Activation, Dense, Masking
+from keras.layers.core import Activation, Dense, Masking, TimeDistributedDense, TimeDistributed
+from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
-from keras.layers import Input, merge, TimeDistributed
+from keras.layers import Input, merge
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
-from keras.regularizers import l2
+from keras.regularizers import l2, activity_l2
 from keras.optimizers import SGD, Adam 
 from models.dataset import Dataset, sample_generator, print_eval
 import numpy as np
@@ -114,10 +115,10 @@ def define_simple_seg_rnn(setting):
             bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
-        rnn = GRU(hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
+        rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "lstm":
@@ -126,18 +127,18 @@ def define_simple_seg_rnn(setting):
         bias = False), name = "event_embedding")(masked)
         if disturbance:
             feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(Dense(embedding_dim, name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
-        rnn = LSTM(hidden_dim, recurrent_activation = 'hard_sigmoid', activation='sigmoid',
-            kernel_regularizer = w_reg, recurrent_regularizer = u_reg, bias_regularizer = b_reg, 
-            return_sequences = attention, name = 'rnn')(embedding)
+        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
     elif rnn_model == "attgru":
         embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
             max_seg_length = setting['max_seg_length']
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributed(Dense(embedding_dim), name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -149,7 +150,7 @@ def define_simple_seg_rnn(setting):
         if disturbance:
             max_seg_length = setting['max_seg_length']
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributed(Dense(embedding_dim), name = 'feature_embedding'))(feature_input)
+            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
             inputs = [event_input, feature_input]
         rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -172,7 +173,7 @@ def define_simple_seg_rnn(setting):
     if len(inputs) == 0:
         inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
-    model = Model(inputs = inputs, outputs = pred)
+    model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
     model.compile(optimizer = opt,
@@ -287,7 +288,7 @@ if __name__ == '__main__':
         if epoch_round - last_hit_round -1 >= early_stop_round:
             print "early stop at round %d" %(epoch_round + 1)
             break
-        model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, epochs = 1, verbose = 1)
+        model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
         # print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
