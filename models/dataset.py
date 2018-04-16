@@ -27,6 +27,8 @@ class Dataset:
         return tuple(datasets)
 
     def load(self, load_time = False, load_static_feature = False):
+        self.load_time = load_time
+        self.load_static_feature = load_static_feature
         f = h5py.File(self.dataset_file, 'r')
         self.labels = f['label'][:]
         self.size = len(self.labels)
@@ -72,6 +74,10 @@ class Dataset:
         s_dataset.segs = self.segs[sample_list]
         s_dataset.max_seg_length = self.max_seg_length
         s_dataset.max_segs = self.max_segs
+        if self.load_time:
+            s_dataset.times = self.times[sample_list]
+        else:
+            s_dataset.times = self.
         return s_dataset
 
     def label_time_at(self, i):
