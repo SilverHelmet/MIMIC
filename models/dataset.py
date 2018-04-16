@@ -351,7 +351,7 @@ def sample_generator(dataset, setting, shuffle = False):
 if __name__ == "__main__":
     sample_dir = 'death_exper/sample'
     dataset = Dataset('death_exper/death_valid_1000.h5', seg = 'death_exper/segs/death_valid_1000_segmode=fixLength_maxchunk=32_length=32.h5')
-    dataset.load(load_static_feature = True)
+    dataset.load(load_static_feature = True, load_time = Trues)
     s_dataset = dataset.sample()
     if not os.path.exists(sample_dir):
         os.mkdir(sample_dir)
