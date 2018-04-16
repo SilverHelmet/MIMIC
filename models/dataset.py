@@ -65,7 +65,7 @@ class Dataset:
 
     def sample(self, sample_list = None):
         if sample_list is None:
-            sample_list = np.arange(1000, 2000, 1)
+            sample_list = np.arange(10000, 20000, 1)
         s_dataset = Dataset(file = None)
         s_dataset.labels = self.labels[sample_list]
         s_dataset.events = self.events[sample_list]
