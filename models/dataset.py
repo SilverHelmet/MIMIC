@@ -74,10 +74,12 @@ class Dataset:
         s_dataset.segs = self.segs[sample_list]
         s_dataset.max_seg_length = self.max_seg_length
         s_dataset.max_segs = self.max_segs
+        s_dataset.load_time = self.load_time
         if self.load_time:
             s_dataset.times = self.times[sample_list]
-        else:
-            s_dataset.times = self.
+
+        s_dataset.load_static_feature = self.load_static_feature
+        s_dataset.static_features = self.static_features[sample_list]
         return s_dataset
 
     def label_time_at(self, i):
@@ -95,19 +97,26 @@ class Dataset:
     def feature_mat(self, row, feature_dim = 649):
         return np.array(gen_seged_feature_seq(self.features[row], self.segs[row], self.max_seg_length, feature_dim))
 
-    def save(self, dataset_filepath, seg_filepath):
-        outf = h5py.File(dataset_filepath, 'w')        
+    def save(self, sample_dir):
+        outf = h5py.File(os.path.join(sample_dir, 'samples.h5'), 'w')        
         outf['label'] = self.labels
         outf['event'] = self.events
         outf['feature'] = self.features
         outf['sample_id'] = self.ids
+        outf['time'] = self.times
         outf.close()
 
-        outf = h5py.File(seg_filepath, "w")
+        outf = h5py.File(os.path.join(sample_dir, 'samples_seg.h5'), "w")
         outf['segment'] = self.segs
         outf['max_segs'] = self.max_segs
         outf['max_seg_length'] = self.max_seg_length
         outf.close()
+
+        if self.load_static_feature:
+            np.save(os.path.join(sample_dir, 'static_feature'), self.static_features)
+
+
+
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
@@ -340,5 +349,10 @@ def sample_generator(dataset, setting, shuffle = False):
 
 
 if __name__ == "__main__":
-    dataset = Dataset('death_merged_exper/death_valid_1000.h5')
+    sample_dir = 'death_exper/sample'
+    dataset = Dataset('death_exper/death_valid_1000.h5')
     dataset.load(load_static_feature = True)
+    s_dataset = dataset.sample()
+    if not os.path.exists(sample_dir):
+        os.mkdir(sample_dir)
+    s_dataset.save(sample_dir)
