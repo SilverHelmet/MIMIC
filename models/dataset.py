@@ -71,6 +71,8 @@ class Dataset:
         s_dataset.events = self.events[sample_list]
         s_dataset.features = self.features[sample_list]
         s_dataset.ids = self.ids[sample_list]
+        s_dataset.label_times = self.label_time[sample_list]
+        s_dataset.predicting_times = self.predicting_times[sample_list]
         s_dataset.segs = self.segs[sample_list]
         s_dataset.max_seg_length = self.max_seg_length
         s_dataset.max_segs = self.max_segs
@@ -104,6 +106,8 @@ class Dataset:
         outf['feature'] = self.features
         outf['sample_id'] = self.ids
         outf['time'] = self.times
+        outf['label_time'] = self.label_times
+        outf['predicting_time'] = self.predicting_times
         outf.close()
 
         outf = h5py.File(os.path.join(sample_dir, 'samples_seg.h5'), "w")
