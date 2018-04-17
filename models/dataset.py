@@ -71,7 +71,7 @@ class Dataset:
         s_dataset.events = self.events[sample_list]
         s_dataset.features = self.features[sample_list]
         s_dataset.ids = self.ids[sample_list]
-        s_dataset.label_times = self.label_time[sample_list]
+        s_dataset.label_times = self.label_times[sample_list]
         s_dataset.predicting_times = self.predicting_times[sample_list]
         s_dataset.segs = self.segs[sample_list]
         s_dataset.max_seg_length = self.max_seg_length
