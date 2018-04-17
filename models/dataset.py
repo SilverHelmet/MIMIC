@@ -113,7 +113,7 @@ class Dataset:
         outf.close()
 
         if self.load_static_feature:
-            np.save(os.path.join(sample_dir, 'static_feature'), self.static_features)
+            np.save(os.path.join(sample_dir, 'sample_static'), self.static_features)
 
 
 
@@ -356,3 +356,6 @@ if __name__ == "__main__":
     if not os.path.exists(sample_dir):
         os.mkdir(sample_dir)
     s_dataset.save(sample_dir)
+
+    
+    s_dataset = Data
