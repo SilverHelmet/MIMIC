@@ -113,10 +113,13 @@ class Dataset:
         outf.close()
 
         if self.load_static_feature:
-            np.save(os.path.join(sample_dir, 'sample_static'), self.static_features)
+            np.save(os.path.join(sample_dir, 'samples_static'), self.static_features)
 
 
-
+    def print_shape(self):
+        for k, v in locals():
+            if hasattr(v, 'shape'):
+                print "%s's shape is %s" %(k, str(v.shape))
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
@@ -358,4 +361,6 @@ if __name__ == "__main__":
     s_dataset.save(sample_dir)
 
     
-    s_dataset = Data
+    s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
+    s_dataset.load(True, True)
+    s_dataset.print_shape()
