@@ -124,7 +124,8 @@ class Dataset:
         for k, v in self.__dict__.items():
             if hasattr(v, 'shape'):
                 print "%s's shape is %s" %(k, str(v.shape))
-            print k, v
+            else:
+                print "%s = %s" %(k, v)
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
