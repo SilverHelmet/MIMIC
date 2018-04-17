@@ -121,7 +121,7 @@ class Dataset:
 
 
     def print_shape(self):
-        for k, v in locals():
+        for k, v in locals().items():
             if hasattr(v, 'shape'):
                 print "%s's shape is %s" %(k, str(v.shape))
 
