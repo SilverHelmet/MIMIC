@@ -3,6 +3,7 @@ import os
 import h5py
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
+from gcn.graph import build_time_graph
 
 class Dataset:
     
@@ -78,7 +79,7 @@ class Dataset:
 
     def sample(self, sample_list = None):
         if sample_list is None:
-            sample_list = np.arange(10000, 20000, 1)
+            sample_list = np.arange(10000, 11000, 1)
         s_dataset = Dataset(file = None)
         s_dataset.labels = self.labels[sample_list]
         s_dataset.events = self.events[sample_list]
@@ -385,4 +386,6 @@ if __name__ == "__main__":
     s_dataset.print_shape()
     s_dataset.trans_time()
     print s_dataset.times[1][:10]
-    print  s_dataset.times[1][-10:]
+    print s_dataset.times[1][-10:]
+    A = build_time_graph(s_dataset.times[1], 0.5)
+    print A[0][:10]
