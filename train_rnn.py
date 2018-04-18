@@ -310,6 +310,9 @@ if __name__ == '__main__':
         weights[name] = layer.get_weights()
     max_merged_auc = 0
     x, y = sample_generator(datasets[0], setting, shuffle = True)
+    for xs in x:
+        print xs.shape
+    print y.shape
     model.predict(x, y)
     for epoch_round in range(nb_epoch):
         if epoch_round - last_hit_round -1 >= early_stop_round:
