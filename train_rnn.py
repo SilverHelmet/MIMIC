@@ -309,7 +309,7 @@ if __name__ == '__main__':
         name = layer.name
         weights[name] = layer.get_weights()
     max_merged_auc = 0
-    for x, y in sample_generator(datasets[0], setting, shuffle = True)
+    for x, y in sample_generator(datasets[0], setting, shuffle = True):
         for xs in x:
             print xs.shape
         print y.shape
