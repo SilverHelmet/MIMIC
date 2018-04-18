@@ -70,6 +70,7 @@ class Dataset:
             for j in range(m):
                 time_s = self.times[i][j]
                 if len(time_s) > 0:
+                    print time_s, parse_time(time_s)
                     offset_hours[i][j] = parse_time(time_s)
         self.times = offset_hours
 
