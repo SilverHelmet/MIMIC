@@ -68,7 +68,7 @@ class Dataset:
         n, m = self.times.shape
         for i in range(n):
             st = parse_time(self.times[i][0])
-            self.offset_hours[i][0] = 0.0
+            offset_hours[i][0] = 0.0
             for j in range(1, m):
                 time_s = self.times[i][j]
                 if len(time_s) > 0:
