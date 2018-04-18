@@ -65,7 +65,6 @@ class Dataset:
 
     def trans_time(self):
         offset_hours = np.ones_like(self.events) * -1.0
-        print offset_hours.shape
         n, m = self.times.shape
         for i in range(n):
             st = parse_time(self.times[i][0])
@@ -73,7 +72,7 @@ class Dataset:
             for j in range(1, m):
                 time_s = self.times[i][j]
                 if len(time_s) > 0:
-                    offset_hours[i][j] = (parse_time(time_s) - st).total_seconds()/3600.0=====
+                    offset_hours[i][j] = (parse_time(time_s) - st).total_seconds()/3600.0
         self.times = offset_hours
 
 
