@@ -65,6 +65,7 @@ class Dataset:
 
     def trans_time(self):
         offset_hours = np.ones_like(self.events) * -1.0
+        print offset_hours.shape
         n, m = self.times.shape
         for i in range(n):
             for j in range(m):
