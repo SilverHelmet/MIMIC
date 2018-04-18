@@ -193,7 +193,7 @@ def define_simple_seg_rnn(setting):
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
 
     for x_input in inputs:
-        print x_input
+        print 'input', x_input
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
