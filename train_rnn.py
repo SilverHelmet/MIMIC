@@ -8,6 +8,7 @@ from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
 from keras.optimizers import SGD, Adam 
+import keras.backend as K
 from models.dataset import Dataset, sample_generator, print_eval
 import numpy as np
 import h5py
@@ -113,10 +114,10 @@ def define_simple_seg_rnn(setting):
         edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
         inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
-        gcn = GraphAttention(F_ = 8, attn_heads=8, activation = 'elu', kernel_regularizer=l2(l2_cof))([embedding, edge_mat])
+        gcn = GraphAttention(F_ = 8, attn_heads=8, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof))([embedding, edge_mat])
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = False, name = 'rnn')(gcn)
+            input_length = None, return_sequences = False, name = 'rnn')(embedding)
         
 
     elif rnn_model == "cnn":
@@ -309,11 +310,12 @@ if __name__ == '__main__':
         name = layer.name
         weights[name] = layer.get_weights()
     max_merged_auc = 0
-    for x, y in sample_generator(datasets[0], setting, shuffle = True):
-        for xs in x:
-            print xs.shape
-        print y.shape
-        model.predict(x, y)
+    # K.set_learning_phase(0)
+    # for x, y in sample_generator(datasets[0], setting, shuffle = True):
+    #     for xs in x:
+    #         print xs.shape
+    #     print y.shape
+    #     model.predict(x, y)
     for epoch_round in range(nb_epoch):
         if epoch_round - last_hit_round -1 >= early_stop_round:
             print "early stop at round %d" %(epoch_round + 1)

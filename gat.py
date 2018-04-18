@@ -1,7 +1,7 @@
 from __future__ import division
 
 from keras.callbacks import EarlyStopping, TensorBoard
-from keras.layers import Input, Dropout
+from keras.layers import Input, Dropout, LSTM
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.regularizers import l2
@@ -60,16 +60,17 @@ graph_attention_2 = GraphAttention(n_classes,
                                    kernel_regularizer=l2(l2_reg),
                                    mask_zero=True)([dropout2, A])
 
+lstm = LSTM(16)(graph_attention_2)
 
 # model = Model(input = [X, A], output = graph_attention_1)
 # out = model.predict([X_train, A_train])
 # print out.shape
 # Build model
-model = Model(input=[X, A], output=graph_attention_2)
-optimizer = Adam(lr=learning_rate)
-model.compile(optimizer=optimizer,
-              loss='categorical_crossentropy',
-              metrics=['acc'])
+model = Model(input=[X, A], output=lstm)
+# optimizer = Adam(lr=learning_rate)
+# model.compile(optimizer=optimizer,
+#               loss='categorical_crossentropy',
+#               metrics=['acc'])
 model.summary()
 
 # Callbacks
@@ -80,6 +81,8 @@ model.summary()
 print X_train.shape
 print A_train.shape
 print Y_train.shape
+out = model.predict([X_train, A_train])
+print out.shape
 model.fit(x = [X_train, A_train],
           y = Y_train,
           nb_epoch=10,
