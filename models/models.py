@@ -712,4 +712,10 @@ def make_CNN1D(filter_lengths, feature_maps, emd, max_segs, l2_reg_cof = .0, dro
         return Dropout(p = drop_rate)(flatten_cnn)
     else:
         return flatten_cnn
-        
+
+def hard_softmax(x):
+    e_x = K.exp(x - K.max(x, axis = -1, keepdims = True))
+    out = e_x / K.sum(e_x, axis=-1, keepdims=True)
+    return out
+
+    

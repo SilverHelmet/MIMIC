@@ -287,6 +287,7 @@ def parse_sparse_static_feature(static_feature, size):
 
 
 def sample_generator(dataset, setting, shuffle = False):
+    Print("start generate samples")
     labels = dataset.labels
     features = dataset.features
     events = dataset.events
@@ -299,6 +300,10 @@ def sample_generator(dataset, setting, shuffle = False):
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
+    gcn = setting.get['gcn']
+    if gcn:
+        times = dataset.times
+
 
     static_features = dataset.static_features
     use_static_feature = setting['static_feature']
@@ -318,7 +323,17 @@ def sample_generator(dataset, setting, shuffle = False):
             label = labels[batch_indices]
             event = events[batch_indices]
             seg = segs[batch_indices]
-            if rnn == 'attlstm' or rnn == 'attgru':
+
+            if gcn:
+                Print("here")
+                seged_event = event
+                time = times[batch_indices]
+                As = []
+                for sample_time in time:
+                    As.append(build_time_graph(sample_time, 0.5))
+                As = np.array(As)
+
+            elif rnn == 'attlstm' or rnn == 'attgru':
                 # output shape (nb_sample, max_segs, max_seg_length)
                 seged_event = []
                 for j in range(ed - st):
@@ -360,11 +375,16 @@ def sample_generator(dataset, setting, shuffle = False):
             inputs = [seged_event]
             if disturbance:
                 inputs.append(seg_feature_matrixes)
+            if gcn:
+                inputs.append(As)
             if use_static_feature:
                 inputs.append(static_feature_mat)
 
             if len(inputs) == 1:
                 inputs = inputs[0]
+            for input in inputs:
+                print input.shape
+
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:
@@ -373,12 +393,12 @@ def sample_generator(dataset, setting, shuffle = False):
 
 if __name__ == "__main__":
     sample_dir = 'death_exper/sample'
-    dataset = Dataset('death_exper/death_valid_1000.h5', seg = 'death_exper/segs/death_valid_1000_segmode=fixLength_maxchunk=32_length=32.h5')
-    dataset.load(load_static_feature = True, load_time = True)
-    s_dataset = dataset.sample()
-    if not os.path.exists(sample_dir):
-        os.mkdir(sample_dir)
-    s_dataset.save(sample_dir)
+    # dataset = Dataset('death_exper/death_valid_1000.h5', seg = 'death_exper/segs/death_valid_1000_segmode=fixLength_maxchunk=32_length=32.h5')
+    # dataset.load(load_static_feature = True, load_time = True)
+    # s_dataset = dataset.sample()
+    # if not os.path.exists(sample_dir):
+    #     os.mkdir(sample_dir)
+    # s_dataset.save(sample_dir)
 
     
     s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
@@ -388,4 +408,4 @@ if __name__ == "__main__":
     print s_dataset.times[1][:10]
     print s_dataset.times[1][-10:]
     A = build_time_graph(s_dataset.times[1], 0.5)
-    print A[0][:10]
+    print A[4][:10]

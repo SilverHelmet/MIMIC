@@ -15,6 +15,7 @@ import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
 from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D
+from gcn.graph_attention_layer import GraphAttention
 
 def load_data(filepath, seg_filepath = None):
     f = h5py.File(filepath, 'r')
@@ -68,6 +69,9 @@ def make_input(setting):
     max_segs = setting['max_segs']
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
+    use_gcn = setting['GCN']
+    if use_gcn:
+        return Input(shape = (setting['event_len'], ), name = 'event input')
     if rnn_model == 'attlstm' or rnn_model == "attgru":
         max_seg_length = setting['max_seg_length']
         return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
@@ -100,8 +104,22 @@ def define_simple_seg_rnn(setting):
     attention = setting["attention"]
     rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
+    gcn = setting['GCN']
+    if gcn:
+        print 'ues graph convolution network'
 
-    if rnn_model == "cnn":
+
+    if gcn:
+        edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
+        inputs.append(edge_mat)
+        embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
+        gcn = GraphAttention(F_ = 8, attn_heads=8, activation = 'elu', kernel_regularizer=l2(l2_cof))([embedding, edge_mat])
+        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = False, name = 'rnn')(gcn)
+        
+
+    elif rnn_model == "cnn":
         masked = Masking(mask_value=0.)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
             bias = False), name = "event_embedding")(masked)
@@ -180,8 +198,9 @@ def define_simple_seg_rnn(setting):
         loss = 'binary_crossentropy', 
          metrics=['accuracy'])
     print "opt config:", opt.get_config()
-    for layer in model.get_config()['layers']:
-        print "\t", layer   
+    # for layer in model.get_config()['layers']:
+    #     print "\t", layer   
+    model.summary()
     return model
 
 
@@ -274,7 +293,6 @@ if __name__ == '__main__':
     print "train event shape =", datasets[0].events.shape
     
     
-    segment_flag = setting['segment']
     
 
     model = define_simple_seg_rnn(setting)
