@@ -63,6 +63,17 @@ class Dataset:
         else:
             self.static_features = np.zeros((1,1))
 
+    def trans_time(self):
+        offset_hours = np.ones_like(self.times) * -1.0
+        n, m = self.times.shape
+        for i in range(n):
+            for j in range(m):
+                time_s = self.times[i][j]
+                if len(time_s) > 0:
+                    offset_hours[i][j] = parse_time(time_s)
+        self.times = offset_hours
+
+
     def sample(self, sample_list = None):
         if sample_list is None:
             sample_list = np.arange(10000, 20000, 1)
@@ -370,3 +381,6 @@ if __name__ == "__main__":
     s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
     s_dataset.load(True, True)
     s_dataset.print_shape()
+    s_dataset.trans_time()
+    print s_dataset.times[1][:10]
+    print  s_dataset.times[1][-10:]

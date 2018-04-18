@@ -209,6 +209,8 @@ def default_setting():
         'rnn': 'lstm',
         'nb_epoch': 100,
         'cnn_drop_rate': 0.5,
+
+        'GCN': False,
     }
     return setting
 
@@ -253,8 +255,12 @@ if __name__ == '__main__':
         print "valid seg file = [%s]" %valid_seg_file
         print "test seg file = [%s]" %test_seg_file
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
+        use_GCN = setting['GCN']
         for dataset in datasets:
-            dataset.load(load_static_feature = setting['static_feature'])
+            dataset.load(load_static_feature = setting['static_feature'], load_time = use_GCN)
+            if use_GCN:
+                dataset.trans_time()
+
 
 
         setting['event_dim'] = int(datasets[0].events.max() + 1)
