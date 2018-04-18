@@ -155,7 +155,6 @@ class GraphAttention(Layer):
         return output_shape
 
     def compute_mask(self, x, mask=None):
-        print mask
         if self.mask_zero:
             return mask[0]
         else:

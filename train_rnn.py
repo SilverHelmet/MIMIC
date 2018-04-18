@@ -192,8 +192,6 @@ def define_simple_seg_rnn(setting):
         inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
 
-    for x_input in inputs:
-        print 'input', x_input
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
@@ -311,6 +309,8 @@ if __name__ == '__main__':
         name = layer.name
         weights[name] = layer.get_weights()
     max_merged_auc = 0
+    x, y = sample_generator(datasets[0], setting, shuffle = True)
+    model.predict(x, y)
     for epoch_round in range(nb_epoch):
         if epoch_round - last_hit_round -1 >= early_stop_round:
             print "early stop at round %d" %(epoch_round + 1)
