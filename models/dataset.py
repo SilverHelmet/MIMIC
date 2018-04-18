@@ -300,7 +300,7 @@ def sample_generator(dataset, setting, shuffle = False):
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
-    gcn = setting.get['gcn']
+    gcn = setting['gcn']
     if gcn:
         times = dataset.times
 
