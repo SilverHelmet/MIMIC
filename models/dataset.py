@@ -325,7 +325,6 @@ def sample_generator(dataset, setting, shuffle = False):
             seg = segs[batch_indices]
 
             if gcn:
-                Print("here")
                 seged_event = event
                 time = times[batch_indices]
                 As = []
@@ -382,8 +381,6 @@ def sample_generator(dataset, setting, shuffle = False):
 
             if len(inputs) == 1:
                 inputs = inputs[0]
-            for input in inputs:
-                print input.shape
 
             yield (inputs, label)
             i += batch_size 
