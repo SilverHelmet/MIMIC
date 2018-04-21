@@ -71,7 +71,7 @@ def make_input(setting):
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
     use_gcn = setting['GCN']
-    if use_gcn:
+    if use_gcn or rnn_model == 'dlstm':
         return Input(shape = (setting['event_len'], ), name = 'event input')
     if rnn_model == 'attlstm' or rnn_model == "attgru":
         max_seg_length = setting['max_seg_length']
@@ -117,9 +117,12 @@ def define_simple_seg_rnn(setting):
         gcn = GraphAttention(F_ = 8, attn_heads=8, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof))([embedding, edge_mat])
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+            input_length = None, return_sequences = False, name = 'rnn')(embedding) 
+    elif rnn_model == "dlstm":
+        embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
+        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = False, name = 'rnn')(embedding)
-        
-
     elif rnn_model == "cnn":
         masked = Masking(mask_value=0.)(event_input)
         embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
