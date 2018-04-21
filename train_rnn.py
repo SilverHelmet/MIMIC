@@ -114,10 +114,10 @@ def define_simple_seg_rnn(setting):
         edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
         inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
-        gcn = GraphAttention(F_ = 8, attn_heads=8, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof))([embedding, edge_mat])
+        gcn = GraphAttention(F_ = 8, attn_heads=8, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = False, name = 'rnn')(embedding) 
+            input_length = None, return_sequences = False, name = 'rnn')(gcn) 
     elif rnn_model == "dlstm":
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -196,6 +196,8 @@ def define_simple_seg_rnn(setting):
         inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
 
+    for input in inputs:
+        print input
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
