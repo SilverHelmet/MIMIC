@@ -331,7 +331,7 @@ def sample_generator(dataset, setting, shuffle = False):
                 for sample_time in time:
                     As.append(build_time_graph(sample_time, 0.5))
                 As = np.array(As)
-            elif rnn = 'dlstm':
+            elif rnn == 'dlstm':
                 seged_event = event
             elif rnn == 'attlstm' or rnn == 'attgru':
                 # output shape (nb_sample, max_segs, max_seg_length)
