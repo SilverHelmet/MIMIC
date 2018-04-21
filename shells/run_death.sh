@@ -1,7 +1,7 @@
 
 # python -u train_rnn.py settings/lstm.txt  settings/fixLength2.txt >& log/death_fixLength2_lstm.log2 
-THEANO_FLAGS=device=gpu1,floatX=float32 python -u train_rnn.py settings/gcn.txt settings/catAtt_lstm.txt settings/fixLength16.txt >& log/death_catAtt_gcn.log1 &
-THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt settings/dlstm.txt settings/fixLength16.txt >& log/death_catAtt_dlstm.log1 &
+THEANO_FLAGS=device=gpu1,floatX=float32 python -u train_rnn.py settings/gcn.txt settings/catAtt_lstm.txt settings/static_feature.txt settings/fixLength16.txt >& log/death_catAtt_gcn.log1 &
+THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/catAtt_lstm.txt settings/dlstm.txt settings/static_feature.txt settings/fixLength16.txt >& log/death_catAtt_dlstm.log1 &
 wait
 # THEANO_FLAGS=device=gpu2,floatX=float32 python -u train_rnn.py settings/gcn.txt settings/catAtt_lstm.txt settings/fixLength16.txt settings/static_feature.txt >& log/death_fixLength16_catAtt_staticfea_gcn.log6 &
 # wait
