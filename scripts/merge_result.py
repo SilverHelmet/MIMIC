@@ -27,7 +27,10 @@ while True:
     res1 = raw_input("log1:")
     res2 = raw_input('log2:')
     p1 = res1.strip().split("\t")
-    p1 = decom(p1)
+    if len(p1) == 3:
+        p1 = decom(p1)
+    else:
+        p1 = parse_result(res1)
     p2 = parse_result(res2)
     res = merge(p1, p2)
     print "\t".join(res)
