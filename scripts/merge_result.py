@@ -22,7 +22,7 @@ def merge(p1, p2):
     return merged_res
 
 
-out = file("tmp.txt", "w")
+# out = file("tmp.txt", "w")
 while True:
     res1 = raw_input("log1:")
     res2 = raw_input('log2:')
@@ -34,9 +34,9 @@ while True:
     p2 = parse_result(res2)
     res = merge(p1, p2)
     print "\t".join(res)
-    out.write("\t".join(res) + "\n")
-    out.flush()
-out.close()
+    # out.write("\t".join(res) + "\n")
+    # out.flush()
+# out.close()
 
     
 

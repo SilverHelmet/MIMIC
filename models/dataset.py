@@ -27,7 +27,7 @@ class Dataset:
             datasets.append(Dataset(file, seg))
         return tuple(datasets)
 
-    def load(self, load_time = False, load_static_feature = False):
+    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False):
         self.load_time = load_time
         self.load_static_feature = load_static_feature
         f = h5py.File(self.dataset_file, 'r')
@@ -43,7 +43,16 @@ class Dataset:
         self.ids = f['sample_id'][:]
         self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
-            self.times = f['time'][:]
+            if load_transfer_time:
+                time_path = self.dataset_file.replace('.h5', '_time.npy')
+                if not os.path.exists(time_path):
+                    Print('%s tranfer time format' % self.dataset_file)
+                    self.times = f['time'][:]
+                    self.trans_time(time_path)
+                else:
+                    self.times = np.load(time_path)
+            else:
+                self.times = f['time'][:]
         f.close()
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
@@ -64,7 +73,8 @@ class Dataset:
         else:
             self.static_features = np.zeros((1,1))
 
-    def trans_time(self):
+    def trans_time(self, outpath = None):
+
         offset_hours = np.ones_like(self.events) * -1.0
         n, m = self.times.shape
         for i in range(n):
@@ -75,6 +85,9 @@ class Dataset:
                 if len(time_s) > 0:
                     offset_hours[i][j] = (parse_time(time_s) - st).total_seconds()/3600.0
         self.times = offset_hours
+        if not outpath:
+            outpath = self.dataset_file.replace('.h5', '_time')
+        np.save(outpath, offset_hours)
 
 
     def sample(self, sample_list = None):
@@ -400,10 +413,11 @@ if __name__ == "__main__":
 
     
     s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
-    s_dataset.load(True, True)
+    s_dataset.load(True, True, True)
     s_dataset.print_shape()
-    s_dataset.trans_time()
+    # s_dataset.trans_time()
     print s_dataset.times[1][:10]
     print s_dataset.times[1][-10:]
     A = build_time_graph(s_dataset.times[1], 0.5)
-    print A[4][:10]
+
+

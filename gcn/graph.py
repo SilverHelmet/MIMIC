@@ -5,6 +5,8 @@ def build_time_graph(times, width):
     n = len(times)
     A = np.zeros((n, n))
     for i in range(n):
+        if times[i] < 0:
+            break
         j = i
         while j < n:
             if times[j] - times[i] <= width:
