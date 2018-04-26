@@ -413,7 +413,7 @@ if __name__ == "__main__":
     # s_dataset.save(sample_dir)
 
     
-    for filepath in glob.glob(death_exper_dir + "death*_1000.h5"):
+    for filepath in glob.glob(death_exper_dir + "/death*_1000.h5"):
         s_dataset = Dataset(filepath)
         s_dataset.load(True, False, True)
     # s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
