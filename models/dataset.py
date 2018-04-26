@@ -4,6 +4,7 @@ import h5py
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
 from gcn.graph import build_time_graph
+import glob
 
 class Dataset:
     
@@ -412,12 +413,15 @@ if __name__ == "__main__":
     # s_dataset.save(sample_dir)
 
     
-    s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
-    s_dataset.load(True, True, True)
-    s_dataset.print_shape()
-    # s_dataset.trans_time()
-    print s_dataset.times[1][:10]
-    print s_dataset.times[1][-10:]
-    A = build_time_graph(s_dataset.times[1], 0.5)
+    for filepath in glob.glob(death_exper_dir + "death*_1000.h5"):
+        s_dataset = Dataset(filepath)
+        s_dataset.load(True, False, True)
+    # s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
+    # s_dataset.load(True, True, True)
+    # s_dataset.print_shape()
+    # # s_dataset.trans_time()
+    # print s_dataset.times[1][:10]
+    # print s_dataset.times[1][-10:]
+    # A = build_time_graph(s_dataset.times[1], 0.5)
 
 
