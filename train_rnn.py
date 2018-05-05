@@ -294,9 +294,9 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         use_GCN = setting['GCN']
         for dataset in datasets:
-            dataset.load(load_static_feature = setting['static_feature'], load_time = use_GCN)
-            if use_GCN:
-                dataset.trans_time()
+            dataset.load(load_static_feature = setting['static_feature'], load_time = use_GCN, load_transfer_time = use_GCN)
+            # if use_GCN:
+            #     dataset.trans_time()
 
 
 
