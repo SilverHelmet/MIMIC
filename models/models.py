@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.layers.core import  Flatten, Lambda, Dense, Dropout
-from keras.layers import merge, InputSpec, Layer, Convolution1D, MaxPooling1D, Merge
+from keras.layers import merge, InputSpec, Layer, Convolution1D, MaxPooling1D, Merge, Layer
 from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
@@ -653,6 +653,20 @@ class MaskOutput(Layer):
     
     def compute_mask(self, x, mask = None):
         return mask
+
+class GCNMaskedGlobalMaxPooling1D(Layer):
+    def __init__(self, **kwargs):
+        self.supports_masking = True
+        super(GCNMaskedGlobalMaxPooling1D, self).__init__(**kwargs)
+
+    def call(self, x, mask=None):
+        return K.max(x, axis=2)
+
+    def get_output_shape_for(self, input_shape):
+        return (input_shape[0], input_shape[1], input_shape[3])
+
+    def compute_mask(self, x, mask = None):
+        return K.any(K.not_equal(x, 0), axis=(-1, -2))
 
 
 def np_switch(condition, x1, x2):

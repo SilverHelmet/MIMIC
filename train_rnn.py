@@ -4,6 +4,7 @@ from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
 from keras.layers import Input, merge
+from keras.layers.pooling import GlobalMaxPooling1D
 from keras.models import Model, load_model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
@@ -15,7 +16,7 @@ import h5py
 import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
-from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D
+from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D, GCNMaskedGlobalMaxPooling1D
 from gcn.graph_attention_layer import GraphAttention
 
 def load_data(filepath, seg_filepath = None):
@@ -87,6 +88,7 @@ def define_simple_seg_rnn(setting):
     att_hidden_dim = setting['att_hidden_dim']
     disturbance = setting['disturbance']
     feature_dim = setting.get('feature_dim', 0)
+    max_seg_length = setting.get('max_seg_length', 0)
     
 
     print "define simple seg rnn"
@@ -106,6 +108,7 @@ def define_simple_seg_rnn(setting):
     rnn_model = setting["rnn"]
     print "rnn = %s" %rnn_model
     gcn = setting['GCN']
+    gcn_seg = setting['GCN_Seg']
     if gcn:
         print 'ues graph convolution network'
 
@@ -114,10 +117,17 @@ def define_simple_seg_rnn(setting):
         edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
         inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
-        gcn = GraphAttention(F_ = 8, attn_heads=8, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+        gcn = GraphAttention(F_ = 64, attn_heads=1, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+        if gcn_seg:
+            seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
+            inputs.append(seg_mat)
+            gcn = merge(inputs = [seg_mat, gcn], mode = 'dot', dot_axes = [3, 1])
+            gcn = GCNMaskedGlobalMaxPooling1D()(gcn)
+
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
             W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
             input_length = None, return_sequences = False, name = 'rnn')(gcn) 
+
     elif rnn_model == "dlstm":
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -158,7 +168,7 @@ def define_simple_seg_rnn(setting):
     elif rnn_model == "attgru":
         embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
         if disturbance:
-            max_seg_length = setting['max_seg_length']
+            
             feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
             feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
             embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
@@ -237,6 +247,7 @@ def default_setting():
         'cnn_drop_rate': 0.5,
 
         'GCN': False,
+        'GCN_Seg': False,
     }
     return setting
 

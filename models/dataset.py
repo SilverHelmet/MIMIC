@@ -228,6 +228,20 @@ def merge_event_by_seg(event_seq, split, event_dim, aggre_mode):
         event_cnts = norm_to_prob(event_cnts)
     return event_cnts
 
+def make_gcn_seg_mat(segment, n, m, k):
+    seg_mat = np.zeros((n, m, k))
+    seg_group_idx = 0
+    st = 0
+    for ed in segment:
+        if ed == 0:
+            continue
+        for i in range(st, ed):
+            seg_mat[seg_group_idx][i - st][i] = 1
+        st = ed
+        seg_group_idx += 1
+    return seg_mat
+
+
 
 def collect_feature(feature_matrix, st, ed, feature_dim):
     length = len(feature_matrix[0])
@@ -307,14 +321,17 @@ def sample_generator(dataset, setting, shuffle = False):
     events = dataset.events
     segs = dataset.segs
     nb_sample = len(labels)
+    event_len = setting['event_len']
     batch_size = setting['batch_size']
     disturbance = setting['disturbance']
     segment_flag = setting['segment_flag']
+    max_segs = setting['max_segs']
     max_seg_length = setting['max_seg_length']
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
     gcn = setting['GCN']
+    gcn_seg = setting['GCN_Seg']
     if gcn:
         times = dataset.times
 
@@ -386,17 +403,26 @@ def sample_generator(dataset, setting, shuffle = False):
                     static_feature_mat.append(parse_sparse_static_feature(static_feature, static_feature_size))
                 static_feature_mat = np.array(static_feature_mat)
 
+            if gcn_seg:
+                gcn_seg_mat = []
+                for batch_seg in seg:
+                    seg_mat = make_gcn_seg_mat(batch_seg, max_segs, max_seg_length, event_len)
+                    gcn_seg_mat.append(seg_mat)
+                gcn_seg_mat = np.array(gcn_seg_mat)
+
+
             inputs = [seged_event]
             if disturbance:
                 inputs.append(seg_feature_matrixes)
             if gcn:
                 inputs.append(As)
+            if gcn_seg:
+                inputs.append(gcn_seg_mat)
             if use_static_feature:
                 inputs.append(static_feature_mat)
 
             if len(inputs) == 1:
                 inputs = inputs[0]
-
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:

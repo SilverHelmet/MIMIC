@@ -1,6 +1,7 @@
 # model
 disturbance=False
 GCN=True
+GCN_Seg=True
 
 #model args
 embedding_dim=64

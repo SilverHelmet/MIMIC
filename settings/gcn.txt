@@ -1,1 +1,2 @@
 GCN=True
+GCN_Seg=True
