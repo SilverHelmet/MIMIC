@@ -348,7 +348,7 @@ def sample_generator(dataset, setting, shuffle = False):
         while i < nb_sample:
             st = i
             ed = min(i + batch_size, nb_sample)
-            Print("%s\t%s" %(st, ed))
+            # Print("%s\t%s" %(st, ed))
             batch_indices = indices[st:ed]
 
             label = labels[batch_indices]
