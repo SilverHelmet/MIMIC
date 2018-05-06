@@ -336,7 +336,7 @@ if __name__ == '__main__':
         if epoch_round - last_hit_round -1 >= early_stop_round:
             print "early stop at round %d" %(epoch_round + 1)
             break
-        model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1, initial_epoch = epoch_round)
+        model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
         # print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
