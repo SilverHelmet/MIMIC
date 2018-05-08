@@ -315,7 +315,7 @@ def parse_sparse_static_feature(static_feature, size):
 
 
 def sample_generator(dataset, setting, shuffle = False):
-    Print("start generate samples")
+    # Print("start generate samples")
     labels = dataset.labels
     features = dataset.features
     events = dataset.events

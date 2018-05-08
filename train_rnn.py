@@ -343,13 +343,19 @@ if __name__ == '__main__':
         #     %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
         print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
         
-        if val_eval[4] > max_merged_auc:
+        if val_eval[4] > max_merged_auc or True:
             last_hit_round = epoch_round
-            print "new max max_merged_auROC"
             test_eval = datasets[2].eval(model, setting)
+            if val_eval[4] > max_merged_auc:
+                max_merged_auc = val_eval[4]
+                print "new max max_merged_auROC"
+                print_eval("round %d" %(epoch_round+1), test_eval)
+            else:
+                print_eval("round-%d " %(epoch_round+1), test_eval)
+            
             # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
-            print_eval("round %d" %(epoch_round+1), test_eval)
-            max_merged_auc = val_eval[4]
+            
+
             if "model_out" in setting:
                 model.save(setting['model_out'])
         new_weights = {}
