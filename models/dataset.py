@@ -315,6 +315,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
 
 def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq):
     gcn_feature_mat = np.zeros((len(event_seq), (width * 2 + 1) * feature_dim))
+    return gcn_feature_mat
     pre_map = {}
     event_map = {}
     next_map = {}
