@@ -345,7 +345,7 @@ def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq):
         base = width * feature_dim
         fill_feature(feature_matrix[idx], row, base)
 
-        e_idx
+        e_idx = idx
         for _ in range(width):
             e_idx = next_map[e_idx]
             if e_idx == -1:
