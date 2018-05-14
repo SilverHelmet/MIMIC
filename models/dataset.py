@@ -313,8 +313,7 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
             st = ed
     return seg_fea_matrix
 
-def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq):
-    gcn_feature_mat = np.zeros((len(event_seq), (width * 2 + 1) * feature_dim))
+def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq, gcn_feature_mat):
     pre_map = {}
     event_map = {}
     next_map = {}
@@ -353,7 +352,7 @@ def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq):
             base += feature_dim
             fill_feature(feature_matrix[e_idx], row, base)
     
-    return gcn_feature_mat
+    # return gcn_feature_mat
 
 
 def parse_sparse_static_feature(static_feature, size):
@@ -460,13 +459,12 @@ def sample_generator(dataset, setting, shuffle = False):
                 static_feature_mat = np.array(static_feature_mat)
 
             if gcn_numeric_feature:
-                
-                gcn_num_feature_matries = []
+                # gcn_num_feature_matries = []
                 feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
                 gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
-                # for j in range(ed - st):
-                #     idx = batch_indices[j]
-                #     gcn_num_feature_matries.append(gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j]))
+                for j in range(ed - st):
+                    idx = batch_indices[j]
+                    gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
                 # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
 
             if gcn_seg:
