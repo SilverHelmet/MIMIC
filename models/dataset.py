@@ -351,7 +351,7 @@ def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq, gcn_featu
                 break
             base += feature_dim
             fill_feature(feature_matrix[e_idx], row, base)
-    
+    print gcn_feature_mat.sum()
     # return gcn_feature_mat
 
 
