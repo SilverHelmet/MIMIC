@@ -1,0 +1,4 @@
+GCN=True
+GCN_Seg=True
+gcn_numeric_feature=True
+gcn_numric_feature_hidden_dim=16

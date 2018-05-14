@@ -287,6 +287,17 @@ def gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim):
             idx += 2
     return vec
 
+def fill_feature(feature_pairs, row, base):
+    idx = 0
+    length = len(feature_pairs)
+    while idx < length:
+        if feature_pairs[idx + 1] != 0:
+            index = int(feature_pairs[idx])
+            value = feature_pairs[idx + 1]
+            row[base + idx] += value
+        else:
+            break
+        idx += 2
 
 def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
     '''
@@ -301,6 +312,47 @@ def gen_seged_feature_seq(feature_matrix, split, max_seg_length, feature_dim):
             seg_fea_matrix.append(gen_feature(feature_matrix, st, ed, max_seg_length, feature_dim))
             st = ed
     return seg_fea_matrix
+
+def gen_gcn_feature_mat(feature_matrix, width, feature_dim, event_seq):
+    gcn_feature_mat = np.zeros((len(event_seq), (width * 2 + 1) * feature_dim))
+    pre_map = {}
+    event_map = {}
+    next_map = {}
+    for idx in range(len(event_seq)):
+        event = event_seq[idx]
+        pre = event_map.get(event, -1)
+        event_map[event] = idx
+        pre_map[idx] = pre
+
+    event_map = {}
+    for idx in range(len(event_seq) - 1, -1, -1):
+        event = event_seq[idx]
+        next = event_map.get(event, -1)
+        event_map[event] = idx
+        next_map[idx] = next
+
+    for idx, event in enumerate(event_seq):
+        base = width * feature_dim
+        row = gcn_feature_mat[idx]
+        for _ in range(width):
+            e_idx = pre_map[idx]
+            if e_idx == -1:
+                break
+            base -= feature_dim
+            fill_feature(feature_matrix[e_idx], row, base)
+
+        base = width * feature_dim
+        fill_feature(feature_matrix[idx], row, base)
+
+        for _ in range(width):
+            e_idx = next_map[idx]
+            if e_idx == -1:
+                break
+            base += feature_dim
+            fill_feature(feature_matrix[e_idx], row, base)
+    
+    return gcn_feature_mat
+
 
 def parse_sparse_static_feature(static_feature, size):
     vec = np.zeros((size, ))
@@ -332,6 +384,8 @@ def sample_generator(dataset, setting, shuffle = False):
     feature_dim = setting.get('feature_dim', None)
     gcn = setting['GCN']
     gcn_seg = setting['GCN_Seg']
+    gcn_numeric_feature = setting['gcn_numeric_feature']
+    gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     if gcn:
         times = dataset.times
 
@@ -403,6 +457,14 @@ def sample_generator(dataset, setting, shuffle = False):
                     static_feature_mat.append(parse_sparse_static_feature(static_feature, static_feature_size))
                 static_feature_mat = np.array(static_feature_mat)
 
+            if gcn_numeric_feature:
+                gcn_num_feature_matries = []
+                feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
+                for j in range(ed - st):
+                    idx = batch_indices[j]
+                    gcn_num_feature_matries.append(gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j]))
+                gcn_num_feature_matries = np.array(gcn_num_feature_matries)
+
             if gcn_seg:
                 gcn_seg_mat = []
                 for batch_seg in seg:
@@ -416,6 +478,8 @@ def sample_generator(dataset, setting, shuffle = False):
                 inputs.append(seg_feature_matrixes)
             if gcn:
                 inputs.append(As)
+            if gcn_numeric_feature:
+                inputs.append(gcn_num_feature_matries)
             if gcn_seg:
                 inputs.append(gcn_seg_mat)
             if use_static_feature:
@@ -427,6 +491,7 @@ def sample_generator(dataset, setting, shuffle = False):
             i += batch_size 
             if i >= nb_sample:
                 i = 0
+                break
 
 
 if __name__ == "__main__":

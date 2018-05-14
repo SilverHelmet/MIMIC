@@ -89,6 +89,9 @@ def define_simple_seg_rnn(setting):
     disturbance = setting['disturbance']
     feature_dim = setting.get('feature_dim', 0)
     max_seg_length = setting.get('max_seg_length', 0)
+    gcn_numeric_feature = setting['gcn_numeric_feature']
+    gcn_numeric_width = setting.get('gcn_numeric_width', 1)
+    gcn_numric_feature_hidden_dim = setting.get('gcn_numric_feature_hidden_dim', 0)
     
 
     print "define simple seg rnn"
@@ -117,6 +120,13 @@ def define_simple_seg_rnn(setting):
         edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
         inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
+        if gcn_numeric_feature:
+            num_feature = Input(shape = (event_len, (gcn_numeric_width * 2 + 1) * feature_dim), name = 'numeric feature')
+            inputs.append(num_feature)
+            num_emd = TimeDistributedDense(gcn_numric_feature_hidden_dim, activation = 'tanh', name = 'numeric feature embedding')(num_feature)
+            embedding = merge(inputs = [embedding, num_emd], name = 'merged embedding', mode = 'concat')
+            
+
         gcn = GraphAttention(F_ = 64, attn_heads=1, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
@@ -248,6 +258,8 @@ def default_setting():
 
         'GCN': False,
         'GCN_Seg': False,
+        'gcn_numeric_feature': False,
+        'gcn_numeric_width': 1,
     }
     return setting
 

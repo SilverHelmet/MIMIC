@@ -2,11 +2,15 @@
 disturbance=False
 GCN=True
 GCN_Seg=True
+gcn_numeric_feature=True
+gcn_numric_feature_hidden_dim=16
+gcn_numeric_width=1
 
 #model args
 embedding_dim=64
 hidden_dim=64
 att_hidden_dim=64
+feature_dim=649
 
 
 # model training 
