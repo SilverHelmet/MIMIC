@@ -461,12 +461,12 @@ def sample_generator(dataset, setting, shuffle = False):
 
             if gcn_numeric_feature:
                 gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
-                gcn_num_feature_matries = []
-                feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
-                for j in range(ed - st):
-                    idx = batch_indices[j]
-                    gcn_num_feature_matries.append(gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j]))
-                gcn_num_feature_matries = np.array(gcn_num_feature_matries)
+                # gcn_num_feature_matries = []
+                # feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
+                # for j in range(ed - st):
+                #     idx = batch_indices[j]
+                #     gcn_num_feature_matries.append(gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j]))
+                # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
 
             if gcn_seg:
                 gcn_seg_mat = []
