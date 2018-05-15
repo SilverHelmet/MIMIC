@@ -363,7 +363,7 @@ if __name__ == '__main__':
                 print "new max max_merged_auROC"
                 print_eval("round %d" %(epoch_round+1), test_eval)
             else:
-                print_eval("round-%d " %(epoch_round+1), test_eval)
+                print_eval("round-%d" %(epoch_round+1), test_eval)
             
             # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
             
