@@ -260,6 +260,7 @@ def default_setting():
         'GCN_Seg': False,
         'gcn_numeric_feature': False,
         'gcn_numeric_width': 1,
+        'gcn_time_width': 0.5,
     }
     return setting
 

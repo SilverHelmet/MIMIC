@@ -386,6 +386,7 @@ def sample_generator(dataset, setting, shuffle = False):
     gcn_seg = setting['GCN_Seg']
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
+    gcn_time_width = setting.get('gcn_time_width', 0.5)
     if gcn:
         times = dataset.times
 
@@ -414,7 +415,7 @@ def sample_generator(dataset, setting, shuffle = False):
                 time = times[batch_indices]
                 As = []
                 for sample_time in time:
-                    As.append(build_time_graph(sample_time, 0.5))
+                    As.append(build_time_graph(sample_time, gcn_time_width))
                 As = np.array(As)
             elif rnn == 'dlstm':
                 seged_event = event

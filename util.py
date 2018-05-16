@@ -205,7 +205,7 @@ def load_items(filepath):
 def load_setting(filepath, default_setting):
     setting = default_setting if default_setting else {}
 
-    if filepath.startswith("#"):
+    if filepath.startswith("@"):
         lines = filepath[1:].split("|")
     else:
         lines = file(filepath).readlines()
