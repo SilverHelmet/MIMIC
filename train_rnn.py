@@ -92,6 +92,8 @@ def define_simple_seg_rnn(setting):
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     gcn_numric_feature_hidden_dim = setting.get('gcn_numric_feature_hidden_dim', 0)
+    gcn_hidden_dim = setting['gcn_hidden_dim']
+    gcn_num_head = setting['gcn_num_head']
     
 
     print "define simple seg rnn"
@@ -127,7 +129,7 @@ def define_simple_seg_rnn(setting):
             embedding = merge(inputs = [embedding, num_emd], name = 'merged embedding', mode = 'concat')
             
 
-        gcn = GraphAttention(F_ = 64, attn_heads=1, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+        gcn = GraphAttention(F_ = gcn_hidden_dim, attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
             inputs.append(seg_mat)
@@ -257,6 +259,8 @@ def default_setting():
         'cnn_drop_rate': 0.5,
 
         'GCN': False,
+        'gcn_hidden_dim': 64,
+        'gcn_num_head':1,
         'GCN_Seg': False,
         'gcn_numeric_feature': False,
         'gcn_numeric_width': 1,
