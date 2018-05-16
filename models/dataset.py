@@ -228,8 +228,8 @@ def merge_event_by_seg(event_seq, split, event_dim, aggre_mode):
         event_cnts = norm_to_prob(event_cnts)
     return event_cnts
 
-def make_gcn_seg_mat(segment, n, m, k):
-    seg_mat = np.zeros((n, m, k))
+def make_gcn_seg_mat(segment, seg_mat):
+    # seg_mat = np.zeros((n, m, k))
     seg_group_idx = 0
     st = 0
     for ed in segment:
@@ -239,7 +239,7 @@ def make_gcn_seg_mat(segment, n, m, k):
             seg_mat[seg_group_idx][i - st][i] = 1
         st = ed
         seg_group_idx += 1
-    return seg_mat
+    # return seg_mat
 
 
 
@@ -386,7 +386,7 @@ def sample_generator(dataset, setting, shuffle = False):
     gcn_seg = setting['GCN_Seg']
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
-    gcn_time_width = setting.get('gcn_time_width', 0.5)
+    gcn_time_width = setting['gcn_time_width']
     if gcn:
         times = dataset.times
 
@@ -413,10 +413,11 @@ def sample_generator(dataset, setting, shuffle = False):
             if gcn:
                 seged_event = event
                 time = times[batch_indices]
-                As = []
-                for sample_time in time:
-                    As.append(build_time_graph(sample_time, gcn_time_width))
-                As = np.array(As)
+                # As = []
+                As = np.zeros((ed - st, event_len, event_len))
+                for idx, sample_time in enumerate(time):
+                    build_time_graph(sample_time, gcn_time_width, As[idx])
+                # As = np.array(As)
             elif rnn == 'dlstm':
                 seged_event = event
             elif rnn == 'attlstm' or rnn == 'attgru':
@@ -468,11 +469,12 @@ def sample_generator(dataset, setting, shuffle = False):
                 # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
 
             if gcn_seg:
-                gcn_seg_mat = []
-                for batch_seg in seg:
-                    seg_mat = make_gcn_seg_mat(batch_seg, max_segs, max_seg_length, event_len)
-                    gcn_seg_mat.append(seg_mat)
-                gcn_seg_mat = np.array(gcn_seg_mat)
+                # gcn_seg_mat = []
+                gcn_seg_mat = np.zeros((ed - st, max_segs, max_seg_length, event_len))
+                for idx, batch_seg in enumerate(seg):
+                    make_gcn_seg_mat(batch_seg, gcn_seg_mat[idx])
+                    # gcn_seg_mat.append(seg_mat)
+                # gcn_seg_mat = np.array(gcn_seg_mat)
 
 
             inputs = [seged_event]
