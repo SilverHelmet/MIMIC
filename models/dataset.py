@@ -3,7 +3,7 @@ import os
 import h5py
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
-from gcn.graph import build_time_graph
+from gcn.graph import build_time_graph, build_time_graph_2
 import glob
 
 class Dataset:
@@ -416,7 +416,7 @@ def sample_generator(dataset, setting, shuffle = False):
                 # As = []
                 As = np.zeros((ed - st, event_len, event_len))
                 for idx, sample_time in enumerate(time):
-                    build_time_graph(sample_time, gcn_time_width, As[idx])
+                    build_time_graph_2(sample_time, gcn_time_width, As[idx])
                 # As = np.array(As)
             elif rnn == 'dlstm':
                 seged_event = event
@@ -508,15 +508,25 @@ if __name__ == "__main__":
     # s_dataset.save(sample_dir)
 
     
-    for filepath in glob.glob(death_exper_dir + "/death*_1000.h5"):
-        s_dataset = Dataset(filepath)
-        s_dataset.load(True, False, True)
-    # s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
-    # s_dataset.load(True, True, True)
-    # s_dataset.print_shape()
-    # # s_dataset.trans_time()
-    # print s_dataset.times[1][:10]
-    # print s_dataset.times[1][-10:]
-    # A = build_time_graph(s_dataset.times[1], 0.5)
+    # for filepath in glob.glob(death_exper_dir + "/death*_1000.h5"):
+    #     s_dataset = Dataset(filepath)
+    #     s_dataset.load(True, False, True)
+    s_dataset = Dataset('death_exper/sample/samples.h5', 'death_exper/sample/samples_seg.h5')
+    s_dataset.load(True, True, True)
+    s_dataset.print_shape()
+    # s_dataset.trans_time()
+    print s_dataset.times[1][:10]
+    print s_dataset.times[1][-10:]
+    As = np.zeros((2, 1000, 1000))
+    build_time_graph(s_dataset.times[1], 1.0, As[0])
+    build_time_graph_2(s_dataset.times[1], 1.0, As[1])
+    print s_dataset.times[1][750:770]
+    for i in range(1000):
+        if (As[0][i] != As[1][i]).sum() != 0:
+            print i
+            print As[0][i][i-10:i+10]
+            print As[1][i][i-10:i+10]
+            break
+    print (As[0] != As[1]).sum()
 
 
