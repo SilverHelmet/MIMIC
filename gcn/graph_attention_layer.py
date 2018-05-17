@@ -109,7 +109,7 @@ class GraphAttention(Layer):
             dense = K.reshape(attn_for_self, (-1, N, 1)) + K.reshape(attn_for_neighs, (-1, 1, N))  #(batch_size X N X N)
 
             # Add nonlinearty
-            # dense = LeakyReLU(alpha=0.2)(dense)``
+            # dense = LeakyReLU(alpha=0.2)(dense)
             dense = K.relu(dense, alpha=0.2)
 
             # Mask values before activation (Vaswani et al., 2017)
