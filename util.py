@@ -1,4 +1,3 @@
-from pg import DB
 from pandas import DataFrame
 import sys
 import os
@@ -7,6 +6,10 @@ import time
 import re
 import numpy as np
 import commands
+try:
+    from pg import DB
+except ImportError:
+    sys.stderr.write('can\'t imprt module pg')
 
 
 def connect():
