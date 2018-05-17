@@ -9,7 +9,7 @@ import commands
 try:
     from pg import DB
 except ImportError:
-    sys.stderr.write('can\'t imprt module pg')
+    sys.stderr.write('can\'t imprt module pg\n')
 
 
 def connect():
