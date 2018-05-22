@@ -117,8 +117,11 @@ def get_timeAggre(times, max_chunk, chunk_length):
 def split_by_timeAggre(event_seq, time_seq, max_chunk, chunk_length):
     event_seq = [i for i in event_seq if i != 0]
     fi = len(event_seq)
-    time_seq = [parse_time(time) for time in time_seq[:fi]]
-    time_bias = [(time - time_seq[0]).total_seconds() / 3600.0 for time in time_seq]
+    if "float" in str(time_seq.dtype):
+        time_bias = time_seq[:fi]
+    else:
+        time_seq = [parse_time(time) for time in time_seq[:fi]]
+        time_bias = [(time - time_seq[0]).total_seconds() / 3600.0 for time in time_seq]
     seg = get_timeAggre(time_bias, max_chunk, chunk_length)
     return seg
 
