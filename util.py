@@ -68,7 +68,7 @@ def time_format_str(time):
     return '{0.year:4d}-{0.month:02d}-{0.day:02d} {0.hour:02d}:{0.minute:02d}:{0.second:02d}'.format(time)
 
 def parse_time(time_str):
-    if len(time_str) == 19:
+    if len(time_str) in [18, 19]:
         try:
             return datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
         except Exception, e:
