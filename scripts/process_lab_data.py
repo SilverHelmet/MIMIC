@@ -79,7 +79,7 @@ def load_data(path, start, end):
             #     np.pad(this_feature_id[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
             # chosen_feature_value.append(
             #     np.pad(this_feature_value[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
-            chosen_label.append(tmp[1])#use value as label
+            chosen_label.append(tmp[2])#use value as label
 
     chosen_event = np.asarray(chosen_event, dtype='int16')
     chosen_time = np.asarray(chosen_time)
