@@ -3,7 +3,7 @@ import cPickle as pickle
 import numpy as np
 import time
 from tqdm import tqdm
-from util import lab_exper_dir
+from util import lab_exper_dir, parse_time
 import os
 
 def time_to_stamp(time_string, start, time_format='%Y-%m-%d %H:%M:%S'):
@@ -32,15 +32,17 @@ def load_data(path, start, end):
     features = f['feature'][start:end]
     # features = feature_norm(features)
 
-    # time_shift = []
-    # for id in xrange(times.shape[0]):
-    #     event_time = times[id]
-    #     event_shift = []
-    #     start_time = time_to_stamp(event_time[0], 0.)
-    #     for i in xrange(event_time.shape[0]):
-    #         event_shift.append(time_to_stamp(event_time[i], start_time)/10800.)
-    #     time_shift.append(event_shift)
-    # times = np.asarray(time_shift, dtype='float32')
+    time_shift = []
+    for id in xrange(times.shape[0]):
+
+        event_time = times[id]
+        st = parse_time(event_time[0])
+        new_event_time = []
+        for time in event_time:
+            new_event_time.append((parse_time(time) - st).total_seconds()/3600.0)
+
+        time_shift.append(new_event_time)
+    times = np.asarray(time_shift, dtype='float32')
 
     chosen_event = []
     chosen_time = []
