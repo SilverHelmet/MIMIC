@@ -39,7 +39,10 @@ def load_data(path, start, end):
         st = parse_time(event_time[0])
         new_event_time = []
         for time in event_time:
-            new_event_time.append((parse_time(time) - st).total_seconds()/3600.0)
+            if len(time) > 0:
+                new_event_time.append((parse_time(time) - st).total_seconds()/3600.0)
+            else:
+                new_event_time.append(-1)
 
         time_shift.append(new_event_time)
     times = np.asarray(time_shift, dtype='float32')
