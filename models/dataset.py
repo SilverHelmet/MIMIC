@@ -49,7 +49,7 @@ class Dataset:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
-            if load_transfer_time:
+            if load_transfer_time and '|S' not in str(f['time'].dtype):
                 time_path = self.dataset_file.replace('.h5', '_time.npy')
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
