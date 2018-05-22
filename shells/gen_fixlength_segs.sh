@@ -13,7 +13,7 @@ length=1
 dir=lab_exper
 files="labtest_test_1000.h5 labtest_train_1000.h5 labtest_valid_1000.h5"
 
-seg_dir=$dir/{segs}
+seg_dir=$dir/segs
 
 if [ ! -d "${seg_dir}"]; then
     mkdir "${seg_dir}"
