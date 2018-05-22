@@ -430,13 +430,14 @@ def sample_generator(dataset, setting, shuffle = False):
             event = events[batch_indices]
             seg = segs[batch_indices]
 
-            if gcn:
+            if gcn or gcn_seg: 
                 seged_event = event
-                time = times[batch_indices]
                 # As = []
-                As = np.zeros((ed - st, event_len, event_len))
-                for idx, sample_time in enumerate(time):
-                    build_time_graph_2(sample_time, gcn_time_width, As[idx])
+                if gcn:
+                    time = times[batch_indices]
+                    As = np.zeros((ed - st, event_len, event_len))
+                    for idx, sample_time in enumerate(time):
+                        build_time_graph_2(sample_time, gcn_time_width, As[idx])
                 # As = np.array(As)
             elif rnn == 'dlstm':
                 seged_event = event
