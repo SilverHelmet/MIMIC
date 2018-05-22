@@ -7,6 +7,8 @@
 dir=zhu_exper
 files="test.h5 train.h5 valid.h5"
 seg_dir=$dir/segs
+dir=lab_exper
+files="labtest_test_1000.h5 labtest_train_1000.h5 labtest_valid_1000.h5"
 
 for file in $files
 do

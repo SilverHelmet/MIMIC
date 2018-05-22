@@ -195,14 +195,14 @@ class Dataset:
             merged_acc = accuracy_score(self.merged_labels, merged_prediction)
 
         if calc_merged_score:
-            return (acc, auROC, auPRC, reverse_auPRC, merged_acc, merged_auROC, merged_auPRC, reverse_auPRC)
+            return (acc, auROC, auPRC, reverse_auPRC, merged_acc, merged_auROC, merged_auPRC, reverse_merged_auPRC)
         else:
             return (acc, auROC, auPRC, reverse_auPRC)
 
 def print_eval(prefix, result):
     out = [prefix]
     out.extend(result)
-    print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
+    print "%s acc = %.4f, auROC = %.4f, auPRC = %.4f, reverse_auPRC = %.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f, merged_reverse_auPRC = %.4f" %(tuple(out))
     
 
 def add_padding(l, max_len, padding_value = 0):

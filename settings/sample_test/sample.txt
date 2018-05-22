@@ -14,7 +14,7 @@ feature_dim=649
 
 
 # model training 
-batch_size=3
+batch_size=10
 nb_epoch=10
 l2_reg_cof=0.0001
 lr=0.001
