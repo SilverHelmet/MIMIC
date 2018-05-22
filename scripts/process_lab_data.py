@@ -92,7 +92,7 @@ def load_data(path, start, end):
 
 def load_data_all(name, start, end):
     lab_path = os.path.join(lab_exper_dir, 'Lab.h5')
-    f = h5py.File(lab_path + '/labtest_{}_1000.h5'.format(name), 'w')
+    f = h5py.File(lab_exper_dir + '/labtest_{}_1000.h5'.format(name), 'w')
     events, times, chosen_feature, labels = load_data(lab_path, start, end)
     f['event'] = events
     f['time'] = times
