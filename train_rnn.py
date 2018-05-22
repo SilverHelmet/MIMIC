@@ -342,7 +342,7 @@ if __name__ == '__main__':
     for layer in model.layers:
         name = layer.name
         weights[name] = layer.get_weights()
-    max_merged_auc = 0
+    max_auc = 0
     # K.set_learning_phase(0)
     # for x, y in sample_generator(datasets[0], setting, shuffle = True):
     #     for xs in x:
@@ -360,12 +360,12 @@ if __name__ == '__main__':
         #     %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
         print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
         
-        if val_eval[4] > max_merged_auc or True:
+        if val_eval[1] > max_auc or True:
             last_hit_round = epoch_round
             test_eval = datasets[2].eval(model, setting)
-            if val_eval[4] > max_merged_auc:
-                max_merged_auc = val_eval[4]
-                print "new max max_merged_auROC"
+            if val_eval[1] > max_auc:
+                max_auc = val_eval[1]
+                print "new max max_auc"
                 print_eval("round %d" %(epoch_round+1), test_eval)
             else:
                 print_eval("round-%d" %(epoch_round+1), test_eval)
@@ -375,20 +375,20 @@ if __name__ == '__main__':
 
             if "model_out" in setting:
                 model.save(setting['model_out'])
-        new_weights = {}
-        
-        for layer in model.layers:
-            name = layer.name
-            new_weights[name] = layer.get_weights()
-        if weights is not None:
-            diff = {}
-            for name in new_weights:
-                new_weight = new_weights[name]
-                weight = weights[name]
-                for i in range(len(weight)):
-                    diff[name + "_" + str(weight[i].shape)] = np.abs(weight[i] - new_weight[i]).mean()
-            for name in sorted(diff.keys()):
-                print '\t', name, "mean diff =", diff[name]
-        weights = new_weights
+                
+        # new_weights = {}
+        # for layer in model.layers:
+        #     name = layer.name
+        #     new_weights[name] = layer.get_weights()
+        # if weights is not None:
+        #     diff = {}
+        #     for name in new_weights:
+        #         new_weight = new_weights[name]
+        #         weight = weights[name]
+        #         for i in range(len(weight)):
+        #             diff[name + "_" + str(weight[i].shape)] = np.abs(weight[i] - new_weight[i]).mean()
+        #     for name in sorted(diff.keys()):
+        #         print '\t', name, "mean diff =", diff[name]
+        # weights = new_weights
     print "end trainning"
 

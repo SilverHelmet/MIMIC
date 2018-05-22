@@ -29,20 +29,25 @@ class Dataset:
         return tuple(datasets)
 
     def load(self, load_time = False, load_static_feature = False, load_transfer_time = False):
+        
         self.load_time = load_time
         self.load_static_feature = load_static_feature
         f = h5py.File(self.dataset_file, 'r')
+        self.feature_set = f.keys()
         self.labels = f['label'][:]
         self.size = len(self.labels)
         self.events = f['event'][:]
-        self.label_times = f['label_time'][:]
-        self.predicting_times = f['predicting_time'][:]
+        if 'label_time' in f:
+            self.label_times = f['label_time'][:]
+        if 'predicting_time' in f:
+            self.predicting_times = f['predicting_time'][:]
         if 'feature' in f:
             self.features = f['feature'][:]
         else:
             self.features = np.zeros((1,1))
-        self.ids = f['sample_id'][:]
-        self.merged_labels = merge_label(self.labels, self.ids)
+        if 'sample_id' in f:
+            self.ids = f['sample_id'][:]
+            self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
             if load_transfer_time:
                 time_path = self.dataset_file.replace('.h5', '_time.npy')
@@ -157,27 +162,42 @@ class Dataset:
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
+        calc_merged_score = 'sample_id' in self.feature_set
 
         auROC = roc_auc_score(self.labels, prediction)
 
-        merged_prediction = merge_prob(prediction, self.ids, max)
-        merged_auROC = roc_auc_score(self.merged_labels, merged_prediction)
+        if calc_merged_score:
+            merged_prediction = merge_prob(prediction, self.ids, max)
+            merged_auROC = roc_auc_score(self.merged_labels, merged_prediction)
 
         precision, recall, thresholds = precision_recall_curve(self.labels, prediction)
         auPRC = auc(recall, precision)
-        precision, recall, thresholds = precision_recall_curve(self.merged_labels, merged_prediction)
-        merged_auPRC = auc(recall, precision)
+
+        precision, recall, thresholds = precision_recall_curve(1 - self.labels, 1 - prediction)
+        reverse_auPRC = auc(recall, precision)
+
+
+        if calc_merged_score:
+            precision, recall, thresholds = precision_recall_curve(self.merged_labels, merged_prediction)
+            merged_auPRC = auc(recall, precision)
+
+            precision, recall, thresholds = precision_recall_curve(1 - self.merged_labels, 1 - merged_prediction)
+            reverse_merged_auPRC = auc(recall, precision)
 
 
         prediction[prediction >= 0.5] = 1
         prediction[prediction < 0.5] =0
         acc = accuracy_score(self.labels, prediction)
 
-        merged_prediction[merged_prediction >= 0.5] = 1
-        merged_prediction[merged_prediction < 0.5] = 0
-        merged_acc = accuracy_score(self.merged_labels, merged_prediction)
+        if calc_merged_score:
+            merged_prediction[merged_prediction >= 0.5] = 1
+            merged_prediction[merged_prediction < 0.5] = 0
+            merged_acc = accuracy_score(self.merged_labels, merged_prediction)
 
-        return (acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC)
+        if calc_merged_score:
+            return (acc, auROC, auPRC, reverse_auPRC, merged_acc, merged_auROC, merged_auPRC, reverse_auPRC)
+        else:
+            return (acc, auROC, auPRC, reverse_auPRC)
 
 def print_eval(prefix, result):
     out = [prefix]
