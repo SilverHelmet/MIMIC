@@ -4,6 +4,7 @@ import numpy as np
 import time
 from tqdm import tqdm
 from util import lab_exper_dir
+import os
 
 def time_to_stamp(time_string, start, time_format='%Y-%m-%d %H:%M:%S'):
     if (time_string==""):
