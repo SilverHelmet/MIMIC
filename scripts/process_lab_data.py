@@ -37,6 +37,7 @@ def load_data(path, start, end):
 
         event_time = times[id]
         st = parse_time(event_time[0])
+        assert st
         new_event_time = []
         for time in event_time:
             if len(time) > 0:
