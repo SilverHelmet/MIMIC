@@ -162,7 +162,7 @@ class Dataset:
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
-        calc_merged_score = 'sample_id' in self.feature_set
+        calc_merged_score = 'sample_id' in self.feature_set and False
 
         auROC = roc_auc_score(self.labels, prediction)
 
@@ -202,7 +202,7 @@ class Dataset:
 def print_eval(prefix, result):
     out = [prefix]
     out.extend(result)
-    if len(out) == 4:
+    if len(out) == 5:
         print "%s acc = %.4f, auROC = %.4f, auPRC = %.4f, reverse_auPRC = %.4f" %(tuple(out))
     else:
         print "%s acc = %.4f, auROC = %.4f, auPRC = %.4f, reverse_auPRC = %.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f, merged_reverse_auPRC = %.4f" %(tuple(out))

@@ -18,7 +18,7 @@ def merge(p1, p2):
         res.append(str(term) + "(" + str(delta) + ")")
     merged_res = []
     for i in range(3):
-        merged_res.append(res[i] + "/" + res[i+3])
+        merged_res.append(res[i] + "/" + res[i+4])
     return merged_res
 
 
