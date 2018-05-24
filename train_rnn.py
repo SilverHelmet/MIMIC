@@ -130,7 +130,7 @@ def define_simple_seg_rnn(setting):
             embedding = merge(inputs = [embedding, num_emd], name = 'merged embedding', mode = 'concat')
             
         if gcn_flag:
-            gcn = GraphAttention(F_ = gcn_hidden_dim, attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'elu', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(F_ = gcn_hidden_dim, attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         else:
             gcn = embedding
 

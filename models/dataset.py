@@ -162,7 +162,7 @@ class Dataset:
 
     def eval(self, model, setting):
         prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
-        calc_merged_score = 'sample_id' in self.feature_set and False
+        calc_merged_score = 'sample_id' in self.feature_set
 
         auROC = roc_auc_score(self.labels, prediction)
 

@@ -3,3 +3,5 @@ GCN_Seg=True
 gcn_numeric_feature=True
 gcn_numric_feature_hidden_dim=16
 feature_dim=649
+gcn_hidden_dim=64
+gcn_num_head=1
