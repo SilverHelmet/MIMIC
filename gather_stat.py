@@ -27,6 +27,8 @@ def handle(filename, outf):
 
 
 if __name__ == '__main__':
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
     outf = file(os.path.join(result_dir, 'stat.tsv'), 'w')
     for filename in glob.glob(stat_dir + "/*.tsv"):
         handle(filename, outf)

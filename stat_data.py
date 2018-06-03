@@ -314,19 +314,19 @@ if __name__ == '__main__':
     # process('data/chartevents_8.tsv', 'stat/test.stat')
 
     # stat data
-    # value_stats = {}
-    # for filename in glob.glob(data_dir + "/*tsv"):
-    #     stat_filename = os.path.join(stat_dir, os.path.basename(filename))
-    #     process(filename, stat_filename, value_stats)
-    # if len(value_stats) > 0:
-    #     write_value_stat(value_stats, os.path.join(result_dir, 'value_coverage_stat.tsv'))
+    value_stats = {}
+    for filename in glob.glob(data_dir + "/*tsv"):
+        stat_filename = os.path.join(stat_dir, os.path.basename(filename))
+        process(filename, stat_filename, value_stats)
+    if value_stats and len(value_stats) > 0:
+        write_value_stat(value_stats, os.path.join(result_dir, 'value_coverage_stat.tsv'))
 
 
     # filepaths = glob.glob(data_dir + "/*tsv")
     # count_event(filepaths, os.path.join(result_dir, 'event_cnt.tsv'))
 
     # print statistics
-    stat = SimpleStat()
-    for filename in glob.glob(data_dir + "/*tsv"):
-        gather_statistics(filename, stat)
-    stat.print_info()
+    # stat = SimpleStat()
+    # for filename in glob.glob(data_dir + "/*tsv"):
+    #     gather_statistics(filename, stat)
+    # stat.print_info()
