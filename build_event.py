@@ -257,13 +257,13 @@ if __name__ == '__main__':
     event_des_file = os.path.join(result_dir, "event_des_text.tsv")
     feature_des_file = os.path.join(result_dir, "feature_des.tsv")
     builders = gen_builders(type_features, text_map, event_des_file, feature_des_file)
-    # for filepath in glob.glob(data_dir + "/*tsv"):
-    #     name = os.path.basename(filepath)
-    #     # if name in ["labevents.tsv", "datetimeevents.tsv"]:
-    #     # if filepath.find("labevents") == -1:
-    #     #     continue
-    #     build_event(filepath, builders)
-    # print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
+    for filepath in glob.glob(data_dir + "/*tsv"):
+        name = os.path.basename(filepath)
+        # if name in ["labevents.tsv", "datetimeevents.tsv"]:
+        # if filepath.find("labevents") == -1:
+        #     continue
+        build_event(filepath, builders)
+    print "#TimeDuration < 0 error =", TimeFeatureExtractor.nerror
 
     # print_event(builders, "static_data/event_des.txt")
     # print builders['labevents.51294'].feature_texts
