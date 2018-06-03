@@ -398,6 +398,9 @@ if __name__ == '__main__':
     for table in tables[:]:
         extract_from_table(table, extractor_map[table], only_test = False, limit = 1000000)
 
+        
+
+
 
 
 

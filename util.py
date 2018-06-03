@@ -1,4 +1,3 @@
-from pandas import DataFrame
 import sys
 import os
 import datetime
@@ -10,14 +9,27 @@ try:
     from pg import DB
 except ImportError:
     sys.stderr.write('can\'t imprt module pg\n')
+import argparse
 
 
 def connect():
-    host = '162.105.146.246'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host')
+    parser.add_argument('--user')
+    parser.add_argument('--passwd')
+    parser.add_argument('--schema', default = 'mimiciii')
+    args = parser.parse_args()
+
+    # host = '162.105.146.246'
     # host = 'localhost'
-    schema = 'mimiciii'
-    db = DB(host = host, user = 'mimic', passwd = 'mimic')
-    db.query('set search_path to %s' %(schema))
+    # schema = 'mimiciii'
+    
+    host = args.host
+    user = args.user
+    passwd = args.passwd
+    Print('connect to %s, user = %s, search_path = %d' %(host, user, args.schema))
+    db = DB(host = host, user = user, passwd = passwd)
+    db.query('set search_path to %s' %(args.schema))
     return db
 
 class Patient():
@@ -53,7 +65,7 @@ class Patient():
                 columns = patient.names
             data.append(patient.to_row())
             index.append(pid)
-
+        from pandas import DataFrame
         dt = DataFrame(data = data, index = index, columns = columns)
         dt.sort_index()
         dt.to_csv(path)
