@@ -173,7 +173,7 @@ def process(filename, outfilename, value_stats):
     cnt = 0
     for line in file(filename, 'r'):
         cnt += 1
-        if cnt % 10000 == 0:
+        if cnt % 100000 == 0:
             print "\t %d lines" %cnt
         parts = extractor.parse_line(line)
 
