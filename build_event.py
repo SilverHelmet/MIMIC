@@ -257,6 +257,8 @@ if __name__ == '__main__':
     event_des_file = os.path.join(result_dir, "event_des_text.tsv")
     feature_des_file = os.path.join(result_dir, "feature_des.tsv")
     builders = gen_builders(type_features, text_map, event_des_file, feature_des_file)
+    if not os.path.exists(event_dir):
+        os.mkdir(event_dir)
     for filepath in glob.glob(data_dir + "/*tsv"):
         name = os.path.basename(filepath)
         # if name in ["labevents.tsv", "datetimeevents.tsv"]:
