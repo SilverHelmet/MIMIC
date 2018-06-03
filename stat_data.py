@@ -316,6 +316,8 @@ if __name__ == '__main__':
     # stat data
     if not os.path.exists(stat_dir):
         os.mkdir(stat_dir)
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
     value_stats = {}
     for filename in glob.glob(data_dir + "/*tsv"):
         stat_filename = os.path.join(stat_dir, os.path.basename(filename))
