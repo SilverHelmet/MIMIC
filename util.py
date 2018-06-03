@@ -27,7 +27,7 @@ def connect():
     host = args.host
     user = args.user
     passwd = args.passwd
-    Print('connect to %s, user = %s, search_path = %d' %(host, user, args.schema))
+    Print('connect to %s, user = %s, search_path = %s' %(host, user, args.schema))
     db = DB(host = host, user = user, passwd = passwd)
     db.query('set search_path to %s' %(args.schema))
     return db
