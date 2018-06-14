@@ -183,6 +183,8 @@ def get_admission_map(admit_path, disch_path, death_path):
 
 
 if __name__ == '__main__':
+    if not os.path.exists(static_data_dir):
+        os.mkdir(static_data_dir)
     # diagnose code map
     # diag_icd_map = get_d_icd_diagnoses()
     # write_map(diag_icd_map, os.path.join(static_data_dir, 'diag_ICD9.tsv'))
