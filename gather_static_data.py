@@ -188,16 +188,16 @@ if __name__ == '__main__':
     # write_map(diag_icd_map, os.path.join(static_data_dir, 'diag_ICD9.tsv'))
 
     # item code map
-    # item_map = get_d_items()
-    # write_map(get_d_items(), os.path.join(static_data_dir, 'item_code.tsv'))
+    item_map = get_d_items()
+    write_map(get_d_items(), os.path.join(static_data_dir, 'item_code.tsv'))
 
     # labitem code map
-    # labitem_map = get_d_labitems()
-    # write_map(labitem_map, os.path.join(static_data_dir, "labitem_code.tsv"))
+    labitem_map = get_d_labitems()
+    write_map(labitem_map, os.path.join(static_data_dir, "labitem_code.tsv"))
 
     # gather admission from database
-    admission_map = get_single_admission()
-    write_map(admission_map, os.path.join(static_data_dir, "single_admission.tsv"))
+    # admission_map = get_single_admission()
+    # write_map(admission_map, os.path.join(static_data_dir, "single_admission.tsv"))
     
 
     # admission map

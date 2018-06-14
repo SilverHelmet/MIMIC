@@ -146,8 +146,7 @@ def write_feature_info(out_path):
     event_des = EventDescription()
     outf = file(out_path, 'w')
 
-    for event_id in range(2, 3418):
-        
+    for event_id in range(2, max(event_des.id2rtype.keys()) + 1):
         rtype = event_des.id2rtype[event_id]
 
         names = event_des.get_name(rtype)
