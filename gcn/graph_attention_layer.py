@@ -142,7 +142,7 @@ class GraphAttention(Layer):
         softmax = hard_softmax(masked)
 
         # Linear combination with neighbors' features
-        node_features = K.batch_dot(dropout, X)  # (batch_size X N x F')
+        node_features = K.batch_dot(softmax, X)  # (batch_size X N x F')
         return node_features
 
     def call(self, inputs, mask = None):
