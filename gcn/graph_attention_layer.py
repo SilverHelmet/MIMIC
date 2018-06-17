@@ -120,7 +120,7 @@ class GraphAttention(Layer):
             self.attn_kernels.append(attn_kernel)
         self.built = True
 
-    def call_mode0(self, X, A, attn_kernel):
+    def call_mode0(self, X, A, attn_kernel, N):
         attn_for_self = K.dot(X, attn_kernel[0])    # (batch_size X N x 1), [a_1]^T [Wh_i]
         attn_for_neighs = K.dot(X, attn_kernel[1])  # (batch_size X N x 1), [a_2]^T [Wh_j]
 
@@ -158,7 +158,7 @@ class GraphAttention(Layer):
             attention_kernel = self.attn_kernels[head]  # Attention kernel a in the paper (2F' x 1)
 
             if self.mode == 0:
-                node_features = self.call_mode0(X, A, attention_kernel)
+                node_features = self.call_mode0(X, A, attention_kernel, N)
 
             # Compute inputs to attention network
             # linear_transf_X = K.dot(X, kernel)  # (batch_size X N x F')
