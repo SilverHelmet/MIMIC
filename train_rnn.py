@@ -123,14 +123,16 @@ def define_simple_seg_rnn(setting):
             edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
             inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
+        emd_dim = embedding_dim
         if gcn_numeric_feature:
             num_feature = Input(shape = (event_len, (gcn_numeric_width * 2 + 1) * feature_dim), name = 'numeric feature')
             inputs.append(num_feature)
             num_emd = TimeDistributedDense(gcn_numric_feature_hidden_dim, activation = 'tanh', name = 'numeric feature embedding')(num_feature)
             embedding = merge(inputs = [embedding, num_emd], name = 'merged embedding', mode = 'concat')
+            emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
             
         if gcn_flag:
-            gcn = GraphAttention(gcn_hidden_dim, attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(gcn_hidden_dim, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         else:
             gcn = embedding
 
