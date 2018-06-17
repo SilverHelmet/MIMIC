@@ -114,6 +114,7 @@ def define_simple_seg_rnn(setting):
     print "rnn = %s" %rnn_model
     gcn_flag = setting['GCN']
     gcn_seg = setting['GCN_Seg']
+    gcn_mode = setting['gcn_mode']
     if gcn_flag:
         print 'ues graph convolution network'
 
@@ -132,7 +133,7 @@ def define_simple_seg_rnn(setting):
             emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
             
         if gcn_flag:
-            gcn = GraphAttention(gcn_hidden_dim, attention_mode = -1, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(gcn_hidden_dim, attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         else:
             gcn = embedding
 
@@ -270,6 +271,7 @@ def default_setting():
         'gcn_numeric_feature': False,
         'gcn_numeric_width': 1,
         'gcn_time_width': 0.5,
+        'gcn_mode': -1,
     }
     return setting
 
