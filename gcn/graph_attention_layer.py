@@ -174,7 +174,7 @@ class GraphAttention(Layer):
 
             if self.mode == -1:
                 node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = True)
-            elif self.mode == 0
+            elif self.mode == 0:
                 node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = False)
             
             
