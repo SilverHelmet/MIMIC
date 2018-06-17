@@ -29,11 +29,12 @@ class GraphAttention(Layer):
         '''
         attention_mode
             h: node embedding
-            0: score = (h0, h1) .* w1
+            -1: score = (t0, t1) .* w2, ti = hi * w1
+            0 : score = (h0, h1) .* w1
             *1: score = (h0, h1) * w1 * w2
-            2: h = (h0, sigma hi * ai) , ai = hi .* w1
-            3: h' = h * w2
-            4: h = (h0, sigma ti * ai), ti = hi * w1, ai = ti .* w2
+            2 : h = (h0, sigma hi * ai) , ai = hi .* w1
+            3 : h' = h * w2
+            4 : h = (h0, sigma ti * ai), ti = hi * w1, ai = ti .* w2
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -61,17 +62,19 @@ class GraphAttention(Layer):
             self.supports_masking = False
 
         # Populated by build()
-        # self.kernels = []       # Layer kernels for attention heads
+        self.kernels = []       # Layer kernels for attention heads
         self.attn_kernels = []  # Attention kernels for attention heads
 
-        if self.mode == 0:
+        if self.mode == -1:
+            output_dim = self.F1
+        elif self.mode == 0:
             output_dim = self.input_dim
         elif self.mode == 1:
             output_dim = self.F2
         elif self.mode == 2:
             output_dim = self.input_dim * 2
         elif self.mode == 3:
-            output_dim = self.F2
+            output_dim = self.F1
 
         if attn_heads_reduction == 'concat':
             
@@ -90,17 +93,21 @@ class GraphAttention(Layer):
         F = input_shape[0][-1]
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
+            if self.mode == -1:
             # Layer kernel
-            # kernel = self.add_weight(shape=(F, self.F_),
-            #                          initializer=self.kernel_initializer,
-            #                          name='kernel_%s' % head,
-            #                          regularizer=self.kernel_regularizer,
-            #                          constraint=self.kernel_constraint)
-            # self.kernels.append(kernel)
+                kernel = self.add_weight(shape=(F, self.F1),
+                                        initializer=self.kernel_initializer,
+                                        name='kernel_%s' % head,
+                                        regularizer=self.kernel_regularizer,
+                                        constraint=self.kernel_constraint)
+                self.kernels.append(kernel)
 
             # Attention kernel
             shapes = []
-            if self.mode == 0:
+            if self.mode == -1:
+                shapes.append((self.F1, 1))
+                shapes.append((self.F1, 1))
+            elif self.mode == 0:
                 shapes.append((F, 1))
                 shapes.append((F, 1))
             elif self.mode == 2:
@@ -120,9 +127,14 @@ class GraphAttention(Layer):
             self.attn_kernels.append(attn_kernel)
         self.built = True
 
-    def call_mode0(self, X, A, attn_kernel, N):
-        attn_for_self = K.dot(X, attn_kernel[0])    # (batch_size X N x 1), [a_1]^T [Wh_i]
-        attn_for_neighs = K.dot(X, attn_kernel[1])  # (batch_size X N x 1), [a_2]^T [Wh_j]
+    def call_mode0(self, X, A, attn_kernel, kernel, N):
+        # Compute inputs to attention network
+        linear_transf_X = K.dot(X, kernel)  # (batch_size X N x F')
+
+        attn_for_self = K.dot(linear_transf_X, attn_kernel[0])    # (batch_size X N x 1), [a_1]^T [Wh_i]
+        attn_for_neighs = K.dot(linear_transf_X, attn_kernel[1])  # (batch_size X N x 1), [a_2]^T [Wh_j]
+        
+        
 
         # Attention head a(Wh_i, Wh_j) = a^T [[Wh_i], [Wh_j]]
         # dense = attn_for_self + K.transpose(attn_for_neighs)  # (N x N) via broadcasting
@@ -142,7 +154,7 @@ class GraphAttention(Layer):
         softmax = hard_softmax(masked)
 
         # Linear combination with neighbors' features
-        node_features = K.batch_dot(softmax, X)  # (batch_size X N x F')
+        node_features = K.batch_dot(softmax, linear_transf_X)  # (batch_size X N x F')
         return node_features
 
     def call(self, inputs, mask = None):
@@ -158,10 +170,9 @@ class GraphAttention(Layer):
             attention_kernel = self.attn_kernels[head]  # Attention kernel a in the paper (2F' x 1)
 
             if self.mode == 0:
-                node_features = self.call_mode0(X, A, attention_kernel, N)
+                node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N)
 
-            # Compute inputs to attention network
-            # linear_transf_X = K.dot(X, kernel)  # (batch_size X N x F')
+            
             
             if self.attn_heads_reduction == 'concat' and self.activation is not None:
                 # In case of 'concat', we compute the activation here (Eq 5)

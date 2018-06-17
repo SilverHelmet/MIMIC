@@ -132,7 +132,7 @@ def define_simple_seg_rnn(setting):
             emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
             
         if gcn_flag:
-            gcn = GraphAttention(gcn_hidden_dim, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(gcn_hidden_dim, attention_mode = -1, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         else:
             gcn = embedding
 
