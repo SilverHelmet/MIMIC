@@ -15,7 +15,8 @@ def get_custom_objects():
         "MaskLambda": MaskLambda,
         "SegMaskEmbedding": SegMaskEmbedding,
         "EventAttentionLSTM": EventAttentionLSTM,
-        "mask_softmax": mask_softmax
+        "mask_softmax": mask_softmax,
+        "GCNMaskedGlobalMaxPooling1D": GCNMaskedGlobalMaxPooling1D, 
     }
     
 def SimpleAttentionRNN(rnn):

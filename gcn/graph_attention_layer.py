@@ -40,6 +40,24 @@ class GraphAttention(Layer):
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
 
+        sele.base_config = {
+            'F1': F1,
+            'F2': F2,
+            'input_dim': input_dim,
+            'attn_heads': attn_heads,
+            'attn_heads_reduction': attn_heads_reduction,
+            "attn_dropout": attn_dropout,
+            "activation": activation,
+            "kernel_initializer": kernel_initializer, 
+            "attn_kernel_initializer": attn_kernel_initializer,
+            "kernel_regularizer": kernel_regularizer,
+            "attn_kernel_regularizer": attn_kernel_regularizer,
+            "activity_regularizer": activity_regularizer,
+            "kernel_constraint": kernel_constraint,
+            "attn_kernel_constraint": kernel_constraint,
+            "mask_zero": mask_zero,
+            "attention_mode": mask_zero,
+        }
         self.F1 = F1  # Number of output features (F' in the paper)
         self.F2 = F2
         self.input_dim = input_dim
@@ -261,3 +279,6 @@ class GraphAttention(Layer):
             return mask[0]
         else:
             return None
+
+    def get_config(self):
+        return dict(list(self.base_config.items()) + list(config.items()))
