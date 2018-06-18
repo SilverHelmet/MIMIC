@@ -5,7 +5,7 @@ from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
 from keras.layers import Input, merge
 from keras.layers.pooling import GlobalMaxPooling1D
-from keras.models import Model, load_model
+from keras.models import Model
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, activity_l2
 from keras.optimizers import SGD, Adam 

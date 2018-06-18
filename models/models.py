@@ -5,6 +5,7 @@ from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.regularizers import l2
+from gcn.graph_attention_layer import GraphAttention
 import numpy as np
 from keras_model import my_rnn
 
@@ -17,6 +18,7 @@ def get_custom_objects():
         "EventAttentionLSTM": EventAttentionLSTM,
         "mask_softmax": mask_softmax,
         "GCNMaskedGlobalMaxPooling1D": GCNMaskedGlobalMaxPooling1D, 
+        "GraphAttention": GraphAttention,
     }
     
 def SimpleAttentionRNN(rnn):
