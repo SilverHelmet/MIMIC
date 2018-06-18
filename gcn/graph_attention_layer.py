@@ -222,13 +222,13 @@ class GraphAttention(Layer):
             elif self.mode == 0:
                 node_features = self.call_mode0(X, A, attention_kernel, None, N, use_kernel = False)
             elif self.mode == 2:
-                node_features = self.call_mode2(X, A, attn_kernel, N)
+                node_features = self.call_mode2(X, A, attention_kernel, N)
             elif self.mode == 3:
-                node_features = self.call_mode3(X, A, attn_kernel, N)
+                node_features = self.call_mode3(X, A, attention_kernel, N)
             elif self.mode == 4:
-                node_features = self.call_mode4(X, A, attn_kernel, self.kernels[head], N)
+                node_features = self.call_mode4(X, A, attention_kernel, self.kernels[head], N)
             elif self.mode ==5 :
-                node_features = self.call_mode5(X, A, attn_kernel, self.kernels[head], N)
+                node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
 
 
             # Add output of attention head to final output
