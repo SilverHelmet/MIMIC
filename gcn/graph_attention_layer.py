@@ -115,6 +115,13 @@ class GraphAttention(Layer):
                                         constraint=self.kernel_constraint)
                     kernel.append(kernel1)
                 self.kernels.append(kernel)
+            elif self.mode == 3:
+                kernel0 = self.add_weight(shape=(F + F, self.F1),
+                                        initializer=self.kernel_initializer,
+                                        name='kernel_%s_0' % head,
+                                        regularizer=self.kernel_regularizer,
+                                        constraint=self.kernel_constraint)
+                self.kernels.append([kernel])
 
             # Attention kernel
             shapes = []
@@ -184,9 +191,9 @@ class GraphAttention(Layer):
         node_features =  K.concatenate([X, neigh_features])
         return node_features
 
-    def call_mode3(self, X, A, attn_kernel, N):
+    def call_mode3(self, X, A, attn_kernel, kernel, N):
         hidden_node_feature = self.call_mode2(X, A, attn_kernel, N)
-        node_features = K.dot(hidden_node_feature, kernel[1])
+        node_features = K.dot(hidden_node_feature, kernel[0])
         if self.attn_heads_reduction == 'concat' and self.activation is not None:
             node_features = self.activation(node_features)
         return node_features
@@ -224,7 +231,7 @@ class GraphAttention(Layer):
             elif self.mode == 2:
                 node_features = self.call_mode2(X, A, attention_kernel, N)
             elif self.mode == 3:
-                node_features = self.call_mode3(X, A, attention_kernel, N)
+                node_features = self.call_mode3(X, A, attention_kernel, self.kernels[head], N)
             elif self.mode == 4:
                 node_features = self.call_mode4(X, A, attention_kernel, self.kernels[head], N)
             elif self.mode ==5 :
