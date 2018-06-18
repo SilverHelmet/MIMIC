@@ -5,12 +5,13 @@ from keras.layers.recurrent import LSTM, GRU
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.regularizers import l2
-from gcn.graph_attention_layer import GraphAttention
+
 import numpy as np
 from keras_model import my_rnn
 
 
 def get_custom_objects():
+    from gcn.graph_attention_layer import GraphAttention
     return {
         "MaskFlatten": MaskFlatten,
         "MaskLambda": MaskLambda,
