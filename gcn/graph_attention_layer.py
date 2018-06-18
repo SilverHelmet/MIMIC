@@ -137,7 +137,6 @@ class GraphAttention(Layer):
             elif self.mode == 3:
                 shapes.append((F, 1))
                 shapes.append((F, 1))
-                shapes.append((2 * F, self.F1))
 
 
             attn_kernel = []
