@@ -1,0 +1,4 @@
+gcn_mode=0
+gcn_num_head=1
+
+# 80

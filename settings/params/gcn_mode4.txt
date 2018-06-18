@@ -1,0 +1,5 @@
+gcn_mode=4
+gcn_hidden_dim=64
+gcn_num_head=1
+
+# 80 + gcn_hidden_dim

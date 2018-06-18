@@ -29,12 +29,13 @@ class GraphAttention(Layer):
         '''
         attention_mode
             h: node embedding
-            -1: score = (t0, t1) .* w2, ti = hi * w1
-            0 : score = (h0, h1) .* w1
-            *1: score = (h0, h1) * w1 * w2
-            2 : h = (h0, sigma hi * ai) , ai = hi .* w1
-            3 : h' = h * w2
-            4 : h = (h0, sigma ti * ai), ti = hi * w1, ai = ti .* w2
+            -1: h = sigma ai * ti, ai = (t0, t1) .* w2, ti = hi * w1
+            0 : h = sigma ai * hi, ai = (h0, h1) .* w1
+            *1: h = sigma ai * hi, ai = (h0, h1) * w1 * w2
+            2 : h = (h0, h.0)
+            3 : h' = h.2 * w1
+            4 : h = (h0, h0.-1)
+            5 : h' = h.4 * w3 
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -75,6 +76,11 @@ class GraphAttention(Layer):
             output_dim = self.input_dim * 2
         elif self.mode == 3:
             output_dim = self.F1
+        elif self.mode == 4:
+            output_dim = self.input_dim + self.F1
+        elif self.mode == 5:
+            output_dim = self.F2
+
 
         if attn_heads_reduction == 'concat':
             
@@ -93,18 +99,26 @@ class GraphAttention(Layer):
         F = input_shape[0][-1]
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
-            if self.mode == -1:
+            if self.mode == -1 or self.mode == 5:
             # Layer kernel
-                kernel = self.add_weight(shape=(F, self.F1),
+                kernel0 = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
-                                        name='kernel_%s' % head,
+                                        name='kernel_%s_0' % head,
                                         regularizer=self.kernel_regularizer,
                                         constraint=self.kernel_constraint)
+                kernel = [kernel0]
+                if self.mode == 5:
+                    kernel1 = self.add_weight(shape=(F + F1 , self.F1),
+                                        initializer=self.kernel_initializer,
+                                        name='kernel_%s_1' % head,
+                                        regularizer=self.kernel_regularizer,
+                                        constraint=self.kernel_constraint)
+                    kernel.append(kernel1)
                 self.kernels.append(kernel)
 
             # Attention kernel
             shapes = []
-            if self.mode == -1:
+            if self.mode in [-1, 4, 5]:
                 shapes.append((self.F1, 1))
                 shapes.append((self.F1, 1))
             elif self.mode == 0:
@@ -112,9 +126,12 @@ class GraphAttention(Layer):
                 shapes.append((F, 1))
             elif self.mode == 2:
                 shapes.append((F, 1))
+                shapes.append((F, 1))
             elif self.mode == 3:
                 shapes.append((F, 1))
+                shapes.append((F, 1))
                 shapes.append(((2 * F, self.F2)))
+
 
             attn_kernel = []
             for idx, shape in enumerate(shapes):
@@ -130,7 +147,7 @@ class GraphAttention(Layer):
     def call_mode0(self, X, A, attn_kernel, kernel, N, use_kernel = False):
         # Compute inputs to attention network
         if use_kernel:
-            linear_transf_X = K.dot(X, kernel)  # (batch_size X N x F')
+            linear_transf_X = K.dot(X, kernel[0])  # (batch_size X N x F')
         else:
             linear_transf_X = X
 
@@ -158,7 +175,35 @@ class GraphAttention(Layer):
 
         # Linear combination with neighbors' features
         node_features = K.batch_dot(softmax, linear_transf_X)  # (batch_size X N x F')
+        if self.attn_heads_reduction == 'concat' and self.activation is not None:
+            node_features = self.activation(node_features)
         return node_features
+
+    def call_mode2(self, X, A, attn_kernel, N):
+        neigh_features = self.call_mode0(X, A, attn_kernel, None, N, False)
+        node_features =  K.concatenate([X, neigh_features])
+        return node_features
+
+    def call_mode3(self, X, A, attn_kernel, N):
+        hidden_node_feature = self.call_mode2(X, A, attn_kernel, N)
+        node_features = K.dot(hidden_node_feature, kernel[1])
+        if self.attn_heads_reduction == 'concat' and self.activation is not None:
+            node_features = self.activation(node_features)
+        return node_features
+
+    def call_mode4(self, X, A, attn_kernel, kernel, N):
+        T = self.call_mode0(X, A, attn_kernel, kernel, N, True)
+        node_features = K.concatenate([X, T])
+        return node_features
+
+    def call_mode5(self, X, A, attn_kernel, kernel, N):
+        node_hidden_features = self.call_mode4(X, A, attn_kernel, kernel, N)
+        node_features = K.dot(node_hidden_features, kernel[1])
+        if self.attn_heads_reduction == 'concat' and self.activation is not None:
+            node_features = self.activation(node_features)
+        return node_features
+
+
 
     def call(self, inputs, mask = None):
         X = inputs[0]  # Node features (batch_size X N x F)
@@ -176,11 +221,15 @@ class GraphAttention(Layer):
                 node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = True)
             elif self.mode == 0:
                 node_features = self.call_mode0(X, A, attention_kernel, None, N, use_kernel = False)
-            
-            
-            if self.attn_heads_reduction == 'concat' and self.activation is not None:
-                # In case of 'concat', we compute the activation here (Eq 5)
-                node_features = self.activation(node_features)
+            elif self.mode == 2:
+                node_features = self.call_mode2(X, A, attn_kernel, N)
+            elif self.mode == 3:
+                node_features = self.call_mode3(X, A, attn_kernel, N)
+            elif self.mode == 4:
+                node_features = self.call_mode4(X, A, attn_kernel, self.kernels[head], N)
+            elif self.mode ==5 :
+                node_features = self.call_mode5(X, A, attn_kernel, self.kernels[head], N)
+
 
             # Add output of attention head to final output
             outputs.append(node_features)

@@ -93,6 +93,7 @@ def define_simple_seg_rnn(setting):
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     gcn_numric_feature_hidden_dim = setting.get('gcn_numric_feature_hidden_dim', 0)
     gcn_hidden_dim = setting['gcn_hidden_dim']
+    gcn_hidden_dim2 = setting.get('gcn_hidden_dim2', 0)
     gcn_num_head = setting['gcn_num_head']
     
 
@@ -134,7 +135,7 @@ def define_simple_seg_rnn(setting):
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
-            gcn = GraphAttention(gcn_hidden_dim, attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
         else:
             gcn = embedding
 
