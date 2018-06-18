@@ -121,7 +121,7 @@ class GraphAttention(Layer):
                                         name='kernel_%s_0' % head,
                                         regularizer=self.kernel_regularizer,
                                         constraint=self.kernel_constraint)
-                self.kernels.append([kernel])
+                self.kernels.append([kernel0])
 
             # Attention kernel
             shapes = []
