@@ -175,7 +175,7 @@ class GraphAttention(Layer):
             if self.mode == -1:
                 node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = True)
             elif self.mode == 0:
-                node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = False)
+                node_features = self.call_mode0(X, A, attention_kernel, None, N, use_kernel = False)
             
             
             if self.attn_heads_reduction == 'concat' and self.activation is not None:
