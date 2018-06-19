@@ -57,7 +57,7 @@ def load_death_timeAggre():
 if __name__ == "__main__":
     # model, setting, dataset, sorted_events = load_sample()
     Print('123')
-    # model, setting, dataset, sorted_events = load_death_timeAggre()
+    model, setting, dataset, sorted_events = load_death_timeAggre()
 
     # thresholds = [0.5, 1.0]
     # thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
