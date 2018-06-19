@@ -79,13 +79,21 @@ class Dataset:
         else:
             self.static_features = np.zeros((1,1))
 
-        # mask other event in: events, features, maybe static_feature
-        # if event_set is not None:
-        #     mask_index = np.zeros_like(self.events)
-        #     for event_seq in self.events:
-        #         for eid in event_seq:
-        #             if eid not in event_set:
-        #                 event_set
+        # mask other event in: events, features, static_feature
+        if event_set is not None:
+            mask_index = []
+            total = (self.events > 0).sum()
+            for i, event_seq in enumerate(self.events):
+                for j, eid in enumerate(event_seq):
+                    if eid not in event_set:
+                        mask_index.append((i,j))
+            print('#masked event = %d/%.4f%%' %(len(mask_index), len(mask_index) * 100.0 / total) )
+            self.events[mask_index] = 0
+            
+            if 'feature' in self.feature_set:
+                self.features[mask_index] = 0
+            if self.load_static_feature:
+                self.static_features[mask_index] = 0
 
 
 
@@ -526,6 +534,8 @@ def sample_generator(dataset, setting, shuffle = False):
 
             if len(inputs) == 1:
                 inputs = inputs[0]
+            for input in inputs:
+                print input.shape
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:

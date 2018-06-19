@@ -3,6 +3,8 @@ import numpy as np
 import os
 from keras.models import load_model
 from models.models import get_custom_objects
+from models.dataset import Dataset
+from train_rnn import load_argv    
 
 def load_event_rank(filepath):
     scores = []
@@ -10,22 +12,25 @@ def load_event_rank(filepath):
         scores.append(float(line))
 
     seq = range(len(scores))
-    sorted_event = sorted(seq, key = lambda x: scores[x], reverse = True)
+    sorted_events = sorted(seq, key = lambda x: scores[x], reverse = True)
 
-    return sorted_event
+    return sorted_events
 
 
 def load_sample():
+    settings = ["none"] + "settings/fea_gcn.txt settings/catAtt_lstm.txt settings/timeAggre.txt settings/params/gcn_mode-1.txt settings/out_model.txt".split(' ')
+    setting = load_argv(settings)
+
     model_path = os.path.join(model_dir, 'sample.model')
     exper_dir = os.path.join(death_exper_dir, 'sample')
     dataset_path = os.path.join(exper_dir, 'samples.h5')
     seg_path = os.path.join(exper_dir,  'samples_seg.h5')
-    sorted_events = load_event_score(os.path.join(model_dir, 'event_filter/event_scores.txt'))
+    sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores.txt'))
 
     model = load_model(model_path, get_custom_objects())
     dataset = Dataset(dataset_path, seg_path)
 
-    return model, dataset, sorted_events
+    return model, setting, dataset, sorted_events
 
 
 
@@ -38,14 +43,22 @@ def load_death():
 
 
 if __name__ == "__main__":
-    model, dataset, sorted_events = load_sample()
+    model, setting, dataset, sorted_events = load_sample()
 
     
-    thresholds = np.arange(0.1, 1.0, 0.1)
-    size = len(sorted_event)
+    thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
+    thresholds = [0.5, 1.0]
+    size = len(sorted_events)
     for threshold in thresholds:
+        
         ed = int(size * threshold)
-        filtered_events = set(sorted_events[:ed]0
-        dataset.load(False, True, True, event_set = filtered_events)
+        filtered_events = set(sorted_events[:ed])
+        dataset.load(True, False, True, event_set = filtered_events)
+        setting['event_dim'] = 3418
+        setting['max_segs'] = dataset.segs.shape[1]
+        setting['max_seg_length'] = dataset.max_seg_length  
+
+        test_eval = dataset.eval(model, setting)
+        print_eval('threshold = %.2f' %threshold, test_eval)
 
     

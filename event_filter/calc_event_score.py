@@ -3,7 +3,7 @@ import os
 import sys
 from keras.models import load_model
 from models.models import get_custom_objects, np_softmax
-from models.dataset import Dataset
+from models.dataset import Dataset, print_eval
 from tqdm import tqdm
 import numpy as np
 import json
