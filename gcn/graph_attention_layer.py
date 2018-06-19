@@ -35,9 +35,9 @@ class GraphAttention(Layer):
             2 : h = (h0, h.0)
             3 : h' = h.2 * w1
             4 : h = (h0, h0.-1)
-            5 : h' = h.4 * w3
+            5 : h' = h.4 * w3 + b3
             6 : h = (h0, h0.-1_0, h0.-1_1, ..., h0.-1_#head) 
-            7 : h' = h.6 * w3
+            7 : h' = h.6 * w3 + b3
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -115,6 +115,10 @@ class GraphAttention(Layer):
                     kernel1 = self.add_weight(shape=(F + self.F1 , self.F2),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1' % head,
+                                        regularizer=self.kernel_regularizer)
+                    kernel1_b = self.add_weight(shape=(self.F2),
+                                        initializer=self.kernel_initializer,
+                                        name='kernel_%s_1_b' % head,
                                         regularizer=self.kernel_regularizer)
                     kernel.append(kernel1)
                 self.kernels.append(kernel)
@@ -206,7 +210,7 @@ class GraphAttention(Layer):
 
     def call_mode5(self, X, A, attn_kernel, kernel, N):
         node_hidden_features = self.call_mode4(X, A, attn_kernel, kernel, N)
-        node_features = K.dot(node_hidden_features, kernel[1])
+        node_features = K.dot(node_hidden_features, kernel[1]) + kernel[2]
         if self.attn_heads_reduction == 'concat' and self.activation is not None:
             node_features = self.activation(node_features)
         return node_features
