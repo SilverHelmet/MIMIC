@@ -34,16 +34,25 @@ def load_sample():
 
 
 
-def load_death():
+def load_death_timeAggre():
+    settings = ["none"] + "settings/fea_gcn.txt settings/catAtt_lstm.txt settings/timeAggre.txt settings/params/gcn_mode-1.txt settings/out_model.txt".split(' ')
+    setting = load_argv(settings)
+
     model_path = os.path.join(model_dir, 'death_timeAggre_fea_catAtt_gcn.model')
     dataset_path = os.path.join(death_exper_dir, 'death_test_1000.h5')
     seg_path = os.path.join(death_exper_dir, 'segs/death_test_1000_segmode=timeAggre_maxchunk=32.h5')
-    event_score = load_event_score(os.path.join())
+    sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_300.txt'))
+    
+    model = load_model(model_path, get_custom_objects())
+    dataset = Dataset(dataset_path, seg_path)
+
+    return model, setting, dataset, sorted_events
 
 
 
 if __name__ == "__main__":
-    model, setting, dataset, sorted_events = load_sample()
+    # model, setting, dataset, sorted_events = load_sample()
+    model, setting, dataset, sorted_events = load_death_timeAggre()
 
     
     thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
