@@ -85,8 +85,9 @@ class GraphAttention(Layer):
         elif self.mode == 6:
             output_dim = self.input_dim + self.attn_heads * self.F1
 
-
-        if attn_heads_reduction == 'concat':
+        if self.mode == 6:
+            self.output_dim = output_dim
+        elif attn_heads_reduction == 'concat':
             
             # Output will have shape (..., K * F')
             self.output_dim = output_dim * self.attn_heads
@@ -218,7 +219,7 @@ class GraphAttention(Layer):
             feature = self.call_mode0(X, A, attn_kernel, kernel, N, True)
             outputs.append(feature)
         node_features = K.concatenate(outputs)
-        return 
+        return node_features
 
 
 
