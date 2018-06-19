@@ -121,6 +121,7 @@ class GraphAttention(Layer):
                                         name='kernel_%s_1_b' % head,
                                         regularizer=self.kernel_regularizer)
                     kernel.append(kernel1)
+                    kernel.append(kernel1_b)
                 self.kernels.append(kernel)
             elif self.mode == 3:
                 kernel0 = self.add_weight(shape=(F + F, self.F1),
