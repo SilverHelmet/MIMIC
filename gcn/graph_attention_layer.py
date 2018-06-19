@@ -35,7 +35,9 @@ class GraphAttention(Layer):
             2 : h = (h0, h.0)
             3 : h' = h.2 * w1
             4 : h = (h0, h0.-1)
-            5 : h' = h.4 * w3 
+            5 : h' = h.4 * w3
+            6 : h = (h0, h0.-1_0, h0.-1_1, ..., h0.-1_#head) 
+            7 : h' = h.6 * w3
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -80,6 +82,8 @@ class GraphAttention(Layer):
             output_dim = self.input_dim + self.F1
         elif self.mode == 5:
             output_dim = self.F2
+        elif self.mode == 6:
+            output_dim = self.input_dim + self.attn_heads * self.F1
 
 
         if attn_heads_reduction == 'concat':
@@ -99,7 +103,7 @@ class GraphAttention(Layer):
         F = input_shape[0][-1]
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
-            if self.mode in [-1, 4, 5]:
+            if self.mode in [-1, 4, 5, 6]:
             # Layer kernel
                 kernel0 = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
@@ -120,9 +124,10 @@ class GraphAttention(Layer):
                                         regularizer=self.kernel_regularizer)
                 self.kernels.append([kernel0])
 
+
             # Attention kernel
             shapes = []
-            if self.mode in [-1, 4, 5]:
+            if self.mode in [-1, 4, 5, 6]:
                 shapes.append((self.F1, 1))
                 shapes.append((self.F1, 1))
             elif self.mode == 0:
@@ -205,6 +210,16 @@ class GraphAttention(Layer):
             node_features = self.activation(node_features)
         return node_features
 
+    def call_mode6(self, X, A, attn_kernels, kernels, N):
+        outputs = [X]
+        for head in range(self.attn_heads):
+            kernel = kernels[head]
+            attn_kernel = attn_kernels[head]
+            feature = self.call_mode0(X, A, attn_kernel, kernel, N, True)
+            outputs.append(feature)
+        node_features = K.concatenate(outputs)
+        return 
+
 
 
     def call(self, inputs, mask = None):
@@ -213,6 +228,10 @@ class GraphAttention(Layer):
 
         # Parameters
         N = K.shape(X)[1]  # Number of nodes in the graph
+
+        if self.mode == 6:
+            node_features = self.call_mode6(X, A, self.attn_kernels, self.kernels, N)
+            return node_features
 
         outputs = []
         for head in range(self.attn_heads):
@@ -234,7 +253,7 @@ class GraphAttention(Layer):
 
 
             # Add output of attention head to final output
-            outputs.append(node_features)
+        outputs.append(node_features)
 
         # Reduce the attention heads output according to the reduction method
         if self.attn_heads_reduction == 'concat':
