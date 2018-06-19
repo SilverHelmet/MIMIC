@@ -111,13 +111,12 @@ def load_event2feature():
             fs.add(idx)
     return e2f
 
-def calc_event_score_by_rank(event_emd):
+def calc_event_score_by_rank(event_emd, limit):
     def value_argsort(seq, values):
         return sorted(seq, key = lambda x: values[x], reverse = True)
     
     size = event_emd.shape[0]
     scores = [0.0] * size 
-    limit = 50.0
     for col_idx in range(event_emd.shape[1]):
         seq = range(size)
         values = event_emd[:, col_idx]
@@ -160,8 +159,9 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
     event_attn = np_softmax(event_attn_score)
     np.save(os.path.join(out_dir, 'event_attn_score'), event_attn)
     event_attn_embedding = event_kernel_emd * event_attn
-    event_scores = calc_event_score_by_rank(event_attn_embedding)
-    outf = file(os.path.join(out_dir, 'event_scores.txt'), 'w')
+    limit = 300
+    event_scores = calc_event_score_by_rank(event_attn_embedding, limit)
+    outf = file(os.path.join(out_dir, 'event_scores_%d.txt' %limit), 'w')
     for score in event_scores:
         outf.write("%.4f\n" %(score))
     outf.close()

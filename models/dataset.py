@@ -28,7 +28,7 @@ class Dataset:
             datasets.append(Dataset(file, seg))
         return tuple(datasets)
 
-    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False):
+    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, event_set = None):
         
         self.load_time = load_time
         self.load_static_feature = load_static_feature
@@ -78,6 +78,11 @@ class Dataset:
             self.static_features = np.load(static_feature_path)
         else:
             self.static_features = np.zeros((1,1))
+
+        # mask other event in: events, features, maybe static_feature
+        for event_seq in self.events:
+            
+
 
     def trans_time(self, outpath = None):
 
