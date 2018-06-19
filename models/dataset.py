@@ -519,7 +519,8 @@ def sample_generator(dataset, setting, shuffle = False):
             i += batch_size 
             if i >= nb_sample:
                 i = 0
-                break
+        if i ==0:
+            break
 
 
 if __name__ == "__main__":
