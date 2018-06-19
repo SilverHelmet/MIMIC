@@ -21,8 +21,8 @@ class GraphAttention(Layer):
                  kernel_regularizer=None,
                  attn_kernel_regularizer=None,
                  activity_regularizer=None,
-                 kernel_constraint=None,
-                 attn_kernel_constraint=None,
+                #  kernel_constraint=None,
+                #  attn_kernel_constraint=None,
                  mask_zero=False,
                  attention_mode = 0,
                  **kwargs):
@@ -40,24 +40,6 @@ class GraphAttention(Layer):
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
 
-        self.config = {
-            'F1': F1,
-            'F2': F2,
-            'input_dim': input_dim,
-            'attn_heads': attn_heads,
-            'attn_heads_reduction': attn_heads_reduction,
-            "attn_dropout": attn_dropout,
-            "activation": activation,
-            "kernel_initializer": kernel_initializer, 
-            "attn_kernel_initializer": attn_kernel_initializer,
-            "kernel_regularizer": kernel_regularizer,
-            "attn_kernel_regularizer": attn_kernel_regularizer,
-            "activity_regularizer": activity_regularizer,
-            "kernel_constraint": kernel_constraint,
-            "attn_kernel_constraint": kernel_constraint,
-            "mask_zero": mask_zero,
-            "attention_mode": mask_zero,
-        }
         self.F1 = F1  # Number of output features (F' in the paper)
         self.F2 = F2
         self.input_dim = input_dim
@@ -70,8 +52,8 @@ class GraphAttention(Layer):
         self.kernel_regularizer = regularizers.get(kernel_regularizer)
         self.attn_kernel_regularizer = regularizers.get(attn_kernel_regularizer)
         self.activity_regularizer = regularizers.get(activity_regularizer)
-        self.kernel_constraint = constraints.get(kernel_constraint)
-        self.attn_kernel_constraint = constraints.get(attn_kernel_constraint)
+        # self.kernel_constraint = constraints.get(kernel_constraint)
+        # self.attn_kernel_constraint = constraints.get(attn_kernel_constraint)
         self.mask_zero = mask_zero
         self.mode = attention_mode
 
@@ -108,7 +90,7 @@ class GraphAttention(Layer):
             # Output will have shape (..., F')
             self.output_dim = output_dim
          
-
+        
 
         super(GraphAttention, self).__init__(**kwargs)
 
@@ -122,23 +104,20 @@ class GraphAttention(Layer):
                 kernel0 = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_0' % head,
-                                        regularizer=self.kernel_regularizer,
-                                        constraint=self.kernel_constraint)
+                                        regularizer=self.kernel_regularizer)
                 kernel = [kernel0]
                 if self.mode == 5:
                     kernel1 = self.add_weight(shape=(F + self.F1 , self.F2),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1' % head,
-                                        regularizer=self.kernel_regularizer,
-                                        constraint=self.kernel_constraint)
+                                        regularizer=self.kernel_regularizer)
                     kernel.append(kernel1)
                 self.kernels.append(kernel)
             elif self.mode == 3:
                 kernel0 = self.add_weight(shape=(F + F, self.F1),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_0' % head,
-                                        regularizer=self.kernel_regularizer,
-                                        constraint=self.kernel_constraint)
+                                        regularizer=self.kernel_regularizer)
                 self.kernels.append([kernel0])
 
             # Attention kernel
@@ -162,8 +141,7 @@ class GraphAttention(Layer):
                 w = self.add_weight(shape=shape,
                                                initializer=self.attn_kernel_initializer,
                                                name='att_kernel_{}_{}'.format(head, idx),
-                                               regularizer=self.attn_kernel_regularizer,
-                                               constraint=self.attn_kernel_constraint)
+                                               regularizer=self.attn_kernel_regularizer)
                 attn_kernel.append(w)
             self.attn_kernels.append(attn_kernel)
         self.built = True
@@ -281,5 +259,23 @@ class GraphAttention(Layer):
             return None
 
     def get_config(self):
+        config = {
+            'F1': self.F1,
+            'F2': self.F2,
+            'input_dim': self.input_dim,
+            'attn_heads': self.attn_heads,
+            'attn_heads_reduction': self.attn_heads_reduction,
+            "attn_dropout": self.attn_dropout,
+            "activation": self.activation.__name__,
+            "kernel_initializer": self.kernel_initializer.__name__, 
+            "attn_kernel_initializer": self.attn_kernel_initializer.__name__,
+            "kernel_regularizer": self.kernel_regularizer.get_config() if self.kernel_regularizer else None,
+            "attn_kernel_regularizer": self.attn_kernel_regularizer.get_config() if self.attn_kernel_regularizer else None,
+            "activity_regularizer": self.activity_regularizer.get_config() if self.activity_regularizer else None,
+            # "kernel_constraint": kernel_constraint,
+            # "attn_kernel_constraint": attn_kernel_constraint,
+            "mask_zero": self.mask_zero,
+            "attention_mode": self.mode,
+        }
         base_config = super(GraphAttention, self).get_config()
-        return dict(list(base_config.items()) + list(self.config.items()))
+        return dict(list(base_config.items()) + list(config.items()))

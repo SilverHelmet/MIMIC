@@ -5,17 +5,18 @@ GCN_Seg=True
 gcn_numeric_feature=True
 gcn_numric_feature_hidden_dim=16
 gcn_numeric_width=1
+gcn_mode=-1
 
 #model args
-embedding_dim=64
-hidden_dim=64
-att_hidden_dim=64
+embedding_dim=12
+hidden_dim=12
+att_hidden_dim=12
 feature_dim=649
 
 
 # model training 
 batch_size=10
-nb_epoch=10
+nb_epoch=2
 l2_reg_cof=0.0001
 lr=0.001
 
@@ -38,3 +39,4 @@ test_seg_file=death_exper/sample/samples_seg.h5
 # embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
 
 
+model_out=RNNmodels/sample.model

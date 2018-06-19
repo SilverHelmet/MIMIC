@@ -20,6 +20,7 @@ def get_custom_objects():
         "mask_softmax": mask_softmax,
         "GCNMaskedGlobalMaxPooling1D": GCNMaskedGlobalMaxPooling1D, 
         "GraphAttention": GraphAttention,
+        'hard_softmax': hard_softmax,
     }
     
 def SimpleAttentionRNN(rnn):
