@@ -281,4 +281,5 @@ class GraphAttention(Layer):
             return None
 
     def get_config(self):
-        return dict(list(self.base_config.items()) + list(config.items()))
+        base_config = super(GraphAttention, self).get_config()
+        return dict(list(base_config.items()) + list(self.config.items()))
