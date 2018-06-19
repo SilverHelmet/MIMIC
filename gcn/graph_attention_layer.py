@@ -116,7 +116,7 @@ class GraphAttention(Layer):
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1' % head,
                                         regularizer=self.kernel_regularizer)
-                    kernel1_b = self.add_weight(shape=(self.F2),
+                    kernel1_b = self.add_weight(shape=(self.F2, ),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1_b' % head,
                                         regularizer=self.kernel_regularizer)
