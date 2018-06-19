@@ -117,7 +117,7 @@ class GraphAttention(Layer):
         F = input_shape[0][-1]
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
-            if self.mode == -1 or self.mode == 5:
+            if self.mode in [-1, 4, 5]:
             # Layer kernel
                 kernel0 = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
