@@ -1,4 +1,4 @@
-from util import death_exper_dir, model_dir
+from util import death_exper_dir, model_dir, Print
 import numpy as np
 import os
 from keras.models import load_model
@@ -63,6 +63,7 @@ if __name__ == "__main__":
         
         ed = int(size * threshold)
         filtered_events = set(sorted_events[:ed])
+        Print("load %.2f dataset" %threshold)
         dataset.load(True, False, True, event_set = filtered_events)
         setting['event_dim'] = 3418
         setting['max_segs'] = dataset.segs.shape[1]
