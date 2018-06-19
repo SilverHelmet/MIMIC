@@ -534,8 +534,6 @@ def sample_generator(dataset, setting, shuffle = False):
 
             if len(inputs) == 1:
                 inputs = inputs[0]
-            for input in inputs:
-                print input.shape
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:

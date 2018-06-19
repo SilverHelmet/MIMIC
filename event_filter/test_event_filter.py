@@ -3,7 +3,7 @@ import numpy as np
 import os
 from keras.models import load_model
 from models.models import get_custom_objects
-from models.dataset import Dataset
+from models.dataset import Dataset, print_eval
 from train_rnn import load_argv    
 
 def load_event_rank(filepath):
@@ -59,6 +59,6 @@ if __name__ == "__main__":
         setting['max_seg_length'] = dataset.max_seg_length  
 
         test_eval = dataset.eval(model, setting)
-        print_eval('threshold = %.2f' %threshold, test_eval)
+        print_eval('threshold = %.2f, ' %threshold, test_eval)
 
     
