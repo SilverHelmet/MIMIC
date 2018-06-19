@@ -56,6 +56,7 @@ if __name__ == "__main__":
 
     thresholds = [0.5, 1.0]
     thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
+    thresholds.reverse()
     
     size = len(sorted_events)
     for threshold in thresholds:
