@@ -126,7 +126,7 @@ class GraphAttention(Layer):
                                         constraint=self.kernel_constraint)
                 kernel = [kernel0]
                 if self.mode == 5:
-                    kernel1 = self.add_weight(shape=(F + self.F1 , self.F1),
+                    kernel1 = self.add_weight(shape=(F + self.F1 , self.F2),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1' % head,
                                         regularizer=self.kernel_regularizer,
