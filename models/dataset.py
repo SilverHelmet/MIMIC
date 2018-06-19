@@ -80,8 +80,14 @@ class Dataset:
             self.static_features = np.zeros((1,1))
 
         # mask other event in: events, features, maybe static_feature
-        for event_seq in self.events:
-            
+        # if event_set is not None:
+        #     mask_index = np.zeros_like(self.events)
+        #     for event_seq in self.events:
+        #         for eid in event_seq:
+        #             if eid not in event_set:
+        #                 event_set
+
+
 
 
     def trans_time(self, outpath = None):
