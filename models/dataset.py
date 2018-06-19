@@ -179,8 +179,8 @@ class Dataset:
             else:
                 print "%s = %s" %(k, v)
 
-    def eval(self, model, setting):
-        prediction = model.predict_generator(sample_generator(self, setting), val_samples = self.size)
+    def eval(self, model, setting, event_set = None, info = None, verbose = False):
+        prediction = model.predict_generator(sample_generator(self, setting, False, event_set, info, verbose), val_samples = self.size)
         calc_merged_score = 'sample_id' in self.feature_set
 
         auROC = roc_auc_score(self.labels, prediction)
@@ -408,7 +408,7 @@ def parse_sparse_static_feature(static_feature, size):
     return vec
 
 
-def sample_generator(dataset, setting, shuffle = False):
+def sample_generator(dataset, setting, shuffle = False, event_set = None, info = None, verbose = False):
     # Print("start generate samples")
     labels = dataset.labels
     features = dataset.features
@@ -443,6 +443,9 @@ def sample_generator(dataset, setting, shuffle = False):
     while  True:
         i = 0
         while i < nb_sample:
+            if verbose and (i / batch_size % 50 == 0):
+                Print('generate at %d/%d' %(i, nb_sample))
+                
             st = i
             ed = min(i + batch_size, nb_sample)
             # Print("%s\t%s" %(st, ed))
@@ -451,6 +454,15 @@ def sample_generator(dataset, setting, shuffle = False):
             label = labels[batch_indices]
             event = events[batch_indices]
             seg = segs[batch_indices]
+            feature = features[batch_indices]
+            if event_set is not None:
+                info['total'] += (event > 0).sum()
+                for i1, event_seq in enumerate(event):
+                    for i2, eid in enumerate(event_seq):
+                        if eid not in event_set:
+                            event[i1,i2] = 0
+                            feature[i1,i2] = 0
+                            info['mask'] += 1
 
             if gcn or gcn_seg: 
                 seged_event = event
@@ -476,7 +488,7 @@ def sample_generator(dataset, setting, shuffle = False):
                     seg_feature_matrixes = []
                     for j in range(ed - st):
                         split_seg = seg[j]
-                        seg_feature_matrixes.append(gen_seged_feature_seq(features[batch_indices[j]], split_seg, max_seg_length, feature_dim))
+                        seg_feature_matrixes.append(gen_seged_feature_seq(feature[j], split_seg, max_seg_length, feature_dim))
                     seg_feature_matrixes = np.array(seg_feature_matrixes)
             else:
                 aggre_mode = setting['aggregation']
@@ -492,7 +504,7 @@ def sample_generator(dataset, setting, shuffle = False):
                     seg_feature_matrixes = []
                     for j in range(ed - st):
                         split_seg = seg[j]
-                        seg_feature_matrixes.append(merge_fea_by_seg(features[batch_indices[j]], split_seg, feature_dim))
+                        seg_feature_matrixes.append(merge_fea_by_seg(feature[j], split_seg, feature_dim))
                     seg_feature_matrixes = np.array(seg_feature_matrixes)
 
             if use_static_feature:
@@ -507,8 +519,8 @@ def sample_generator(dataset, setting, shuffle = False):
                 feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
                 gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
                 for j in range(ed - st):
-                    idx = batch_indices[j]
-                    gen_gcn_feature_mat(features[idx], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
+                    # idx = batch_indices[j]
+                    gen_gcn_feature_mat(feature[j], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
                 # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
 
             if gcn_seg:
@@ -538,7 +550,8 @@ def sample_generator(dataset, setting, shuffle = False):
             i += batch_size 
             if i >= nb_sample:
                 i = 0
-        if i ==0:
+                # break
+        if i == 0:
             break
 
 

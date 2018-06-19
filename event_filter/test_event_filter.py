@@ -18,7 +18,7 @@ def load_event_rank(filepath):
 
 
 def load_sample():
-    settings = ["none"] + "settings/fea_gcn.txt settings/catAtt_lstm.txt settings/timeAggre.txt settings/params/gcn_mode-1.txt settings/out_model.txt".split(' ')
+    settings = ["none"] + "settings/sample_test/sample.txt".split(' ')
     setting = load_argv(settings)
 
     model_path = os.path.join(model_dir, 'sample.model')
@@ -51,25 +51,36 @@ def load_death_timeAggre():
 
 
 if __name__ == "__main__":
-    # model, setting, dataset, sorted_events = load_sample()
-    model, setting, dataset, sorted_events = load_death_timeAggre()
+    model, setting, dataset, sorted_events = load_sample()
+    
+    # model, setting, dataset, sorted_events = load_death_timeAggre()
 
     thresholds = [0.5, 1.0]
     thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
-    thresholds.reverse()
     
+    thresholds.reverse()
+    Print("load dataset")
+    dataset.load(True, False, True)
+    Print('load over')
+
     size = len(sorted_events)
     for threshold in thresholds:
         
         ed = int(size * threshold)
-        filtered_events = set(sorted_events[:ed])
-        Print("load %.2f dataset" %threshold)
-        dataset.load(True, False, True, event_set = filtered_events)
+        reserved_events = set(sorted_events[:ed])
+        
+        
         setting['event_dim'] = 3418
         setting['max_segs'] = dataset.segs.shape[1]
         setting['max_seg_length'] = dataset.max_seg_length  
 
-        test_eval = dataset.eval(model, setting)
+        info = {
+            'mask': 0,
+            'total': 0,
+        }
+        Print('eval')
+        test_eval = dataset.eval(model, setting,reserved_events, info, verbose = True)
+        print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
         print_eval('threshold = %.2f, ' %threshold, test_eval)
 
     
