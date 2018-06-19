@@ -263,13 +263,14 @@ def Print(*l):
     l = map(str, l)
     print now() + "\t" + " ".join(l)
 
-def add_to_cnt_dict(d, key):
+def add_to_cnt_dict(d, key, value = 1):
     if not key in d:
         d[key] = 0
-    d[key] += 1
+    d[key] += value
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(script_dir, 'data')
+model_dir = os.path.join(script_dir, 'RNNmodels')
 stat_dir = os.path.join(script_dir, 'stat')
 result_dir = os.path.join(script_dir, 'result')
 static_data_dir = os.path.join(script_dir, "static_data")
@@ -288,6 +289,7 @@ lab_exper_dir = os.path.join(script_dir, 'lab_exper')
 event_seq_stat_dir = os.path.join(script_dir, "event_seq_stat")
 graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
+
 
 if __name__ == "__main__":
     st = parse_time("2101-10-20 19:08:00")
