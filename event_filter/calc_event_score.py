@@ -161,6 +161,12 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
     event_attn_embedding = event_kernel_emd * event_attn
     limit = 300
     event_scores = calc_event_score_by_rank(event_attn_embedding, limit)
+    cnt = 0
+    for score in event_scores:
+        cnt += score > 0
+    print "#not zero event: %d" %cnt 
+
+
     outf = file(os.path.join(out_dir, 'event_scores_%d.txt' %limit), 'w')
     for score in event_scores:
         outf.write("%.4f\n" %(score))
