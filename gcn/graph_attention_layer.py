@@ -40,7 +40,7 @@ class GraphAttention(Layer):
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
 
-        self.base_config = {
+        self.config = {
             'F1': F1,
             'F2': F2,
             'input_dim': input_dim,
