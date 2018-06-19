@@ -26,7 +26,6 @@ def load_sample():
     dataset_path = os.path.join(exper_dir, 'samples.h5')
     seg_path = os.path.join(exper_dir,  'samples_seg.h5')
     sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores.txt'))
-
     model = load_model(model_path, get_custom_objects())
     dataset = Dataset(dataset_path, seg_path)
 
@@ -43,7 +42,9 @@ def load_death_timeAggre():
     seg_path = os.path.join(death_exper_dir, 'segs/death_test_1000_segmode=timeAggre_maxchunk=32.h5')
     sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_300.txt'))
     
+    Print('load model from [%s]' %model_path)
     model = load_model(model_path, get_custom_objects())
+    Print('load over')
     dataset = Dataset(dataset_path, seg_path)
 
     return model, setting, dataset, sorted_events
