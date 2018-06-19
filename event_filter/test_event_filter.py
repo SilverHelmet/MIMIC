@@ -43,7 +43,7 @@ def load_death_timeAggre():
     seg_path = os.path.join(death_exper_dir, 'segs/death_test_1000_segmode=timeAggre_maxchunk=32.h5')
     Print('4')
     sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_300.txt'))
-
+    
     
     Print('load model from [%s]' %model_path)
     model = load_model(model_path, get_custom_objects())
@@ -59,32 +59,32 @@ if __name__ == "__main__":
     Print('123')
     model, setting, dataset, sorted_events = load_death_timeAggre()
 
-    # thresholds = [0.5, 1.0]
-    # thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
+    thresholds = [0.5, 1.0]
+    thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.6,0.8]
     
-    # thresholds.reverse()
-    # Print("load dataset")
-    # dataset.load(True, False, True)
-    # Print('load over')
+    thresholds.reverse()
+    Print("load dataset")
+    dataset.load(True, False, True)
+    Print('load over')
 
-    # size = len(sorted_events)
-    # for threshold in thresholds:
+    size = len(sorted_events)
+    for threshold in thresholds:
         
-    #     ed = int(size * threshold)
-    #     reserved_events = set(sorted_events[:ed])
+        ed = int(size * threshold)
+        reserved_events = set(sorted_events[:ed])
         
         
-    #     setting['event_dim'] = 3418
-    #     setting['max_segs'] = dataset.segs.shape[1]
-    #     setting['max_seg_length'] = dataset.max_seg_length  
+        setting['event_dim'] = 3418
+        setting['max_segs'] = dataset.segs.shape[1]
+        setting['max_seg_length'] = dataset.max_seg_length  
 
-    #     info = {
-    #         'mask': 0,
-    #         'total': 0,
-    #     }
-    #     Print('eval')
-    #     test_eval = dataset.eval(model, setting,reserved_events, info, verbose = True)
-    #     print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
-    #     print_eval('threshold = %.2f, ' %threshold, test_eval)
+        info = {
+            'mask': 0,
+            'total': 0,
+        }
+        Print('eval')
+        test_eval = dataset.eval(model, setting,reserved_events, info, verbose = True)
+        print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
+        print_eval('threshold = %.2f, ' %threshold, test_eval)
 
     
