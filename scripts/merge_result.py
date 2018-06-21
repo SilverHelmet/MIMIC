@@ -9,6 +9,12 @@ def decom(p):
 
 def merge(p1, p2):
     res = []
+    if len(p1) < len(p2):
+        tmp = p1
+        p1 = p2
+        p2 = tmp
+    if len(p1) > len(p2):
+        p1 = [p1[0], p1[1], p1[2], p1[4],p1[5],p1[6]]
     for term1, term2 in zip(p1, p2):
         term1 = float(term1)
         term2 = float(term2)
@@ -17,8 +23,9 @@ def merge(p1, p2):
         term = round(term, 4)
         res.append(str(term) + "(" + str(delta) + ")")
     merged_res = []
+    bias = min(len(p1), len(p2)) / 2
     for i in range(3):
-        merged_res.append(res[i] + "/" + res[i+4])
+        merged_res.append(res[i] + "/" + res[i+bias])
     return merged_res
 
 
