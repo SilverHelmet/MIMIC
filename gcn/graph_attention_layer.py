@@ -257,7 +257,6 @@ class GraphAttention(Layer):
             elif self.mode ==5 :
                 node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
 
-
             # Add output of attention head to final output
         outputs.append(node_features)
 
