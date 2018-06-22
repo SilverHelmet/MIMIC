@@ -257,8 +257,7 @@ class GraphAttention(Layer):
             elif self.mode ==5 :
                 node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
 
-            # Add output of attention head to final output
-        outputs.append(node_features)
+            outputs.append(node_features)
 
         # Reduce the attention heads output according to the reduction method
         if self.attn_heads_reduction == 'concat':
