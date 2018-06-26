@@ -73,7 +73,7 @@ def make_input(setting):
     rnn_model = setting['rnn']
     use_gcn = setting['GCN']
     if use_gcn or setting['GCN_Seg'] or rnn_model == 'dlstm':
-        return Input(shape = (setting['event_len'], ), name = 'event input')
+        return Input(shape = (setting['event_len'], ),  dtype = 'int32', name = 'event input')
     if rnn_model == 'attlstm' or rnn_model == "attgru":
         max_seg_length = setting['max_seg_length']
         return Input(shape = (max_segs, max_seg_length), name = 'seg event input')
@@ -122,7 +122,7 @@ def define_simple_seg_rnn(setting):
 
     if gcn_flag or gcn_numeric_feature:
         if gcn_flag:
-            edge_mat = Input(shape = (event_len, event_len), name = 'adjacent matrix')
+            edge_mat = Input(shape = (event_len, event_len), dtype = 'int32', name = 'adjacent matrix')
             inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
@@ -135,7 +135,11 @@ def define_simple_seg_rnn(setting):
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
-            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, attn_dropout = 1.0, activation = 'tanh', kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat])
+            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
+                    nb_event = event_dim, 
+                    attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, 
+                    attn_dropout = 1.0, activation = 'tanh', 
+                    kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat, event_input])
         else:
             gcn = embedding
 

@@ -2,8 +2,10 @@ from __future__ import absolute_import
 
 from keras import backend as K
 from keras import activations, constraints, regularizers, initializations
+from keras.initializations import zero
 from keras.layers import Layer, Dropout, LeakyReLU
 from models.models import hard_softmax
+import numpy as np 
 
 
 class GraphAttention(Layer):
@@ -12,6 +14,7 @@ class GraphAttention(Layer):
                  F1,
                  F2 = 0,
                  input_dim = 0,
+                 nb_event = 0,
                  attn_heads=1,
                  attn_heads_reduction='concat',  # {'concat', 'average'}
                  attn_dropout=0.5,
@@ -29,6 +32,7 @@ class GraphAttention(Layer):
         '''
         attention_mode
             h: node embedding
+            -2: h = sigma ai * ti, ai = (t0, t1) .* w2.h, ti = hi * w1
             -1: h = sigma ai * ti, ai = (t0, t1) .* w2, ti = hi * w1
             0 : h = sigma ai * hi, ai = (h0, h1) .* w1
             *1: h = sigma ai * hi, ai = (h0, h1) * w1 * w2
@@ -38,12 +42,14 @@ class GraphAttention(Layer):
             5 : h' = h.4 * w3 + b3
             6 : h = (h0, h0.-1_0, h0.-1_1, ..., h0.-1_#head) 
             7 : h' = h.6 * w3 + b3
+            8 : h = (h0, h0.-2_0, h0.-2_0,, ..., h0.-2_#head)
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
 
         self.F1 = F1  # Number of output features (F' in the paper)
         self.F2 = F2
+        self.nb_event = nb_event
         self.input_dim = input_dim
         self.attn_heads = attn_heads  # Number of attention heads (K in the paper)
         self.attn_heads_reduction = attn_heads_reduction  # 'concat' or 'average' (Eq 5 and 6 in the paper)
@@ -67,8 +73,9 @@ class GraphAttention(Layer):
         # Populated by build()
         self.kernels = []       # Layer kernels for attention heads
         self.attn_kernels = []  # Attention kernels for attention heads
+        self.constant_kernels = []
 
-        if self.mode == -1:
+        if self.mode in [-1, -2]:
             output_dim = self.F1
         elif self.mode == 0:
             output_dim = self.input_dim
@@ -82,10 +89,10 @@ class GraphAttention(Layer):
             output_dim = self.input_dim + self.F1
         elif self.mode == 5:
             output_dim = self.F2
-        elif self.mode == 6:
+        elif self.mode in [6, 8]:
             output_dim = self.input_dim + self.attn_heads * self.F1
 
-        if self.mode == 6:
+        if self.mode in [6, 8]:
             self.output_dim = output_dim
         elif attn_heads_reduction == 'concat':
             
@@ -102,9 +109,10 @@ class GraphAttention(Layer):
     def build(self, input_shape):
         assert len(input_shape) >= 2
         F = input_shape[0][-1]
+        l = input_shape[0][-2]
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
-            if self.mode in [-1, 4, 5, 6]:
+            if self.mode in [-2, -1, 4, 5, 6, 8]:
             # Layer kernel
                 kernel0 = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
@@ -133,7 +141,9 @@ class GraphAttention(Layer):
 
             # Attention kernel
             shapes = []
-            if self.mode in [-1, 4, 5, 6]:
+            if self.mode in [-2, 8]:
+                shapes.append((self.nb_event, self.F1))
+            elif self.mode in [-1, 4, 5, 6]:
                 shapes.append((self.F1, 1))
                 shapes.append((self.F1, 1))
             elif self.mode == 0:
@@ -154,8 +164,64 @@ class GraphAttention(Layer):
                                                name='att_kernel_{}_{}'.format(head, idx),
                                                regularizer=self.attn_kernel_regularizer)
                 attn_kernel.append(w)
+
+
             self.attn_kernels.append(attn_kernel)
+
+        if self.mode in [-2, 8]:
+            def my_init(shape, name = None):
+                return K.variable(range(shape[0]), dtype = 'int32', name = name)
+
+            w = self.add_weight(shape = (l, ),
+                                initializer = my_init,
+                                name = 'constant_transform_w',
+                                trainable = False)
+            # w.set_value(np.array(range(l), dtype='int32'))
+            self.constant_kernels.append(w)
+
         self.built = True
+
+    def batch_batch_dot(self, A, B, N, F):
+
+        A = K.reshape(A, (-1, N, F))
+        B = K.reshape(B, (-1, F))
+        result = K.batch_dot(A, B, (2, 1))
+        result = K.reshape(result, (-1, N, N))
+        return result
+
+    def call_modep2(self, X, A, E, attn_kernel, kernel, N):
+        linear_transf_X = K.dot(X, kernel[0])           # (batch_size X N X F')
+
+        A_index = A * self.constant_kernels[0]          # (batch_size X N X N)
+        # A_index = K.cast(A_index, 'int32')
+
+        neighs_emd = K.gather(K.reshape(linear_transf_X, (-1, self.F1)), A_index) # (batch_size X N X N X F')
+
+    
+
+        # E = K.cast(E, 'int32')
+        attn_kernel_for_E = K.gather(attn_kernel[0], E) # (batch_size X N X F')
+
+        attn_for_neights = self.batch_batch_dot(neighs_emd, attn_kernel_for_E, N, self.F1) #(batch_size X N X N)
+
+        dense = K.relu(attn_for_neights, alpha=0.2)
+
+        # Mask values before activation (Vaswani et al., 2017)
+        comparison = K.equal(A, 0.0) # (batch_size X N X N)
+        A_mask = K.switch(comparison, K.ones_like(A) * -10e9, K.zeros_like(A))
+        masked = dense + A_mask
+
+        softmax = hard_softmax(masked)
+
+        # Linear combination with neighbors' features
+        node_features = K.batch_dot(softmax, linear_transf_X)  # (batch_size X N x F')
+        if self.attn_heads_reduction == 'concat' and self.activation is not None:
+            node_features = self.activation(node_features)
+        
+        return K.cast(node_features, 'float32')
+
+
+
 
     def call_mode0(self, X, A, attn_kernel, kernel, N, use_kernel = False):
         # Compute inputs to attention network
@@ -226,6 +292,18 @@ class GraphAttention(Layer):
         node_features = K.concatenate(outputs)
         return node_features
 
+    def call_mode8(self, X, A, E, attn_kernels, kernels, N):
+        outputs = [X]
+        for head in range(self.attn_heads):
+            kernel = kernels[head]
+            attn_kernel = attn_kernels[head]
+            feature = self.call_modep2(X, A, E, attn_kernel, kernel, N)
+            outputs.append(feature)
+        node_features = K.concatenate(outputs)
+        return node_features
+
+
+    
 
 
     def call(self, inputs, mask = None):
@@ -238,13 +316,17 @@ class GraphAttention(Layer):
         if self.mode == 6:
             node_features = self.call_mode6(X, A, self.attn_kernels, self.kernels, N)
             return node_features
+        elif self.mode == 8:
+            node_features = self.call_mode8(X, A, inputs[2], self.attn_kernels, self.kernels, N)
+            return node_features
 
         outputs = []
         for head in range(self.attn_heads):
             # kernel = self.kernels[head]  # W in the paper (F x F')
             attention_kernel = self.attn_kernels[head]  # Attention kernel a in the paper (2F' x 1)
-
-            if self.mode == -1:
+            if self.mode == -2:
+                node_features = self.call_modep2(X, A, inputs[2], attention_kernel, self.kernels[head], N)
+            elif self.mode == -1:
                 node_features = self.call_mode0(X, A, attention_kernel, self.kernels[head], N, use_kernel = True)
             elif self.mode == 0:
                 node_features = self.call_mode0(X, A, attention_kernel, None, N, use_kernel = False)
@@ -256,6 +338,8 @@ class GraphAttention(Layer):
                 node_features = self.call_mode4(X, A, attention_kernel, self.kernels[head], N)
             elif self.mode == 5:
                 node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
+
+
 
             outputs.append(node_features)
 
@@ -285,6 +369,7 @@ class GraphAttention(Layer):
         config = {
             'F1': self.F1,
             'F2': self.F2,
+            'nb_event': self.nb_event,
             'input_dim': self.input_dim,
             'attn_heads': self.attn_heads,
             'attn_heads_reduction': self.attn_heads_reduction,
