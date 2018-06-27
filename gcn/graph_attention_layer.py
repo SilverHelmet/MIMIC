@@ -94,7 +94,7 @@ class GraphAttention(Layer):
             output_dim = self.input_dim + self.attn_heads * self.F1
 
 
-        if self.mode in [6, 8]:
+        if self.mode in [5, 6, 8, 9]:
             self.output_dim = output_dim
         elif attn_heads_reduction == 'concat':
             
