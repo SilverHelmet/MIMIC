@@ -1,4 +1,4 @@
-gcn_mode=5
+gcn_mode=9
 gcn_hidden_dim=8
 gcn_hidden_dim2=80
 gcn_num_head=12

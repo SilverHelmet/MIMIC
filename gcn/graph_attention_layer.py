@@ -112,6 +112,9 @@ class GraphAttention(Layer):
         assert len(input_shape) >= 2
         F = input_shape[0][-1]
         l = input_shape[0][-2]
+        print 'F = %d' %F
+        print "F1 = %d" %self.F1
+        print "F2 = %d" %self.F2
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
             if self.mode in [-2, -1, 4, 5, 6, 8, 9]:
@@ -313,6 +316,7 @@ class GraphAttention(Layer):
         return node_features
 
     def call_mode9(self, X, A, attn_kernels, kernels, N):
+
         outputs = []
         for head in range(self.attn_heads):
             kernel = kernels[head]
@@ -320,10 +324,13 @@ class GraphAttention(Layer):
             feature = self.call_mode0(X, A, attn_kernel, kernel, N, True)
             outputs.append(feature)
         node_hidden_features = K.concatenate(outputs)
+        print 'here'
 
-        node_features = K.dot(node_hidden_features, self.constant_kernels[0]) + self.constant_kernels[1]
-        node_features = K.relu(node_features, alpha = 0.2)
-        return node_features
+        y = K.dot(node_hidden_features, self.constant_kernels[0]) + self.constant_kernels[1]
+        z = K.relu(y, alpha = 0.2)
+        if z.dtype != 'float32':
+            z = K.cast(z, 'float32')
+        return z
 
     
 
@@ -345,8 +352,6 @@ class GraphAttention(Layer):
             return node_features
         elif self.mode == 9:
             node_features = self.call_mode9(X, A, self.attn_kernels, self.kernels, N)
-            if node_features.dtype != 'float32':
-                node_features = K.cast(node_features, 'float32')
             return node_features
 
         outputs = []
