@@ -343,7 +343,7 @@ class GraphAttention(Layer):
         elif self.mode == 8:
             node_features = self.call_mode8(X, A, inputs[2], self.attn_kernels, self.kernels, N)
             return node_features
-        elif self.mode == 9:``
+        elif self.mode == 9:
             node_features = self.call_mode9(X, A, self.attn_kernels, self.kernels, N)
             if node_features.dtype != 'float32':
                 node_features = K.cast(node_features, 'float32')
