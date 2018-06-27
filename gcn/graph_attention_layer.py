@@ -313,7 +313,7 @@ class GraphAttention(Layer):
         return node_features
 
     def call_mode9(self, X, A, attn_kernels, kernels, N):
-        outputs = [X]
+        outputs = []
         for head in range(self.attn_heads):
             kernel = kernels[head]
             attn_kernel = attn_kernels[head]
