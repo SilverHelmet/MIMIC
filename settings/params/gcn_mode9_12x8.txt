@@ -1,0 +1,7 @@
+gcn_mode=5
+gcn_hidden_dim=8
+gcn_hidden_dim2=80
+gcn_num_head=12
+
+# layer1: gcn_num_head * gcn_hidden_dim
+# layer2: gcn_hidden_dim

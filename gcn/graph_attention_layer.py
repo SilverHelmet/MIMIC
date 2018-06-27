@@ -39,10 +39,11 @@ class GraphAttention(Layer):
             2 : h = (h0, h.0)
             3 : h' = h.2 * w1
             4 : h = (h0, h0.-1)
-            5 : h' = h.4 * w3 + b3
+            5 : h' = h.4 * w3
             6 : h = (h0, h0.-1_0, h0.-1_1, ..., h0.-1_#head) 
-            7 : h' = h.6 * w3 + b3
+            7 : h' = h.6 * w3
             8 : h = (h0, h0.-2_0, h0.-2_0,, ..., h0.-2_#head)
+            9 : h = h.-1 * w3 + b
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -87,10 +88,11 @@ class GraphAttention(Layer):
             output_dim = self.F1
         elif self.mode == 4:
             output_dim = self.input_dim + self.F1
-        elif self.mode == 5:
+        elif self.mode in [5, 9]:
             output_dim = self.F2
         elif self.mode in [6, 8]:
             output_dim = self.input_dim + self.attn_heads * self.F1
+
 
         if self.mode in [6, 8]:
             self.output_dim = output_dim
@@ -119,7 +121,7 @@ class GraphAttention(Layer):
                                         name='kernel_%s_0' % head,
                                         regularizer=self.kernel_regularizer)
                 kernel = [kernel0]
-                if self.mode == 5:
+                if self.mode in [5]:
                     kernel1 = self.add_weight(shape=(F + self.F1 , self.F2),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_1' % head,
@@ -143,7 +145,7 @@ class GraphAttention(Layer):
             shapes = []
             if self.mode in [-2, 8]:
                 shapes.append((self.nb_event, self.F1))
-            elif self.mode in [-1, 4, 5, 6]:
+            elif self.mode in [-1, 4, 5, 6, 9]:
                 shapes.append((self.F1, 1))
                 shapes.append((self.F1, 1))
             elif self.mode == 0:
@@ -179,6 +181,17 @@ class GraphAttention(Layer):
             # w.set_value(np.array(range(l), dtype='int32'))
             self.constant_kernels.append(w)
 
+        if self.mode == 9:
+            kernel1 = self.add_weight(shape=(self.F1 * self.attn_heads, self.F2),
+                                initializer=self.kernel_initializer,
+                                name='hidden_kernel',
+                                regularizer=self.kernel_regularizer)
+            kernel1_b = self.add_weight(shape=(self.F2,),
+                                        initializer='zero',
+                                        name='hidden_kernel_b',
+                                        regularizer=self.kernel_regularizer)
+            self.constant_kernels.append(kernel1)
+            self.constant_kernels.append(kernel1_b)
         self.built = True
 
     def batch_batch_dot(self, A, B, N, F):
@@ -219,9 +232,6 @@ class GraphAttention(Layer):
             node_features = self.activation(node_features)
         
         return K.cast(node_features, 'float32')
-
-
-
 
     def call_mode0(self, X, A, attn_kernel, kernel, N, use_kernel = False):
         # Compute inputs to attention network
@@ -302,6 +312,18 @@ class GraphAttention(Layer):
         node_features = K.concatenate(outputs)
         return node_features
 
+    def call_mode9(self, X, A, attn_kernels, kernels, N):
+        outputs = [X]
+        for head in range(self.attn_heads):
+            kernel = kernels[head]
+            attn_kernel = attn_kernels[head]
+            feature = self.call_mode0(X, A, attn_kernel, kernel, N, True)
+            outputs.append(feature)
+        node_hidden_features = K.concatenate(outputs)
+
+        node_features = K.dot(node_hidden_features, self.constant_kernels[0]) + self.constant_kernels[1]
+        node_features = K.relu(node_features, alpha = 0.2)
+        return node_features
 
     
 
@@ -320,6 +342,11 @@ class GraphAttention(Layer):
             return node_features
         elif self.mode == 8:
             node_features = self.call_mode8(X, A, inputs[2], self.attn_kernels, self.kernels, N)
+            return node_features
+        elif self.mode == 9:
+            node_features = self.call_mode9(X, A, self.attn_kernels, self.kernels, N)
+            if node_features.dtype != 'float32':
+                node_features = K.cast(node_features, 'float32')
             return node_features
 
         outputs = []
