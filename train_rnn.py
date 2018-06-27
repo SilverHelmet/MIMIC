@@ -122,7 +122,7 @@ def define_simple_seg_rnn(setting):
 
     if gcn_flag or gcn_numeric_feature:
         if gcn_flag:
-            edge_mat = Input(shape = (event_len, event_len), dtype = 'int32', name = 'adjacent matrix')
+            edge_mat = Input(shape = (event_len, event_len), dtype = 'float32', name = 'adjacent matrix')
             inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
