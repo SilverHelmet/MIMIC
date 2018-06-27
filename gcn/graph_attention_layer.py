@@ -217,7 +217,7 @@ class GraphAttention(Layer):
 
         attn_for_neights = self.batch_batch_dot(neighs_emd, attn_kernel_for_E, N, self.F1) #(batch_size X N X N)
 
-        dense = K.relu(attn_for_neights, alpha=0.2)
+        dense = K.tanh(attn_for_neights)
 
         # Mask values before activation (Vaswani et al., 2017)
         comparison = K.equal(A, 0.0) # (batch_size X N X N)
