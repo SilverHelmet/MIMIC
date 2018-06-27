@@ -112,9 +112,6 @@ class GraphAttention(Layer):
         assert len(input_shape) >= 2
         F = input_shape[0][-1]
         l = input_shape[0][-2]
-        print 'F = %d' %F
-        print "F1 = %d" %self.F1
-        print "F2 = %d" %self.F2
         # Initialize kernels for each attention head
         for head in range(self.attn_heads):
             if self.mode in [-2, -1, 4, 5, 6, 8, 9]:
@@ -324,7 +321,6 @@ class GraphAttention(Layer):
             feature = self.call_mode0(X, A, attn_kernel, kernel, N, True)
             outputs.append(feature)
         node_hidden_features = K.concatenate(outputs)
-        print 'here'
 
         y = K.dot(node_hidden_features, self.constant_kernels[0]) + self.constant_kernels[1]
         z = K.relu(y, alpha = 0.2)
