@@ -339,8 +339,6 @@ class GraphAttention(Layer):
             elif self.mode == 5:
                 node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
 
-
-
             outputs.append(node_features)
 
         # Reduce the attention heads output according to the reduction method
@@ -351,7 +349,9 @@ class GraphAttention(Layer):
             if self.activation is not None:
                 # In case of 'average', we compute the activation here (Eq 6)
                 output = self.activation(output)
-
+        
+        if output.dtype != 'float32':
+            output = K.cast(output, 'float32')
         return output
 
     def get_output_shape_for(self, input_shape):
