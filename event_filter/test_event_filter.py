@@ -54,7 +54,7 @@ def load_death_fixlength16():
     setting = load_argv(settings)
     model_path = os.path.join(model_dir, 'death_fixLength16_fea_catAtt_gcn_mode-1_12X8.model2')
     dataset_path = os.path.join(death_exper_dir, 'death_test_1000.h5')
-    seg_path = os.path.join(death_exper_dir, 'segs/segs/death_test_1000_segmode=fixLength_maxchunk=63_length=16.h5')
+    seg_path = os.path.join(death_exper_dir, 'segs/death_test_1000_segmode=fixLength_maxchunk=63_length=16.h5')
     sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_400.txt'))
     
     
