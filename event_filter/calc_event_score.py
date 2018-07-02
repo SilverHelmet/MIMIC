@@ -199,8 +199,8 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
 
 
 if __name__ == "__main__":
-    dataset, model, weights_map = load_sample()
-    # dataset, model, weights_map = load_death_fixlength16()
+    # dataset, model, weights_map = load_sample()
+    dataset, model, weights_map = load_death_fixlength16()
 
     feature_width = 3
     feature_size = weights_map['numeric feature embedding_W'].shape[0] / feature_width
