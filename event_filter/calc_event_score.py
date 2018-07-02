@@ -58,10 +58,18 @@ class FeatureStat:
 
 def get_weights(model, keys):
     keys = set(keys)
+    substrs = set()
+    for key in keys:
+        if key.endswith('*'):
+            substrs.add(key[:-1])
     weights_map = {}
     for weight in model.weights:
         if weight.name in keys:
             weights_map[weight.name] = weight.get_value()
+            continue
+        for substr in substrs:
+            if substr in weight.name:
+                weights_map[weight.name] = weight.get_value()
     return weights_map
 
 def load_sample():
@@ -74,23 +82,23 @@ def load_sample():
     dataset.load(False, False, False)
 
     weights_name = ['embedding_W', 'numeric feature embedding_W', 
-        'numeric feature embedding_b', 'kernel_0_0', 'att_kernel_0_1']
+        'numeric feature embedding_b', 'kernel*']
     model = load_model(model_path, get_custom_objects())
     weights_map = get_weights(model, weights_name)
 
     return dataset, model, weights_map
 
-def load_death_timeAggre():
-    model_path = os.path.join(model_dir, 'death_timeAggre_fea_catAtt_gcn.model')
+def load_death_fixlength16():
+    model_path = os.path.join(model_dir, 'death_fixLength16_fea_catAtt_gcn_mode-1_12X8.model2')
     exper_dir = death_exper_dir
     dataset_path = os.path.join(exper_dir, 'death_train_1000.h5')
-    seg_path = os.path.join(exper_dir,  'segs/death_train_1000_segmode=timeAggre_maxchunk=32.h5')
+    seg_path = os.path.join(exper_dir,  'segs/death_train_1000_segmode=fixLength_maxchunk=63_length=16.h5')
 
     dataset = Dataset(dataset_path, seg_path)
     dataset.load(False, False, False)
 
     weights_name = ['embedding_W', 'numeric feature embedding_W', 
-        'numeric feature embedding_b', 'kernel_0_0', 'att_kernel_0_1']
+        'numeric feature embedding_b', 'kernel*']
     model = load_model(model_path, get_custom_objects())
     weights_map = get_weights(model, weights_name)
 
@@ -150,16 +158,27 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
 
     Print("calc event embedding")
     event_ori_emd = np.concatenate((weights_map['embedding_W'], feature_emd), axis = -1)
-    event_kernel_emd = np.matmul(event_ori_emd, weights_map['kernel_0_0'])
-    np.save(os.path.join(out_dir, 'event_kernel_embedding'), event_kernel_emd)
+    
+    # event_kernel_emd = np.matmul(event_ori_emd, weights_map['kernel_0_0'])
+    # np.save(os.path.join(out_dir, 'event_kernel_embedding'), event_kernel_emd)
     Print("calc event embedding over")
 
     Print("calc event score")
-    event_attn_score = np.matmul(event_kernel_emd, weights_map['att_kernel_0_1'])
-    event_attn = np_softmax(event_attn_score)
-    np.save(os.path.join(out_dir, 'event_attn_score'), event_attn)
-    event_attn_embedding = event_kernel_emd * event_attn
-    limit = 300
+    outputs = []
+    head = 0
+    while "kernel_%d_0" %head in weights_map:
+        kernel = weights_map['kernel_%d_0' %head]
+        event_kernel_emd = np.matmul(event_ori_emd, kernel)
+        event_attn_score = np.matmul(event_kernel_emd, weights_map['att_kernel_%d_1' %head])
+        event_attn = np_softmax(event_attn_score)
+        np.save(os.path.join(out_dir, 'event_attn_score_%d' %head), event_attn)
+        event_attn_embedding = event_kernel_emd * event_attn
+        outputs.append(event_attn_embedding)
+        head += 1
+    
+
+    limit = 400
+    event_attn_embedding = np.concatenate(outputs)
     event_scores = calc_event_score_by_rank(event_attn_embedding, limit)
     cnt = 0
     for score in event_scores:
@@ -177,8 +196,8 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
 
 
 if __name__ == "__main__":
-    dataset, model, weights_map = load_sample()
-    # dataset, model, weights_map = load_death_timeAggre()
+    # dataset, model, weights_map = load_sample()
+    dataset, model, weights_map = load_death_fixlength16()
 
     feature_width = 3
     feature_size = weights_map['numeric feature embedding_W'].shape[0] / feature_width

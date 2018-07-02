@@ -5,6 +5,7 @@ GCN_Seg=True
 gcn_numeric_feature=True
 gcn_numric_feature_hidden_dim=16
 gcn_numeric_width=1
+gcn_num_head=3
 gcn_mode=-1
 
 #model args
