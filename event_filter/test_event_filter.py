@@ -39,7 +39,7 @@ def load_death_timeAggre():
     model_path = os.path.join(model_dir, 'death_timeAggre_fea_catAtt_gcn.model')
     dataset_path = os.path.join(death_exper_dir, 'death_test_1000.h5')
     seg_path = os.path.join(death_exper_dir, 'segs/death_test_1000_segmode=timeAggre_maxchunk=32.h5')
-    sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_300.txt'))
+    sorted_events = load_event_rank(os.path.join(model_dir, 'event_filter/event_scores_400.txt'))
     
     
     Print('load model from [%s]' %model_path)
@@ -67,9 +67,9 @@ def load_death_fixlength16():
 
 
 if __name__ == "__main__":
-    # model, setting, dataset, sorted_events = load_sample()
+    model, setting, dataset, sorted_events = load_sample()
     # model, setting, dataset, sorted_events = load_death_timeAggre()
-    model, setting, dataset, sorted_events = load_death_fixlength16()
+    # model, setting, dataset, sorted_events = load_death_fixlength16()
 
     thresholds = [0.5, 1.0]
     thresholds = [0.05, 0.1, 0.15,0.20,0.3,0.4,0.5, 0.6,0.7,0.8]

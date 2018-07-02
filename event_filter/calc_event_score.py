@@ -132,7 +132,7 @@ def calc_event_score_by_rank(event_emd, limit):
         for rank, eid in enumerate(sorted_eid, start = 0):
             if rank >= limit:
                 continue
-            scores[eid] += 1.0  - rank / limit
+            scores[eid] += 1.0  - rank / float(limit)
     return scores
 
 
@@ -174,11 +174,14 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
         np.save(os.path.join(out_dir, 'event_attn_score_%d' %head), event_attn)
         event_attn_embedding = event_kernel_emd * event_attn
         outputs.append(event_attn_embedding)
+        print event_attn_embedding.shape
         head += 1
+    
     
 
     limit = 400
-    event_attn_embedding = np.concatenate(outputs)
+    event_attn_embedding = np.concatenate(outputs, -1)
+    print event_attn_embedding.shape
     event_scores = calc_event_score_by_rank(event_attn_embedding, limit)
     cnt = 0
     for score in event_scores:
@@ -196,8 +199,8 @@ def calc_event_score(weights_map, features_ave, feature_width, out_dir):
 
 
 if __name__ == "__main__":
-    # dataset, model, weights_map = load_sample()
-    dataset, model, weights_map = load_death_fixlength16()
+    dataset, model, weights_map = load_sample()
+    # dataset, model, weights_map = load_death_fixlength16()
 
     feature_width = 3
     feature_size = weights_map['numeric feature embedding_W'].shape[0] / feature_width
