@@ -50,7 +50,7 @@ def load_death_timeAggre():
     return model, setting, dataset, sorted_events
 
 def load_death_fixlength16():
-    settings = ["none"] + 'settings/fea_gcn.txt settings/catAtt_lstm.txt settings/fixLength16.txt "@gcn_mode=-1|gcn_hidden_dim=8|gcn_num_head=12"'.split(' ')
+    settings = ["none"] + 'settings/fea_gcn.txt settings/catAtt_lstm.txt settings/fixLength16.txt @gcn_mode=-1|gcn_hidden_dim=8|gcn_num_head=12'.split(' ')
     setting = load_argv(settings)
     model_path = os.path.join(model_dir, 'death_fixLength16_fea_catAtt_gcn_mode-1_12X8.model2')
     dataset_path = os.path.join(death_exper_dir, 'death_test_1000.h5')
