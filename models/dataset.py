@@ -459,11 +459,10 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                 info['total'] += (event > 0).sum()
                 for i1, event_seq in enumerate(event):
                     for i2, eid in enumerate(event_seq):
-                        if eid not in event_set:
+                        if eid not in event_set and eid > 0:
                             event[i1,i2] = 0
                             feature[i1,i2] = 0
-                            if eid > 0:
-                                info['mask'] += 1
+                            info['mask'] += 1
 
             if gcn or gcn_seg: 
                 seged_event = event
