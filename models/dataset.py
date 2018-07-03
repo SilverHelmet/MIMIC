@@ -462,7 +462,8 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                         if eid not in event_set:
                             event[i1,i2] = 0
                             feature[i1,i2] = 0
-                            info['mask'] += 1
+                            if eid > 0:
+                                info['mask'] += 1
 
             if gcn or gcn_seg: 
                 seged_event = event
