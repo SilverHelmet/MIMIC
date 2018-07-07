@@ -391,7 +391,6 @@ class GraphAttention(Layer):
 
         # Parameters
         N = K.shape(X)[1]  # Number of nodes in the grap
-        print 'batch = %s' %K.shape(X)[0]
 
         if self.mode == 6:
             node_features = self.call_mode6(X, A, self.attn_kernels, self.kernels, N)
