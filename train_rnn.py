@@ -386,8 +386,6 @@ if __name__ == '__main__':
                 print_eval("round-%d" %(epoch_round+1), test_eval)
             
             # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
-            
-
                 
         # new_weights = {}
         # for layer in model.layers:

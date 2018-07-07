@@ -1,0 +1,6 @@
+gcn_mode=10
+gcn_hidden_dim=8
+gcn_num_head=10
+
+# key query value attention mode
+# gcn_hidden_dim * gcn_num_head
