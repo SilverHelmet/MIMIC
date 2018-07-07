@@ -233,11 +233,9 @@ class GraphAttention(Layer):
 
 
         A_index = A * self.constant_kernels[0] + batch_base      #(batch_size, N, N)
-        print A_index.dtype
         if A_index.dtype != 'int32':
             A_index = K.cast(A_index, 'int32')
         query_mat = K.gather(K.reshape(query, (-1, self.F1)), A_index) #(batch, N, N, F1)
-        print query_mat.dtype
         attn_for_neights = self.batch_batch_dot(query_mat, key, N, self.F1) #(batch_size, N, N)
 
         comparison = K.equal(A, 0.0) # (batch_size X N X N)
