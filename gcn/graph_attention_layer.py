@@ -44,7 +44,7 @@ class GraphAttention(Layer):
             7 : h' = h.6 * w3
             8 : h = (h0, h0.-2_0, h0.-2_0,, ..., h0.-2_#head)
             9 : h = h.-1 * w3 + b
-            10: query, key value attention mode
+            10: h = sigma value * attn, query, key ,value = hi * w, attn = query .* key, 
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -249,7 +249,7 @@ class GraphAttention(Layer):
             node_features = self.activation(node_features)
 
         if node_features.dtype != 'float32':
-            node_features = K.case(node_features, 'float32')
+            node_features = K.cast(node_features, 'float32')
 
         return node_features
 
