@@ -143,6 +143,10 @@ def define_simple_seg_rnn(setting):
         else:
             gcn = embedding
 
+
+        if setting.get('gcn_dense', False):
+            gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
+
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
             inputs.append(seg_mat)
