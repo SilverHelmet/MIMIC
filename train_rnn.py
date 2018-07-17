@@ -135,18 +135,19 @@ def define_simple_seg_rnn(setting):
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
-            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
+            gcn_layer = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
                     nb_event = event_dim, 
                     attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, 
                     attn_dropout = 1.0, activation = 'tanh', 
-                    kernel_regularizer=l2(l2_cof), name = 'gcn')([embedding, edge_mat, event_input])
+                    kernel_regularizer=l2(l2_cof), name = 'gcn')
+            gcn = gcn_layer([embedding, edge_mat, event_input])
         else:
             gcn = embedding
 
         if setting.get('gcn_gcn', False):
             gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
                     nb_event = event_dim, 
-                    attention_mode = gcn_mode, input_dim = gcn.output_dim, attn_heads=gcn_num_head, 
+                    attention_mode = gcn_mode, input_dim = gcn_layer.output_dim, attn_heads=gcn_num_head, 
                     attn_dropout = 1.0, activation = 'tanh', 
                     kernel_regularizer=l2(l2_cof), name = 'gcn_gcn')([gcn, edge_mat, event_input])
 
