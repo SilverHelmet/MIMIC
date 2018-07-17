@@ -143,6 +143,12 @@ def define_simple_seg_rnn(setting):
         else:
             gcn = embedding
 
+        if setting.get('gcn_gcn', False):
+            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
+                    nb_event = event_dim, 
+                    attention_mode = gcn_mode, input_dim = gcn.output_dim, attn_heads=gcn_num_head, 
+                    attn_dropout = 1.0, activation = 'tanh', 
+                    kernel_regularizer=l2(l2_cof), name = 'gcn_gcn')([gcn, edge_mat, event_input])
 
         if setting.get('gcn_dense', False):
             gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
