@@ -28,6 +28,7 @@ class GraphAttention(Layer):
                 #  attn_kernel_constraint=None,
                  mask_zero=False,
                  attention_mode = 0,
+                 batch_size = 1000, 
                  **kwargs):
         '''
         attention_mode
@@ -42,9 +43,10 @@ class GraphAttention(Layer):
             5 : h' = h.4 * w3
             6 : h = (h0, h0.-1_0, h0.-1_1, ..., h0.-1_#head) 
             7 : h' = h.6 * w3
-            8 : h = (h0, h0.-2_0, h0.-2_0,, ..., h0.-2_#head)
+            8 : h = (h0, h0.-2_0, h0.-2_1,, ..., h0.-2_#head)
             9 : h = h.-1 * w3 + b
             10: h = sigma value * attn, query, key ,value = hi * w, attn = query .* key, 
+            11: mode10 and key/query with edge weight
         '''
         if attn_heads_reduction not in {'concat', 'average'}:
             raise ValueError('Possbile reduction methods: concat, average')
@@ -66,6 +68,7 @@ class GraphAttention(Layer):
         # self.attn_kernel_constraint = constraints.get(attn_kernel_constraint)
         self.mask_zero = mask_zero
         self.mode = attention_mode
+        self.batch_size = batch_size
 
         if self.mask_zero:
             self.supports_masking = True
@@ -77,7 +80,7 @@ class GraphAttention(Layer):
         self.attn_kernels = []  # Attention kernels for attention heads
         self.constant_kernels = []
 
-        if self.mode in [-1, -2, 10]:
+        if self.mode in [-1, -2, 10, 11]:
             output_dim = self.F1
         elif self.mode == 0:
             output_dim = self.input_dim
@@ -140,13 +143,17 @@ class GraphAttention(Layer):
                                         name='kernel_%s_0' % head,
                                         regularizer=self.kernel_regularizer)
                 self.kernels.append([kernel0])
-            elif self.mode == 10: #key query value
+            elif self.mode in [10, 11]: #key query value
+                if self.mode == 11:
+                    key_output_dim =  self.F1 + 1
+                else:
+                    key_output_dim = self.F1
                 query_kernel = self.add_weight(shape=(F, self.F1),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_query' % head,
                                         regularizer=self.kernel_regularizer)
                 
-                key_kernel = self.add_weight(shape=(F, self.F1),
+                key_kernel = self.add_weight(shape=(F, key_output_dim),
                                         initializer=self.kernel_initializer,
                                         name='kernel_%s_key' % head,
                                         regularizer=self.kernel_regularizer)
@@ -175,7 +182,7 @@ class GraphAttention(Layer):
             elif self.mode == 3:
                 shapes.append((F, 1))
                 shapes.append((F, 1))
-            elif self.mode == 10:
+            elif self.mode in [10, 11]:
                 pass
 
 
@@ -190,7 +197,7 @@ class GraphAttention(Layer):
 
             self.attn_kernels.append(attn_kernel)
 
-        if self.mode in [-2, 8, 10]:
+        if self.mode in [-2, 8, 10, 11]:
             def my_init(shape, name = None):
                 return K.variable(range(shape[0]), dtype = 'int32', name = name)
 
@@ -200,6 +207,12 @@ class GraphAttention(Layer):
                                 trainable = False)
             # w.set_value(np.array(range(l), dtype='int32'))
             self.constant_kernels.append(w)
+
+            w_batch = self.add_weight(shape = (self.batch_size, ),
+                                initializer = my_init,
+                                name = 'constant_transform_w',
+                                trainable = False)
+            self.constant_kernels.append(w_batch)                  
 
         if self.mode == 9:
             kernel1 = self.add_weight(shape=(self.F1 * self.attn_heads, self.F2),
@@ -223,20 +236,25 @@ class GraphAttention(Layer):
         return result
 
     def call_qkv_attention(self, X, A, attn_kernel, kernel, N):
+        
         query = K.dot(X, kernel[0])     #(batch_size, N, F1)
-        key = K.dot(X, kernel[1])       #(batch_size, N, F1)
+        key = K.dot(X, kernel[1])       #(batch_size, N, F1) or (batch_size, N, F1+1)
         value = K.dot(X, kernel[2])     #(batch_size, N, F1)
 
         batch_size = K.shape(X)[0]
-        batch_base = (self.constant_kernels[0] * N)[:batch_size]
+        batch_base = (self.constant_kernels[1] * N)[:batch_size]
         batch_base = K.reshape(batch_base, (-1, 1, 1))
 
-
-        A_index = A * self.constant_kernels[0] + batch_base      #(batch_size, N, N)
+        A_index = K.ones_like(A) * self.constant_kernels[0] + batch_base      #(batch_size, N, N)
         if A_index.dtype != 'int32':
             A_index = K.cast(A_index, 'int32')
-        query_mat = K.gather(K.reshape(query, (-1, self.F1)), A_index) #(batch, N, N, F1)
-        attn_for_neights = self.batch_batch_dot(query_mat, key, N, self.F1) #(batch_size, N, N)
+        query_mat = K.gather(K.reshape(query, (-1, self.F1)), A_index) #(batch_size, N, N, F1)
+        if self.mode == 11:
+            A_mat = K.expand_dims(A, -1)
+            weighted_query_mat  = K.concatenate([A_mat, query_mat])             #(batch_size, N, N, F1 + 1)
+            attn_for_neights = self.batch_batch_dot(weighted_query_mat, key, N, self.F1+1) #(batch_size, N, N)
+        else:
+            attn_for_neights = self.batch_batch_dot(query_mat, key, N, self.F1)
 
         comparison = K.equal(A, 0.0) # (batch_size X N X N)
         A_mask = K.switch(comparison, K.ones_like(A) * -10e9, K.zeros_like(A))
@@ -422,7 +440,7 @@ class GraphAttention(Layer):
                 node_features = self.call_mode4(X, A, attention_kernel, self.kernels[head], N)
             elif self.mode == 5:
                 node_features = self.call_mode5(X, A, attention_kernel, self.kernels[head], N)
-            elif self.mode == 10:
+            elif self.mode in [10, 11]:
                 node_features = self.call_qkv_attention(X, A, attention_kernel, self.kernels[head], N)
 
             outputs.append(node_features)
@@ -470,6 +488,7 @@ class GraphAttention(Layer):
             # "attn_kernel_constraint": attn_kernel_constraint,
             "mask_zero": self.mask_zero,
             "attention_mode": self.mode,
+            "batch_size": self.batch_size
         }
         base_config = super(GraphAttention, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))

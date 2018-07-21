@@ -3,7 +3,7 @@ import os
 import h5py
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
-from gcn.graph import build_time_graph, build_time_graph_2
+from gcn.graph import build_time_graph_2, get_seg_time, time_funcs
 import glob
 
 class Dataset:
@@ -429,6 +429,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     gcn_time_width = setting['gcn_time_width']
+    post_gcn_time_func = time_funcs[setting.get('post_gcn_time_func', 'invert')]
     if gcn:
         times = dataset.times
 
@@ -524,26 +525,34 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                 # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
 
             if gcn_seg:
-                # gcn_seg_mat = []
                 gcn_seg_mat = np.zeros((ed - st, max_segs, max_seg_length, event_len))
                 for idx, batch_seg in enumerate(seg):
                     make_gcn_seg_mat(batch_seg, gcn_seg_mat[idx])
-                    # gcn_seg_mat.append(seg_mat)
-                # gcn_seg_mat = np.array(gcn_seg_mat)
+
+            if setting.get('post_gcn', False):
+                gcn_seg_edge_mat = np.zeros((ed -st, max_segs, max_segs))
+                time = times[batch_indices]
+                for j in range(ed - st):
+                    split_seg = seg[j] 
+                    sample_time = time[j]
+                    seg_sample_time = get_seg_time(sample_time, split_seg)
+                    build_time_graph_2(seg_sample_time, 9999999999, gcn_seg_edge_mat[j], post_gcn_time_func)
+
 
 
             inputs = [seged_event]
             if disturbance:
                 inputs.append(seg_feature_matrixes)
-            if gcn:
-                inputs.append(As)
             if gcn_numeric_feature:
                 inputs.append(gcn_num_feature_matries)
+            if gcn:
+                inputs.append(As)
             if gcn_seg:
                 inputs.append(gcn_seg_mat)
+            if setting.get('post_gcn', False):
+                inputs.append(gcn_seg_edge_mat)
             if use_static_feature:
                 inputs.append(static_feature_mat)
-
             if len(inputs) == 1:
                 inputs = inputs[0]
             yield (inputs, label)
@@ -585,5 +594,6 @@ if __name__ == "__main__":
             print As[1][i][i-10:i+10]
             break
     print (As[0] != As[1]).sum()
+
 
 

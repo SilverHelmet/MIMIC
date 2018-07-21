@@ -116,14 +116,13 @@ def define_simple_seg_rnn(setting):
     gcn_flag = setting['GCN']
     gcn_seg = setting['GCN_Seg']
     gcn_mode = setting['gcn_mode']
+    post_gcn = setting.get('post_gcn', False)
     if gcn_flag:
         print 'ues graph convolution network'
 
 
+
     if gcn_flag or gcn_numeric_feature:
-        if gcn_flag:
-            edge_mat = Input(shape = (event_len, event_len), dtype = 'float32', name = 'adjacent matrix')
-            inputs.append(edge_mat)
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
         if gcn_numeric_feature:
@@ -135,12 +134,15 @@ def define_simple_seg_rnn(setting):
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
+            edge_mat = Input(shape = (event_len, event_len), dtype = 'float32', name = 'adjacent matrix')
+            inputs.append(edge_mat)
             gcn_layer = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
                     nb_event = event_dim, 
                     attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, 
-                    attn_dropout = 1.0, activation = 'tanh', 
+                    attn_dropout = 1.0, activation = 'tanh', batch_size = setting['batch_size'],
                     kernel_regularizer=l2(l2_cof), name = 'gcn')
             gcn = gcn_layer([embedding, edge_mat, event_input])
+            
         else:
             gcn = embedding
 
@@ -148,7 +150,7 @@ def define_simple_seg_rnn(setting):
             gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
                     nb_event = event_dim, 
                     attention_mode = gcn_mode, input_dim = gcn_layer.output_dim, attn_heads=gcn_num_head, 
-                    attn_dropout = 1.0, activation = 'tanh', 
+                    attn_dropout = 1.0, activation = 'tanh', batch_size = setting['batch_size'],
                     kernel_regularizer=l2(l2_cof), name = 'gcn_gcn')([gcn, edge_mat, event_input])
 
         if setting.get('gcn_dense', False):
@@ -160,9 +162,18 @@ def define_simple_seg_rnn(setting):
             gcn = merge(inputs = [seg_mat, gcn], mode = 'dot', name = 'segment', dot_axes = [3, 1])
             gcn = GCNMaskedGlobalMaxPooling1D(name = 'max pooling')(gcn)
 
-        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = False, name = 'rnn')(gcn) 
+        if post_gcn:
+            seg_edge_mat = Input(shape = (max_segs, max_segs), name = 'post edge matrix')
+            inputs.append(seg_edge_mat)
+            rnn = GraphAttention(F1 = hidden_dim, activation='tanh', 
+                    attention_mode = 11, attn_dropout = 1.0, 
+                    kernel_regularizer = l2(l2_cof), name = 'post_gcn',
+                    mask_zero = True)([gcn, seg_edge_mat, event_input])
+            rnn = SimpleAttentionRNN(rnn)
+        else:
+            rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+                W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+                input_length = None, return_sequences = False, name = 'rnn')(gcn)
     elif rnn_model == "dlstm":
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
