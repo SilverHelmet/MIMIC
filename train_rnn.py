@@ -403,7 +403,7 @@ if __name__ == '__main__':
                 print "new max max_auc"
                 print_eval("round %d" %(epoch_round+1), test_eval)
                 if "model_out" in setting:
-                    model.save(setting['model_out'])
+                    model.save(setting['model_out'] + '.round%d' %epoch_round)
             else:
                 print_eval("round-%d" %(epoch_round+1), test_eval)
             
