@@ -95,7 +95,7 @@ if __name__ == "__main__":
             'total': 0,
         }
         Print('eval')
-        test_eval = dataset.eval(model, setting,reserved_events, info, verbose = True)
+        test_eval = dataset.eval(model, setting, reserved_events, info, verbose = True)
         print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
         print_eval('threshold = %.2f, ' %threshold, test_eval)
 

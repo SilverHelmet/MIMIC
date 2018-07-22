@@ -4,7 +4,7 @@ import numpy as np
 def one(x):
     return 1
 
-def invert(x, max_value = 10.0):
+def invert(x, max_value = 2.0):
     if x == 0:
         return max_value
     else:
@@ -46,11 +46,13 @@ def build_time_graph_2(times, width, A, time_func = one):
         while times[i] - times[st] > width:
             st += 1
         while ed < n and times[ed] - times[i] <= width and times[ed] >= 0:
-            A[i][ed] = time_func(times[ed] - times[i])
             ed += 1
+        print i, st, ed
+        for j in range(st, ed):
+            A[i][j] = time_func(times[j] - times[i])
 
 def get_seg_time(times, split):
-    seg_time = [0] * len(split)
+    seg_time = [-1] * len(split)
     st = 0
     for idx, ed in enumerate(split):
         if ed == 0:

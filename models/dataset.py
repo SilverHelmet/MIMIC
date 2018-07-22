@@ -3,7 +3,7 @@ import os
 import h5py
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
-from gcn.graph import build_time_graph_2, get_seg_time, time_funcs
+from gcn.graph import build_time_graph_2, get_seg_time, time_funcs, get_seg_time, time_funcs
 import glob
 
 class Dataset:
@@ -582,18 +582,14 @@ if __name__ == "__main__":
     s_dataset.print_shape()
     # s_dataset.trans_time()
     print s_dataset.times[1][:10]
-    print s_dataset.times[1][-10:]
     As = np.zeros((2, 1000, 1000))
-    build_time_graph(s_dataset.times[1], 1.0, As[0])
-    build_time_graph_2(s_dataset.times[1], 1.0, As[1])
-    print s_dataset.times[1][750:770]
-    for i in range(1000):
-        if (As[0][i] != As[1][i]).sum() != 0:
-            print i
-            print As[0][i][i-10:i+10]
-            print As[1][i][i-10:i+10]
-            break
-    print (As[0] != As[1]).sum()
-
-
-
+    # build_time_graph(s_dataset.times[1], 1.0, As[0])
+    print s_dataset.times[1][-10:]
+    split_seg = s_dataset.segs[1]
+    print split_seg
+    seg_time = get_seg_time(s_dataset.times[1], split_seg)
+    
+    x = np.zeros((len(split_seg), len(split_seg)))
+    print seg_time
+    build_time_graph_2(seg_time, 99999, x, time_func = time_funcs.get('invert'))
+    print x[-9][:]
