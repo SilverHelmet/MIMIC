@@ -390,6 +390,7 @@ if __name__ == '__main__':
             print "early stop at round %d" %(epoch_round + 1)
             break
         if "model_out" in setting:
+            print setting['model_out']
             model.save(setting['model_out'])
         model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
         
