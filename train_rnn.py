@@ -169,7 +169,8 @@ def define_simple_seg_rnn(setting):
                     attention_mode = 11, attn_dropout = 1.0, 
                     kernel_regularizer = l2(l2_cof), name = 'post_gcn',
                     mask_zero = True)([gcn, seg_edge_mat, event_input])
-            rnn = SimpleAttentionRNN(rnn)
+            # rnn = SimpleAttentionRNN(rnn)
+            rnn = GlobalMaxPooling1D(name = 'max pooling after post_gcn')(rnn)
         else:
             rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
                 W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
@@ -388,6 +389,8 @@ if __name__ == '__main__':
         if epoch_round - last_hit_round -1 >= early_stop_round:
             print "early stop at round %d" %(epoch_round + 1)
             break
+        if "model_out" in setting:
+            model.save(setting['model_out'] + '.round%d' %epoch_round)
         model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)

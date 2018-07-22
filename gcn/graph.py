@@ -61,5 +61,4 @@ def get_seg_time(times, split):
         st = ed
     return seg_time
 
-
-
+if __name__
