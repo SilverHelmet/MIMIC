@@ -673,6 +673,23 @@ class GCNMaskedGlobalMaxPooling1D(Layer):
     def compute_mask(self, x, mask = None):
         return K.any(K.not_equal(x, 0), axis=(-1, -2))
 
+class MaskedGlobalMaxPooling1D(Layer):
+    def __init__(self, **kwargs):
+        self.supports_masking = True
+        super(MaskedGlobalMaxPooling1D, self).__init__(**kwargs)
+
+    def call(self, x, mask=None):
+        y = K.expand_dims(K.ones_like(mask) - K.cast(mask, K.floatx()), -1)
+        z = y * (-999999999) + x
+        return K.max(x, axis=1)
+
+    def get_output_shape_for(self, input_shape):
+        return (input_shape[0], input_shape[2])
+
+    def compute_mask(self, x, mask = None):
+        return None
+
+
 
 def np_switch(condition, x1, x2):
     return np.select([condition, np.not_equal(condition, True)], [x1, x2])
