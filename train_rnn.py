@@ -390,7 +390,7 @@ if __name__ == '__main__':
             print "early stop at round %d" %(epoch_round + 1)
             break
         if "model_out" in setting:
-            model.save(setting['model_out'] + '.round%d' %epoch_round)
+            model.save(setting['model_out'])
         model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
         
         val_eval = datasets[1].eval(model, setting)
@@ -405,8 +405,6 @@ if __name__ == '__main__':
                 max_auc = val_eval[1]
                 print "new max max_auc"
                 print_eval("round %d" %(epoch_round+1), test_eval)
-                if "model_out" in setting:
-                    model.save(setting['model_out'] + '.round%d' %epoch_round)
             else:
                 print_eval("round-%d" %(epoch_round+1), test_eval)
             

@@ -1,1 +1,2 @@
 post_gcn=True
+post_gcn_time_func=one
