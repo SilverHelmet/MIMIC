@@ -210,7 +210,7 @@ class GraphAttention(Layer):
 
             w_batch = self.add_weight(shape = (self.batch_size, ),
                                 initializer = my_init,
-                                name = 'constant_transform_w',
+                                name = 'constant_transform_w_batch',
                                 trainable = False)
             self.constant_kernels.append(w_batch)                  
 
