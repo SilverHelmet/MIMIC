@@ -16,7 +16,7 @@ import h5py
 import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
-from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D, GCNMaskedGlobalMaxPooling1D
+from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D, GCNMaskedGlobalMaxPooling1D, MaskedGlobalMaxPooling1D
 from gcn.graph_attention_layer import GraphAttention
 
 def load_data(filepath, seg_filepath = None):
@@ -170,7 +170,7 @@ def define_simple_seg_rnn(setting):
                     kernel_regularizer = l2(l2_cof), name = 'post_gcn',
                     mask_zero = True)([gcn, seg_edge_mat, event_input])
             # rnn = SimpleAttentionRNN(rnn)
-            rnn = GlobalMaxPooling1D(name = 'max pooling after post_gcn')(rnn)
+            rnn = MaskedGlobalMaxPooling1D(name = 'max pooling after post_gcn')(rnn)
         else:
             rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
                 W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
