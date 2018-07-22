@@ -61,4 +61,5 @@ def get_seg_time(times, split):
         st = ed
     return seg_time
 
-if __name__
+if __name__ == "__main__":
+    pass
