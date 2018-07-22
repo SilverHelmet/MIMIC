@@ -1,0 +1,3 @@
+train_seg_file=lab_exper/segs/labtest_train_1000_segmode=timeAggre_maxchunk=32.h5
+valid_seg_file=lab_exper/segs/labtest_valid_1000_segmode=timeAggre_maxchunk=32.h5
+test_seg_file=lab_exper/segs/labtest_test_1000_segmode=timeAggre_maxchunk=32.h5

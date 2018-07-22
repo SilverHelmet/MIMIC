@@ -429,6 +429,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     gcn_time_width = setting['gcn_time_width']
+    gcn_time_func = time_funcs[settinng.get('gcn_time_func', 'one')]
     post_gcn_time_func = time_funcs[setting.get('post_gcn_time_func', 'invert')]
     if gcn:
         times = dataset.times
