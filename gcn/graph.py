@@ -47,7 +47,6 @@ def build_time_graph_2(times, width, A, time_func = one):
             st += 1
         while ed < n and times[ed] - times[i] <= width and times[ed] >= 0:
             ed += 1
-        print i, st, ed
         for j in range(st, ed):
             A[i][j] = time_func(times[j] - times[i])
 

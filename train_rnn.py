@@ -165,8 +165,8 @@ def define_simple_seg_rnn(setting):
         if post_gcn:
             seg_edge_mat = Input(shape = (max_segs, max_segs), name = 'post edge matrix')
             inputs.append(seg_edge_mat)
-            rnn = GraphAttention(F1 = hidden_dim, activation='tanh', 
-                    attention_mode = 11, attn_dropout = 1.0, 
+            rnn = GraphAttention(F1 = hidden_dim / gcn_num_head, activation='tanh', 
+                    attention_mode = 11, attn_dropout = 1.0, attn_heads=gcn_num_head
                     kernel_regularizer = l2(l2_cof), name = 'post_gcn',
                     mask_zero = True)([gcn, seg_edge_mat, event_input])
             # rnn = SimpleAttentionRNN(rnn)
