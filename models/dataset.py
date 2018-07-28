@@ -432,7 +432,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
     post_model = setting['post_model']    
     gcn_time_func = time_funcs[setting.get('gcn_time_func', 'one')]
     post_gcn_time_func = time_funcs[setting.get('post_gcn_time_func', 'invert')]
-    if gcn:
+    if setting['load_time']:
         times = dataset.times
 
 

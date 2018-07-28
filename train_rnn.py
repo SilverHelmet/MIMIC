@@ -313,7 +313,9 @@ def default_setting():
         'gcn_time_width': 0.5,
         'gcn_mode': -1,
 
-        "post_model": "LSTM"
+        "post_model": "LSTM",
+
+        "load_time": True,
     }
     return setting
 
@@ -360,7 +362,7 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         use_GCN = setting['GCN']
         for dataset in datasets:
-            dataset.load(load_static_feature = setting['static_feature'], load_time = use_GCN, load_transfer_time = use_GCN)
+            dataset.load(load_static_feature = setting['static_feature'], load_time = setting['load_time'], load_transfer_time = setting['load_time'])
             # if use_GCN:
             #     dataset.trans_time()
 
