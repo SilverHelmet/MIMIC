@@ -1,0 +1,9 @@
+GCN=True
+GCN_Seg=False
+
+gcn_mode=10
+gcn_hidden_dim=8
+gcn_num_head=10
+batch_size=20
+
+post_model=HELSTM

@@ -1,0 +1,5 @@
+GCN=False
+GCN_Seg=False
+
+batch_size=32
+post_model=HELSTM

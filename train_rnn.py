@@ -3,7 +3,7 @@ from keras.layers.core import Activation, Dense, Masking, TimeDistributedDense
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, SimpleRNN, GRU
-from keras.layers import Input, merge
+from keras.layers import Input, merge, Merge
 from keras.layers.pooling import GlobalMaxPooling1D
 from keras.models import Model
 from keras.callbacks import EarlyStopping
@@ -17,7 +17,9 @@ import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
 from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D, GCNMaskedGlobalMaxPooling1D, MaskedGlobalMaxPooling1D
+from models.helstm import HELSTM
 from gcn.graph_attention_layer import GraphAttention
+
 
 def load_data(filepath, seg_filepath = None):
     f = h5py.File(filepath, 'r')
@@ -116,13 +118,13 @@ def define_simple_seg_rnn(setting):
     gcn_flag = setting['GCN']
     gcn_seg = setting['GCN_Seg']
     gcn_mode = setting['gcn_mode']
-    post_gcn = setting.get('post_gcn', False)
+    post_model = setting['post_model']
     if gcn_flag:
         print 'ues graph convolution network'
 
 
 
-    if gcn_flag or gcn_numeric_feature:
+    if gcn_flag or gcn_numeric_feature or True:
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
         if gcn_numeric_feature:
@@ -137,7 +139,7 @@ def define_simple_seg_rnn(setting):
             edge_mat = Input(shape = (event_len, event_len), dtype = 'float32', name = 'adjacent matrix')
             inputs.append(edge_mat)
             gcn_layer = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
-                    nb_event = event_dim, 
+                    nb_event = event_dim, mask_zero = not gcn_seg,
                     attention_mode = gcn_mode, input_dim = emd_dim,attn_heads=gcn_num_head, 
                     attn_dropout = 1.0, activation = 'tanh', batch_size = setting['batch_size'],
                     kernel_regularizer=l2(l2_cof), name = 'gcn')
@@ -146,15 +148,15 @@ def define_simple_seg_rnn(setting):
         else:
             gcn = embedding
 
-        if setting.get('gcn_gcn', False):
-            gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
-                    nb_event = event_dim, 
-                    attention_mode = gcn_mode, input_dim = gcn_layer.output_dim, attn_heads=gcn_num_head, 
-                    attn_dropout = 1.0, activation = 'tanh', batch_size = setting['batch_size'],
-                    kernel_regularizer=l2(l2_cof), name = 'gcn_gcn')([gcn, edge_mat, event_input])
+        # if setting.get('gcn_gcn', False):
+        #     gcn = GraphAttention(F1 = gcn_hidden_dim, F2 = gcn_hidden_dim2, 
+        #             nb_event = event_dim, 
+        #             attention_mode = gcn_mode, input_dim = gcn_layer.output_dim, attn_heads=gcn_num_head, 
+        #             attn_dropout = 1.0, activation = 'tanh', batch_size = setting['batch_size'],
+        #             kernel_regularizer=l2(l2_cof), name = 'gcn_gcn')([gcn, edge_mat, event_input])
 
-        if setting.get('gcn_dense', False):
-            gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
+        # if setting.get('gcn_dense', False):
+        #     gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
 
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
@@ -162,7 +164,7 @@ def define_simple_seg_rnn(setting):
             gcn = merge(inputs = [seg_mat, gcn], mode = 'dot', name = 'segment', dot_axes = [3, 1])
             gcn = GCNMaskedGlobalMaxPooling1D(name = 'max pooling')(gcn)
 
-        if post_gcn:
+        if post_model == 'gcn':
             seg_edge_mat = Input(shape = (max_segs, max_segs), name = 'post edge matrix')
             inputs.append(seg_edge_mat)
             post_gcn_num_head = setting.get("post_gcn_num_head", 8)
@@ -172,10 +174,18 @@ def define_simple_seg_rnn(setting):
                     mask_zero = True)([gcn, seg_edge_mat, event_input])
             # rnn = SimpleAttentionRNN(rnn)
             rnn = MaskedGlobalMaxPooling1D(name = 'max pooling after post_gcn')(rnn)
-        else:
+        elif post_model == 'LSTM':
             rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
                 W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-                input_length = None, return_sequences = False, name = 'rnn')(gcn)
+                input_length = None, return_sequences = False, name = 'lstm', unroll = False)(gcn)
+        elif post_model == "HELSTM":
+            time_input = Input(shape = (event_len, 1), name = 'time input')
+            inputs.append(time_input)
+            event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([gcn, time_input])
+            rnn = HELSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', 
+                 W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+                 input_length = None, return_sequences = False, name = 'helstm', 
+                 off_slope = 1e-3, event_hidden_dim = None)(event_with_time)
     elif rnn_model == "dlstm":
         embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
         rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
@@ -302,6 +312,8 @@ def default_setting():
         'gcn_numeric_width': 1,
         'gcn_time_width': 0.5,
         'gcn_mode': -1,
+
+        "post_model": "LSTM"
     }
     return setting
 

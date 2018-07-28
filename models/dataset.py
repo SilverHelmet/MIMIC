@@ -429,6 +429,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
     gcn_numeric_feature = setting['gcn_numeric_feature']
     gcn_numeric_width = setting.get('gcn_numeric_width', 1)
     gcn_time_width = setting['gcn_time_width']
+    post_model = setting['post_model']    
     gcn_time_func = time_funcs[setting.get('gcn_time_func', 'one')]
     post_gcn_time_func = time_funcs[setting.get('post_gcn_time_func', 'invert')]
     if gcn:
@@ -530,7 +531,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                 for idx, batch_seg in enumerate(seg):
                     make_gcn_seg_mat(batch_seg, gcn_seg_mat[idx])
 
-            if setting.get('post_gcn', False):
+            if post_model == 'gcn':
                 gcn_seg_edge_mat = np.zeros((ed -st, max_segs, max_segs))
                 time = times[batch_indices]
                 for j in range(ed - st):
@@ -538,6 +539,12 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                     sample_time = time[j]
                     seg_sample_time = get_seg_time(sample_time, split_seg)
                     build_time_graph_2(seg_sample_time, 9999999999, gcn_seg_edge_mat[j], post_gcn_time_func)
+            elif post_model == 'LSTM':
+                pass
+            elif post_model == 'HELSTM':
+                event_time = np.expand_dims(times[batch_indices], -1)
+            else:
+                assert False
 
 
 
@@ -550,8 +557,10 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                 inputs.append(As)
             if gcn_seg:
                 inputs.append(gcn_seg_mat)
-            if setting.get('post_gcn', False):
+            if post_model == 'gcn':
                 inputs.append(gcn_seg_edge_mat)
+            elif post_model == 'HELSTM':
+                inputs.append(event_time)            
             if use_static_feature:
                 inputs.append(static_feature_mat)
             if len(inputs) == 1:

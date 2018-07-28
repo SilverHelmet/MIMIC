@@ -1,6 +1,6 @@
 import numpy as np
 import theano
-import theano.tensor as T 
+import theano.tensor as T
 import lasagne
 from lasagne import nonlinearities
 from lasagne import init
