@@ -467,7 +467,7 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                             feature[i1,i2] = 0
                             info['mask'] += 1
 
-            if gcn or gcn_seg: 
+            if gcn or gcn_seg or True: 
                 seged_event = event
                 # As = []
                 if gcn:
