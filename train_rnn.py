@@ -74,7 +74,7 @@ def make_input(setting):
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
     use_gcn = setting['GCN']
-    if use_gcn or setting['GCN_Seg'] or rnn_model == 'dlstm':
+    if use_gcn or setting['GCN_Seg'] or rnn_model == 'dlstm' or True:
         return Input(shape = (setting['event_len'], ),  dtype = 'int32', name = 'event input')
     if rnn_model == 'attlstm' or rnn_model == "attgru":
         max_seg_length = setting['max_seg_length']
