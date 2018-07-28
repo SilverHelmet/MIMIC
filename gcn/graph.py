@@ -47,8 +47,11 @@ def build_time_graph_2(times, width, A, time_func = one):
             st += 1
         while ed < n and times[ed] - times[i] <= width and times[ed] >= 0:
             ed += 1
-        for j in range(st, ed):
-            A[i][j] = time_func(times[j] - times[i])
+        if time_func is one:
+            A[i][st:ed] = 1
+        else:
+            for j in range(st, ed):
+                A[i][j] = time_func(times[j] - times[i])
 
 def get_seg_time(times, split):
     seg_time = [-1] * len(split)
