@@ -245,7 +245,8 @@ class GraphAttention(Layer):
         batch_base = (self.constant_kernels[1] * N)[:batch_size]
         batch_base = K.reshape(batch_base, (-1, 1, 1))
 
-        A_index = K.ones_like(A) * self.constant_kernels[0] + batch_base      #(batch_size, N, N)
+        comparison = K.equal(A, 0.0)
+        A_index = K.switch(comparison, K.zeros_like(A), K.ones_like(A)) #(batch_size, N, N)
         if A_index.dtype != 'int32':
             A_index = K.cast(A_index, 'int32')
         query_mat = K.gather(K.reshape(query, (-1, self.F1)), A_index) #(batch_size, N, N, F1)
