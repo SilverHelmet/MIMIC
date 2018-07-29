@@ -182,7 +182,7 @@ def define_simple_seg_rnn(setting):
             time_input = Input(shape = (event_len, 1), name = 'time input')
             inputs.append(time_input)
             event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([gcn, time_input])
-            rnn = HELSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', 
+            rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', 
                  W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
                  input_length = None, return_sequences = False, name = 'helstm', 
                  off_slope = 1e-3, event_hidden_dim = None)(event_with_time)

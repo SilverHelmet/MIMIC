@@ -5,85 +5,8 @@ import theano
 from keras.layers import InputSpec, merge, Merge
 from keras.backend.theano_backend import expand_dims
 
-
-def helstm_rnn(step_function, inputs, initial_states,
-        go_backwards=False, mask=None, constants=None,
-        unroll=False, input_length=None):
-
-    ndim = inputs[0].ndim
-    assert ndim >= 3, 'Input should be at least 3D.'
-
-    if unroll:
-        if input_length is None:
-            raise ValueError('When specifying `unroll=True`, '
-                             'an `input_length` '
-                             'must be provided to `rnn`.')
-
-    axes = [1, 0] + list(range(2, ndim))
-    # inputs = inputs.dimshuffle(axes)
-    # changed by lihaoran
-    tmp_inputs = []
-    for input_x in inputs:
-        input_ndim = input_x.ndim
-        input_axes = [1, 0] + list(range(2, input_ndim))
-        input_x = input_x.dimshuffle(input_axes)
-        tmp_inputs.append(input_x)
-    inputs = tmp_inputs
-
-    if constants is None:
-        constants = []
-
-    if mask is not None:
-        if mask.ndim == ndim-1:
-            mask = expand_dims(mask)
-        assert mask.ndim == ndim
-        mask = mask.dimshuffle(axes)
-
-        if unroll:
-            assert False
-        else:
-            # build an all-zero tensor of shape (samples, output_dim)
-            initial_output = step_function(inputs[0], initial_states + constants)[0] * 0
-            # Theano gets confused by broadcasting patterns in the scan op
-            initial_output = T.unbroadcast(initial_output, 0, 1)
-
-            def _step(input, mask, output_tm1, *states):
-                output, new_states = step_function(input, states)
-                # output previous output if masked.
-                output = T.switch(mask, output, output_tm1)
-                return_states = []
-                for state, new_state in zip(states, new_states):
-                    return_states.append(T.switch(mask, new_state, state))
-                return [output] + return_states
-
-            results, _ = theano.scan(
-                _step,
-                sequences=[inputs, mask],
-                outputs_info=[initial_output] + initial_states,
-                non_sequences=constants,
-                go_backwards=go_backwards)
-
-            # deal with Theano API inconsistency
-            if isinstance(results, list):
-                outputs = results[0]
-                states = results[1:]
-            else:
-                outputs = results
-                states = []
-            
-    else:
-        assert False
-
-    outputs = T.squeeze(outputs)
-    last_output = outputs[-1]
-
-    axes = [1, 0] + list(range(2, outputs.ndim))
-    outputs = outputs.dimshuffle(axes)
-    states = [T.squeeze(state[-1]) for state in states]
-    return last_output, outputs, states
-
 class HELSTM(LSTM):
-    def __init__(self, off_slope = 1e-3, event_hidden_dim = None, event_emd_dim, **kwargs):
+    def __init__(self, off_slope = 1e-3, event_emd_dim, event_hidden_dim = None, **kwargs):
         super(HELSTM, self).__init__(consume_less = 'gpu', **kwargs)
         self.event_hidden_dim = self.input_dim
         self.off_slope = off_slope
