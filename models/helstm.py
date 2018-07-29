@@ -83,10 +83,11 @@ def helstm_rnn(step_function, inputs, initial_states,
     return last_output, outputs, states
 
 class HELSTM(LSTM):
-    def __init__(self, off_slope = 1e-3, event_hidden_dim = None, **kwargs):
+    def __init__(self, off_slope = 1e-3, event_hidden_dim = None, event_emd_dim, **kwargs):
         super(HELSTM, self).__init__(consume_less = 'gpu', **kwargs)
         self.event_hidden_dim = self.input_dim
         self.off_slope = off_slope
+        self.event_emd_dim = event_emd_dim
 
     def build(self, input_shape):
         x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1)
@@ -94,10 +95,10 @@ class HELSTM(LSTM):
         self.input_spec = [InputSpec(shape = (input_shape))]
 
         if self.event_hidden_dim is None:
-            self.event_hidden_dim = self.input_dim
+            self.event_hidden_dim = self.event_emd_dim
 
 
-        self.event_hid_w = self.add_weight((self.input_dim, self.event_hidden_dim),
+        self.event_hid_w = self.add_weight((self.event_emd_dim, self.event_hidden_dim),
                                        initializer=self.init,
                                        name='{}_event_hid_w'.format(self.name),
                                        regularizer=self.W_regularizer)
@@ -173,21 +174,6 @@ class HELSTM(LSTM):
                                     self.off_slope*(in_cycle_time/period_broadcast)))
         return sleep_wake_mask
 
-        # times (batch_size, )
-        # on_mid_broadcast = K.abs(self.on_end * 0.5 * self.period)
-        # on_end_broadcast = K.abs(self.on_end * self.period)
-        # K.tile
-        # in_cycle_time = T.mod(times + self.shift, self.period)
-
-        # is_up_phase = K.lesser_equal(in_cycle_time, on_mid_broadcast)
-        # is_down_phase = K.greater(in_cycle_time, on_mid_broadcast) * K.lesser_equal(in_cycle_time, on_end_broadcast)
-
-        # sleep_wake_mask = K.switch(is_up_phase, in_cycle_time/on_mid_broadcast,
-        #                         K.switch(is_down_phase,
-        #                             (on_end_broadcast-in_cycle_time)/on_mid_broadcast,
-        #                                 self.off_slope*(in_cycle_time/self.period)))
-
-        # return sleep_wake_mask
         
 
     def step(self, x, states):
@@ -200,9 +186,10 @@ class HELSTM(LSTM):
 
         c = new_states[1]
 
-        event_hidden = K.tanh(K.dot(input_x, self.event_hid_w) + self.event_hid_b)
+        event_emd = input_x[:, :self.event_emd_dim]
+
+        event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
         event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
-        sleep_wake_mask = event_attn
 
         sleep_wake_mask = self.calc_time_gate(time_input_n)
         sleep_wake_mask = K.tile(sleep_wake_mask, (1, self.output_dim))
