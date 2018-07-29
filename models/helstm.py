@@ -118,7 +118,7 @@ class HELSTM(LSTM):
                                 regularizer=self.b_regularizer)
 
         def period_init(shape, name = None):
-            return K.random_uniform_variable(shape, 10.0, 1000.0, name=name)
+            return K.random_uniform_variable(shape, 1.0, 2.0, name=name)
 
         def shift_init(shape, name = None):
             return K.random_uniform_variable(shape, 0.0, 1000.0, name=name)
