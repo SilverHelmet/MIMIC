@@ -6,7 +6,7 @@ from keras.layers import InputSpec, merge, Merge
 from keras.backend.theano_backend import expand_dims
 
 class HELSTM(LSTM):
-    def __init__(self, off_slope = 1e-3, event_emd_dim, event_hidden_dim = None, **kwargs):
+    def __init__(self, event_emd_dim, off_slope = 1e-3, event_hidden_dim = None, **kwargs):
         super(HELSTM, self).__init__(consume_less = 'gpu', **kwargs)
         self.event_hidden_dim = self.input_dim
         self.off_slope = off_slope
