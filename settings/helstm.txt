@@ -1,5 +1,5 @@
 embedding_dim=32
-hidden_dim=32
+hidden_dim=64
 
 GCN=False
 GCN_Seg=False
