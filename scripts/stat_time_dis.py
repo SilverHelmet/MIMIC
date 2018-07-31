@@ -12,10 +12,9 @@ def stat():
     outf = file(os.path.join(result_dir, 'time_dis_in_a_day.txt'), 'w')
     for times in t:
         for time_str in times:
-            print type(time_str)
             time = parse_time(time_str)
             if time is not None:
-                offset = t.hour * 3600 + t.minute * 60 + t.second
+                offset = time.hour * 3600 + time.minute * 60 + time.second
                 outf.write("%s\n" %offset)
 
     outf.close()
