@@ -13,7 +13,7 @@ def stat():
     for times in t:
         for time_str in times:
             time = parse_time(time_str)
-            if time:
+            if time is not None:
                 offset = t.hour * 3600 + t.minute * 60 + t.second
                 outf.write("%s\n" %offset)
 
