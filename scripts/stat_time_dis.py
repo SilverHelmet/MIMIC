@@ -21,6 +21,9 @@ def stat():
 
 def plot():
     plt.style.use('ggplot')
+    for line in file(os.path.join(result_dir, 'time_dis_in_a_day.txt'), 'r'):
+        hour_off = float(line) / 3600.0
+
 
 if __name__ == "__main__":
     stat()
