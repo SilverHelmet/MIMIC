@@ -1,2 +1,3 @@
 embedding_dim=32
 hidden_dim=64
+gcn_numric_feature_hidden_dim=8
