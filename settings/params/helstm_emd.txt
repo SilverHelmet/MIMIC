@@ -1,0 +1,3 @@
+feature_dim=649
+numeric_feature_type=HELSTM
+gcn_numeric_feature=True
