@@ -144,6 +144,9 @@ def define_simple_seg_rnn(setting):
                 num_emd = TimeDistributedDense(gcn_numric_feature_hidden_dim, activation = 'tanh', name = 'numeric feature embedding')(num_feature)
                 embedding = merge(inputs = [e_embedding, num_emd], name = 'merged embedding', mode = 'concat')
                 emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
+        else:
+            embedding = e_embedding
+            emd_dim = embedding_dim
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
