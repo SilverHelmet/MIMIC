@@ -17,7 +17,7 @@ import sys
 from util import *
 from scripts import gen_fix_segs, norm_feature
 from models.models import SimpleAttentionRNN, SimpleAttentionRNN2, EventAttentionLSTM, EventAttentionGRU, SegMaskEmbedding, make_CNN1D, GCNMaskedGlobalMaxPooling1D, MaskedGlobalMaxPooling1D
-from models.helstm import HELSTM
+from models.helstm import HELSTM, FeatureEmbeddding
 from gcn.graph_attention_layer import GraphAttention
 
 
@@ -125,14 +125,25 @@ def define_simple_seg_rnn(setting):
 
 
     if gcn_flag or gcn_numeric_feature or True:
-        embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
+        e_embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
         if gcn_numeric_feature:
-            num_feature = Input(shape = (event_len, (gcn_numeric_width * 2 + 1) * feature_dim), name = 'numeric feature')
-            inputs.append(num_feature)
-            num_emd = TimeDistributedDense(gcn_numric_feature_hidden_dim, activation = 'tanh', name = 'numeric feature embedding')(num_feature)
-            embedding = merge(inputs = [embedding, num_emd], name = 'merged embedding', mode = 'concat')
-            emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
+            if setting['numeric_feature_type'] == "HELSTM":
+                print 'user helstm event embedding'
+                numeric_feature_num = setting['numeric_feature_num']
+                num_feature_idx = Input(shape = (event_len, numeric_feature_num), name = 'numeric feature idx')
+                num_feature_value = Input(shape = (event_len, numeric_feature_num), name = 'numeric feature value')
+                num_feature_emd = FeatureEmbeddding(input_dim = feature_dim, output_dim = embedding_dim, name = 'numeric feture embedding')([num_feature_idx, num_feature_value])
+                inputs.append(num_feature_idx)
+                inputs.append(num_feature_value)
+                embedding = merge(inputs = [e_embedding, num_feature_emd], mode = 'sum', name = 'e_f_embedding')
+                emd_dim = embedding_dim
+            else:    
+                num_feature = Input(shape = (event_len, (gcn_numeric_width * 2 + 1) * feature_dim), name = 'numeric feature')
+                inputs.append(num_feature)
+                num_emd = TimeDistributedDense(gcn_numric_feature_hidden_dim, activation = 'tanh', name = 'numeric feature embedding')(num_feature)
+                embedding = merge(inputs = [e_embedding, num_emd], name = 'merged embedding', mode = 'concat')
+                emd_dim = embedding_dim + gcn_numric_feature_hidden_dim
             
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
@@ -181,71 +192,73 @@ def define_simple_seg_rnn(setting):
         elif post_model == "HELSTM":
             time_input = Input(shape = (event_len, 1), name = 'time input')
             inputs.append(time_input)
-            event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([gcn, time_input])
+            event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, gcn, time_input])
             rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', 
                  W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
                  input_length = None, return_sequences = False, name = 'helstm', 
                  off_slope = 1e-3, event_hidden_dim = None)(event_with_time)
-    elif rnn_model == "dlstm":
-        embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
-        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = False, name = 'rnn')(embedding)
-    elif rnn_model == "cnn":
-        masked = Masking(mask_value=0.)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-            bias = False), name = "event_embedding")(masked)
-        cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
-                        emd = embedding, max_segs = setting['max_segs'], l2_reg_cof = l2_cof, drop_rate = setting['cnn_drop_rate'])
-        # lazy 
-        rnn = cnn
-    elif rnn_model == 'gru':
-        masked = Masking(mask_value=0)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-            bias = False), name = "event_embedding")(masked)
-        if disturbance:
-            feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
-            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-            inputs = [event_input, feature_input]
-        rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-    elif rnn_model == "lstm":
-        masked = Masking(mask_value=0)(event_input)
-        embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-        bias = False), name = "event_embedding")(masked)
-        if disturbance:
-            feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
-            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-            inputs = [event_input, feature_input]
-        rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-    elif rnn_model == "attgru":
-        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
-        if disturbance:
+    else:
+        assert False
+    # elif rnn_model == "dlstm":
+    #     embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
+    #     rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+    #         input_length = None, return_sequences = False, name = 'rnn')(embedding)
+    # elif rnn_model == "cnn":
+    #     masked = Masking(mask_value=0.)(event_input)
+    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
+    #         bias = False), name = "event_embedding")(masked)
+    #     cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
+    #                     emd = embedding, max_segs = setting['max_segs'], l2_reg_cof = l2_cof, drop_rate = setting['cnn_drop_rate'])
+    #     # lazy 
+    #     rnn = cnn
+    # elif rnn_model == 'gru':
+    #     masked = Masking(mask_value=0)(event_input)
+    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
+    #         bias = False), name = "event_embedding")(masked)
+    #     if disturbance:
+    #         feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
+    #         feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
+    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+    #         inputs = [event_input, feature_input]
+    #     rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
+    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+    # elif rnn_model == "lstm":
+    #     masked = Masking(mask_value=0)(event_input)
+    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
+    #     bias = False), name = "event_embedding")(masked)
+    #     if disturbance:
+    #         feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
+    #         feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
+    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+    #         inputs = [event_input, feature_input]
+    #     rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+    # elif rnn_model == "attgru":
+    #     embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
+    #     if disturbance:
             
-            feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
-            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-            inputs = [event_input, feature_input]
-        rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+    #         feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
+    #         feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
+    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+    #         inputs = [event_input, feature_input]
+    #     rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
         
-    elif rnn_model == "attlstm":
-        embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
-        if disturbance:
-            max_seg_length = setting['max_seg_length']
-            feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-            feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
-            embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-            inputs = [event_input, feature_input]
-        rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-            W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-            input_length = None, return_sequences = attention, name = 'rnn')(embedding)
+    # elif rnn_model == "attlstm":
+    #     embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
+    #     if disturbance:
+    #         max_seg_length = setting['max_seg_length']
+    #         feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
+    #         feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
+    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
+    #         inputs = [event_input, feature_input]
+    #     rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
+    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
 
     if attention:
         print "add attention"
@@ -309,6 +322,8 @@ def default_setting():
         'gcn_num_head':1,
         'GCN_Seg': False,
         'gcn_numeric_feature': False,
+        'numeric_feature_num': 3,
+        'numeric_feature_type': "HELSTM",
         'gcn_numeric_width': 1,
         'gcn_time_width': 0.5,
         'gcn_mode': -1,

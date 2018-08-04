@@ -26,9 +26,10 @@ def plot():
         hour_off = float(line) / 3600.0
         x.append(hour_off)
     
-    plt.hist(x, bins = 24 * 60, range = (0, 24), normed = True)
+    plt.hist(x, bins = 24 * 12, range = (-0.00001, 24), normed = True)
     plt.savefig(os.path.join(result_dir, 'time_dis_in_a_day'))
 
 
 if __name__ == "__main__":
-    stat()
+    # stat()
+    plot()

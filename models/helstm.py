@@ -2,21 +2,68 @@ from keras.layers.recurrent import LSTM
 from keras import backend as K
 import theano.tensor as T 
 import theano
-from keras.layers import InputSpec, merge, Merge
+from keras.layers.core import initializations
+from keras.layers import InputSpec, merge, Merge, Layer
 from keras.backend.theano_backend import expand_dims
+
+class FeatureEmbeddding(Layer):
+    def __init__(self, input_dim, output_dim, init='uniform', **kwargs):
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.init = initializations.get(init)
+        super(FeatureEmbeddding, self).__init__(**kwargs)
+        self.support_zero = True
+    
+    def build(self, inputs_shape):
+        self.W = self.add_weight((self.input_dim, self.output_dim),
+                                initializer=self.init,
+                                name='{}_W'.format(self.name))
+        self.feature_trans_w = self.add_weight((self.input_dim, ),
+                                initializer=self.init,
+                                name='{}_feature_trans_w'.format(self.name))
+        self.feature_trans_b = self.add_weight((self.input_dim, ),
+                                initializer='zero',
+                                name='{}_feature_trans_b'.format(self.name))
+        self.build = True
+
+    def get_output_shape_for(self, input_shapes):
+        return (input_shapes[0][0], input_shapes[0][1], self.output_dim)
+
+    def call(self, inputs, mask = None):
+        feature_idx = inputs[0]     #(batch, 1000, 3)
+        feature_value = inputs[1]   #(batch, 1000, 3)
+
+        if K.dtype(feature_idx) != 'int32':
+            feature_idx = K.cast(feature_idx, 'int32')
+
+        feature_trans_w = K.gather(self.feature_trans_w, feature_idx)
+        feature_trans_b = K.gather(self.feature_trans_b, feature_idx)
+        feature_dist = K.tanh(feature_value * feature_trans_w + feature_trans_b) #(batch, 1000, 3)
+
+        feature_emd = K.gather(self.W, feature_idx) #(batch, 1000, 3, output_dim)
+
+        dist_feature_emd = feature_emd * K.expand_dims(feature_dist)
+        
+        merged_feature_emd = K.sum(dist_feature_emd, axis = 2, keepdims = False)
+        return merged_feature_emd
+
+
+
+
+
+
 
 class HELSTM(LSTM):
     def __init__(self, event_emd_dim, off_slope = 1e-3, event_hidden_dim = None, **kwargs):
         super(HELSTM, self).__init__(consume_less = 'gpu', **kwargs)
-        self.event_hidden_dim = self.input_dim
+        self.event_hidden_dim = event_hidden_dim
         self.off_slope = off_slope
         self.event_emd_dim = event_emd_dim
 
     def build(self, input_shape):
-        x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1)
+        x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim)
         super(HELSTM, self).build(x_input_shape)
         self.input_spec = [InputSpec(shape = (input_shape))]
-
         if self.event_hidden_dim is None:
             self.event_hidden_dim = self.event_emd_dim
 
@@ -100,7 +147,10 @@ class HELSTM(LSTM):
         
 
     def step(self, x, states):
-        input_x = x[:, : -1]
+        # input_x = x[:, : self.input_dim]
+        # event_emd = input_x[:, :self.event_emd_dim]
+        event_emd = x[:, : self.event_emd_dim]
+        input_x = x[:, self.event_emd_dim: self.event_emd_dim + self.input_dim]
         time_input_n = x[:, -1]
         prev_h = states[0]
         prev_c = states[1]
@@ -108,8 +158,6 @@ class HELSTM(LSTM):
         # return h, new_states
 
         c = new_states[1]
-
-        event_emd = input_x[:, :self.event_emd_dim]
 
         event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
         event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
@@ -137,40 +185,47 @@ if __name__ == "__main__":
     batch = 7
     output_dim = 30
     X = Input(shape = (input_length, ), name = 'x')
-    emd = Embedding(input_dim = 20, output_dim = emd_dim, mask_zero = True)(X)
+    e_emd = Embedding(input_dim = 20, output_dim = emd_dim, mask_zero = True)(X)
+    F_idx = Input(shape = (input_length, 3), name = 'f_idx')
+    F_value = Input(shape = (input_length, 3), name = 'f_value')
+    f_emd = FeatureEmbeddding(input_dim = 10, output_dim = emd_dim, name = 'f_emd')([F_idx, F_value])
+    emd = Merge(mode = 'sum', name = 'emd')([e_emd, f_emd])
+    
     Time = Input(shape = (input_length, 1), name = 'time')
     merge_layer = Merge(mode = 'concat', concat_axis = 2)
-    med_time = merge_layer([Time, emd])
+    med_time = merge_layer([e_emd, emd, Time])
 
-    helstm = HELSTM(output_dim = output_dim)(med_time)
-    model = Model(input = [X, Time], output = helstm)
+    helstm = HELSTM(event_emd_dim = emd_dim, output_dim = output_dim)(med_time)
+    model = Model(input = [X, F_idx, F_value, Time], output = helstm)
 
     # x = np.random.random((batch, input_length, emd_dim))
 
     x = np.random.randint(0, 3, size = (batch, input_length))
     t = np.random.random((batch, input_length, 1))
+    f_idx = np.random.randint(0, 10, size = (batch, input_length, 3))
+    f_value = np.random.random((batch, input_length, 3))
 
     print x.shape
     print t.shape
     model.summary()
-    out =  model.predict([x, t])
+    out =  model.predict([x, f_idx, f_value, t])
     print out.shape
 
-    x = np.random.random((batch, input_length, output_dim))
-    t = np.random.random((batch, input_length, 1))
+    # x = np.random.random((batch, input_length, output_dim))
+    # t = np.random.random((batch, input_length, 1))
 
-    mask1 = np.random.randint(0, 2, (batch, input_length, 1))
-    mask2 = np.ones_like(t)
+    # mask1 = np.random.randint(0, 2, (batch, input_length, 1))
+    # mask2 = np.ones_like(t)
 
-    concatenated = np.concatenate([mask1, mask2], axis=2)
-    mask = np.all(concatenated, axis=-1, keepdims=False)
-    mask1 =  np.squeeze(mask)
-    # mask = np.array(mask, dtype = 'int')
-    print mask1
-    print mask
+    # concatenated = np.concatenate([mask1, mask2], axis=2)
+    # mask = np.all(concatenated, axis=-1, keepdims=False)
+    # mask1 =  np.squeeze(mask)
+    # # mask = np.array(mask, dtype = 'int')
+    # print mask1
+    # print mask
 
-    print (mask1 != mask).sum()
-    print mask.shape
+    # print (mask1 != mask).sum()
+    # print mask.shape
 
 
     

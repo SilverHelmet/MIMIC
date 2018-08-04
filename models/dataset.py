@@ -469,13 +469,11 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
 
             if gcn or gcn_seg or True: 
                 seged_event = event
-                # As = []
                 if gcn:
                     time = times[batch_indices]
                     As = np.zeros((ed - st, event_len, event_len))
                     for idx, sample_time in enumerate(time):
                         build_time_graph_2(sample_time, gcn_time_width, As[idx])
-                # As = np.array(As)
             elif rnn == 'dlstm':
                 seged_event = event
             elif rnn == 'attlstm' or rnn == 'attgru':
@@ -518,13 +516,14 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
                 static_feature_mat = np.array(static_feature_mat)
 
             if gcn_numeric_feature:
-                # gcn_num_feature_matries = []
-                feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
-                gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
-                for j in range(ed - st):
-                    # idx = batch_indices[j]
-                    gen_gcn_feature_mat(feature[j], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
-                # gcn_num_feature_matries = np.array(gcn_num_feature_matries)
+                if setting['numeric_feature_type'] == "HELSTM":
+                    feature_idx = feature[:, :, [0,2,4]]
+                    feature_value = feature[:, :, [1,3,5]]                    
+                else:
+                    feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
+                    gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
+                    for j in range(ed - st):
+                        gen_gcn_feature_mat(feature[j], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
 
             if gcn_seg:
                 gcn_seg_mat = np.zeros((ed - st, max_segs, max_seg_length, event_len))
@@ -552,7 +551,11 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
             if disturbance:
                 inputs.append(seg_feature_matrixes)
             if gcn_numeric_feature:
-                inputs.append(gcn_num_feature_matries)
+                if setting['numeric_feature_type'] == "HELSTM":
+                    inputs.append(feature_idx)
+                    inputs.append(feature_value)
+                else:
+                    inputs.append(gcn_num_feature_matries)
             if gcn:
                 inputs.append(As)
             if gcn_seg:
