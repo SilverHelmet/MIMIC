@@ -18,6 +18,11 @@ class FeatureEmbeddding(Layer):
         self.W = self.add_weight((self.input_dim, self.output_dim),
                                 initializer=self.init,
                                 name='{}_W'.format(self.name))
+
+        WV = self.W.get_value()
+        WV[0] = 0
+        K.set_value(self.W, WV)
+        
         self.feature_trans_w = self.add_weight((self.input_dim, ),
                                 initializer=self.init,
                                 name='{}_feature_trans_w'.format(self.name))

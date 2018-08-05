@@ -28,7 +28,7 @@ class Dataset:
             datasets.append(Dataset(file, seg))
         return tuple(datasets)
 
-    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, event_set = None):
+    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, load_normed_feature = False, event_set = None):
         
         self.load_time = load_time
         self.load_static_feature = load_static_feature
@@ -42,7 +42,14 @@ class Dataset:
         if 'predicting_time' in f:
             self.predicting_times = f['predicting_time'][:]
         if 'feature' in f:
-            self.features = f['feature'][:]
+            if load_normed_feature:
+                nf_path = os.path.dirname(self.dataset_file) + "normed_" + os.path.basename(self.dataset_file)
+                print 'load normed feature from [%s]' %nf_path
+                nf = file(nf_path, 'r')
+                self.features = nf['feature'][:]
+                nf.close()
+            else:
+                self.features = f['feature'][:]
         else:
             self.features = np.zeros((1,1))
         if 'sample_id' in f:
@@ -56,9 +63,10 @@ class Dataset:
                     self.times = f['time'][:]
                     self.trans_time(time_path)
                 else:
-                    self.times = np.load(time_path)
+                    self.times = np.load(time_path) / 3.0
             else:
-                self.times = f['time'][:]
+                print 'load time diff /3'
+                self.times = f['time'][:] / 3.0
         f.close()
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
@@ -94,6 +102,8 @@ class Dataset:
                 self.features[mask_index] = 0
             if self.load_static_feature:
                 self.static_features[mask_index] = 0
+
+        f.cloes()
 
 
 

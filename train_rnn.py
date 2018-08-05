@@ -327,6 +327,7 @@ def default_setting():
         'gcn_numeric_feature': False,
         'numeric_feature_num': 3,
         'numeric_feature_type': "HELSTM",
+        "normed_feature": True,
         'gcn_numeric_width': 1,
         'gcn_time_width': 0.5,
         'gcn_mode': -1,
@@ -380,7 +381,9 @@ if __name__ == '__main__':
         datasets = Dataset.create_datasets(files = [train_file, valid_file, test_file], segs = [train_seg_file, valid_seg_file, test_seg_file])
         use_GCN = setting['GCN']
         for dataset in datasets:
-            dataset.load(load_static_feature = setting['static_feature'], load_time = setting['load_time'], load_transfer_time = setting['load_time'])
+            dataset.load(load_static_feature = setting['static_feature'], 
+            load_time = setting['load_time'], load_transfer_time = setting['load_time'],
+            load_normed_feature = setting['normed_feature'])
             # if use_GCN:
             #     dataset.trans_time()
 
