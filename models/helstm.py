@@ -22,7 +22,7 @@ class FeatureEmbeddding(Layer):
         WV = self.W.get_value()
         WV[0] = 0
         K.set_value(self.W, WV)
-        
+
         self.feature_trans_w = self.add_weight((self.input_dim, ),
                                 initializer=self.init,
                                 name='{}_feature_trans_w'.format(self.name))
@@ -113,23 +113,6 @@ class HELSTM(LSTM):
         self.on_end_timegate = self.add_weight((1, ), 
                                 initializer = onend_init,
                                 name = "{}_onend".format(self.name))
-
-    def calc_time_gate(time_input_n):
-            # Broadcast the time across all units
-        t_broadcast = time_input_n.dimshuffle([0,'x'])
-        # Get the time within the period
-        in_cycle_time = T.mod(t_broadcast + shift_broadcast, period_broadcast)
-        # Find the phase
-        is_up_phase = T.le(in_cycle_time, on_mid_broadcast)
-        is_down_phase = T.gt(in_cycle_time, on_mid_broadcast)*T.le(in_cycle_time, on_end_broadcast)
-
-        # Set the mask
-        sleep_wake_mask = T.switch(is_up_phase, in_cycle_time/on_mid_broadcast,
-                            T.switch(is_down_phase,
-                                (on_end_broadcast-in_cycle_time)/on_mid_broadcast,
-                                    off_slope*(in_cycle_time/period_broadcast)))
-
-        return sleep_wake_mask
 
     def calc_time_gate(self, time_input_n):
         t_broadcast = time_input_n.dimshuffle([0,'x'])
