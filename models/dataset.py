@@ -45,7 +45,7 @@ class Dataset:
             if load_normed_feature:
                 nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
                 print 'load normed feature from [%s]' %nf_path
-                nf = file(nf_path, 'r')
+                nf = h5py.File(nf_path, 'r')
                 self.features = nf['feature'][:]
                 nf.close()
             else:
