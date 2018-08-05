@@ -63,10 +63,10 @@ class Dataset:
                     self.times = f['time'][:]
                     self.trans_time(time_path)
                 else:
+                    print 'load time diff /3'
                     self.times = np.load(time_path) / 3.0
             else:
-                print 'load time diff /3'
-                self.times = f['time'][:] / 3.0
+                self.times = f['time'][:]
         f.close()
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
