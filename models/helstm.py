@@ -100,29 +100,32 @@ class HELSTM(LSTM):
             return K.random_uniform_variable(shape, 0.0, 1000.0, name=name)
 
         def onend_init(shape, name = None):
-            return K.variable([0.05], name=name)
+            return K.variable([0.05] * shape[0], name=name)
 
-        self.period_timegate = self.add_weight((1, ),  
+        self.period_timegate = self.add_weight((self.output_dim, ),  
                                 initializer = period_init,
                                 name = "{}_period".format(self.name))
 
-        self.shift_timegate = self.add_weight((1, ), 
+        self.shift_timegate = self.add_weight((self.output_dim, ), 
                                 initializer = shift_init,
                                 name = "{}_shift".format(self.name))
 
-        self.on_end_timegate = self.add_weight((1, ), 
+        self.on_end_timegate = self.add_weight((self.output_dim, ), 
                                 initializer = onend_init,
                                 name = "{}_onend".format(self.name))
 
     def calc_time_gate(self, time_input_n):
-        t_broadcast = time_input_n.dimshuffle([0,'x'])
-        shift_broadcast = self.shift_timegate.dimshuffle(['x',0])
-        period_broadcast = K.abs(self.period_timegate.dimshuffle(['x',0]))
-        on_mid_broadcast = K.abs(self.on_end_timegate.dimshuffle(['x',0])) * 0.5 * period_broadcast
-        on_end_broadcast = K.abs(self.on_end_timegate.dimshuffle(['x',0])) * period_broadcast
+        '''
+            time_input_n: (batch, )
+        '''
+        t_broadcast = time_input_n.dimshuffle([0,'x'])                                              # (batch, 1)
+        shift_broadcast = self.shift_timegate.dimshuffle(['x',0])                                   # (1, output_dim)
+        period_broadcast = K.abs(self.period_timegate.dimshuffle(['x',0]))                          # (1, output_dim)
+        on_mid_broadcast = K.abs(self.on_end_timegate.dimshuffle(['x',0])) * 0.5 * period_broadcast # (1, output_dim)
+        on_end_broadcast = K.abs(self.on_end_timegate.dimshuffle(['x',0])) * period_broadcast       # (1, output_dim)
 
-        in_cycle_time = T.mod(t_broadcast + shift_broadcast, period_broadcast)
-        is_up_phase = K.lesser_equal(in_cycle_time, on_mid_broadcast)
+        in_cycle_time = T.mod(t_broadcast + shift_broadcast, period_broadcast)                      # (batch, output_dim)
+        is_up_phase = K.lesser_equal(in_cycle_time, on_mid_broadcast)                               # ()
         is_down_phase = K.greater(in_cycle_time, on_mid_broadcast)*K.lesser_equal(in_cycle_time, on_end_broadcast)
 
         # Set the mask
@@ -151,7 +154,7 @@ class HELSTM(LSTM):
         event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
 
         sleep_wake_mask = self.calc_time_gate(time_input_n)
-        sleep_wake_mask = K.tile(sleep_wake_mask, (1, self.output_dim))
+        # sleep_wake_mask = K.tile(sleep_wake_mask, (1, self.output_dim))
         sleep_wake_mask = sleep_wake_mask * event_attn
 
         cell = sleep_wake_mask*c + (1.-sleep_wake_mask)*prev_c
