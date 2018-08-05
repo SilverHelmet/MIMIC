@@ -338,6 +338,21 @@ def default_setting():
     }
     return setting
 
+def split_batch_index(size, nb_split):
+    idxs = np.random.permutation(size)
+    step = size / nb_split
+    st_ed_pair = []
+    st = 0
+    for _ in range(nb_split - 1):
+        ed = min(size, st + step)
+        st_ed_pair.append((st, ed))
+        st += step
+    st_ed_pair.append((st, size))
+    for st, ed  in st_ed_pair:
+        yield idxs[st:ed]
+
+
+
 
 def load_argv(argv):
     setting = default_setting()
@@ -427,38 +442,24 @@ if __name__ == '__main__':
             break
         if "model_out" in setting:
             model.save(setting['model_out'] + '.round%d' %(epoch_round + 1))
-        model.fit_generator(sample_generator(datasets[0], setting, shuffle = True), datasets[0].size, nb_epoch = 1, verbose = 1)
+
+        nb_batch = 5
+        for batch_idx, train_index in enumerate(split_batch_index(datasets[0].size, nb_batch), start = 1):
+            model.fit_generator(sample_generator(datasets[0], setting, shuffle = True, train_index = train_index), len(train_index), nb_epoch = 1, verbose = 1)
+
         
-        val_eval = datasets[1].eval(model, setting)
-        # print 'Epoch %d/%d, validation acc = %f, auc = %f, merged_acc = %f, merged_auc = %f' \
-        #     %(epoch_round + 1, nb_epoch, val_eval[0], val_eval[1], val_eval[2], val_eval[3])
-        print_eval('Epoch %d/%d, validation' %(epoch_round+1, nb_epoch), val_eval)
+            val_eval = datasets[1].eval(model, setting)
+            print_eval('Epoch %d/%d Batch %d/%d, validation' %(epoch_round+1, nb_epoch, batch_idx, nb_batch), val_eval)
         
-        if val_eval[1] > max_auc or True:
-            last_hit_round = epoch_round
-            test_eval = datasets[2].eval(model, setting)
-            if val_eval[1] > max_auc:
-                max_auc = val_eval[1]
-                print "new max max_auc"
-                print_eval("round %d" %(epoch_round+1), test_eval)
-            else:
-                print_eval("round-%d" %(epoch_round+1), test_eval)
-            
-            # print 'round %d test acc = %f, auc = %f, merged_acc = %f, merged_auc = %f'  %(epoch_round + 1, test_eval[0], test_eval[1], test_eval[2], test_eval[3])
+            if val_eval[1] > max_auc or True:
+                last_hit_round = epoch_round
+                test_eval = datasets[2].eval(model, setting)
+                if val_eval[1] > max_auc:
+                    max_auc = val_eval[1]
+                    print "new max max_auc"
+                    print_eval("round %d batch %d" %(epoch_round+1, batch_idx), test_eval)
+                else:
+                    print_eval("round-%d batch %d" %(epoch_round+1, batch_idx), test_eval)
                 
-        # new_weights = {}
-        # for layer in model.layers:
-        #     name = layer.name
-        #     new_weights[name] = layer.get_weights()
-        # if weights is not None:
-        #     diff = {}
-        #     for name in new_weights:
-        #         new_weight = new_weights[name]
-        #         weight = weights[name]
-        #         for i in range(len(weight)):
-        #             diff[name + "_" + str(weight[i].shape)] = np.abs(weight[i] - new_weight[i]).mean()
-        #     for name in sorted(diff.keys()):
-        #         print '\t', name, "mean diff =", diff[name]
-        # weights = new_weights
     print "end trainning"
 

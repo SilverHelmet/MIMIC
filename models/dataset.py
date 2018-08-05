@@ -103,9 +103,6 @@ class Dataset:
             if self.load_static_feature:
                 self.static_features[mask_index] = 0
 
-        f.close()
-
-
 
 
     def trans_time(self, outpath = None):
@@ -418,13 +415,19 @@ def parse_sparse_static_feature(static_feature, size):
     return vec
 
 
-def sample_generator(dataset, setting, shuffle = False, event_set = None, info = None, verbose = False):
+def sample_generator(dataset, setting, shuffle = False, train_index = None, event_set = None, info = None, verbose = False):
     # Print("start generate samples")
+    if train_index is None:
+        if shuffle:
+            train_index = np.random.permutation(dataset.size)
+        else:
+            train_index = np.arange(dataset.size)
     labels = dataset.labels
     features = dataset.features
     events = dataset.events
     segs = dataset.segs
-    nb_sample = len(labels)
+    # nb_sample = len(labels)
+    nb_sample = len(train_index)
     event_len = setting['event_len']
     batch_size = setting['batch_size']
     disturbance = setting['disturbance']
@@ -449,20 +452,18 @@ def sample_generator(dataset, setting, shuffle = False, event_set = None, info =
     static_features = dataset.static_features
     use_static_feature = setting['static_feature']
     static_feature_size = setting.get('static_feature_size', 0)
-    if shuffle:
-        indices = np.random.permutation(nb_sample)
-    else:
-        indices = np.arange(nb_sample)
     while  True:
         i = 0
         while i < nb_sample:
             if verbose and (i / batch_size % 50 == 0):
                 Print('generate at %d/%d' %(i, nb_sample))
+
+            
                 
             st = i
             ed = min(i + batch_size, nb_sample)
             # Print("%s\t%s" %(st, ed))
-            batch_indices = indices[st:ed]
+            batch_indices = train_index[st:ed]
 
             label = labels[batch_indices]
             event = events[batch_indices]
