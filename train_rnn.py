@@ -443,10 +443,12 @@ if __name__ == '__main__':
         if "model_out" in setting:
             model.save(setting['model_out'] + '.round%d' %(epoch_round + 1))
 
-        nb_batch = 5
+        if epoch_round >= 2:
+            nb_batch = 5
+        else:
+            nb_batch = 1
         for batch_idx, train_index in enumerate(split_batch_index(datasets[0].size, nb_batch), start = 1):
             model.fit_generator(sample_generator(datasets[0], setting, shuffle = True, train_index = train_index), len(train_index), nb_epoch = 1, verbose = 1)
-
         
             val_eval = datasets[1].eval(model, setting)
             print_eval('Epoch %d/%d Batch %d/%d, validation' %(epoch_round+1, nb_epoch, batch_idx, nb_batch), val_eval)
