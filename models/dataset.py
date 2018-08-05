@@ -103,7 +103,7 @@ class Dataset:
             if self.load_static_feature:
                 self.static_features[mask_index] = 0
 
-        f.cloes()
+        f.close()
 
 
 
