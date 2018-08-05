@@ -43,7 +43,7 @@ class Dataset:
             self.predicting_times = f['predicting_time'][:]
         if 'feature' in f:
             if load_normed_feature:
-                nf_path = os.path.dirname(self.dataset_file) + "normed_" + os.path.basename(self.dataset_file)
+                nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
                 print 'load normed feature from [%s]' %nf_path
                 nf = file(nf_path, 'r')
                 self.features = nf['feature'][:]
