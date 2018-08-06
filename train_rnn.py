@@ -196,7 +196,9 @@ def define_simple_seg_rnn(setting):
             time_input = Input(shape = (event_len, 1), name = 'time input')
             inputs.append(time_input)
             event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, gcn, time_input])
-            rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, inner_activation = 'tanh', activation = 'tanh', 
+            event_hidden_dim = setting.get('event_hidden_dim', embedding_dim)
+            print 'event_hidden_dim = %d' %(event_hidden_dim)
+            rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, event_hidden_dim = event_hidden_dim, inner_activation = 'tanh', activation = 'tanh', 
                  W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
                  input_length = None, return_sequences = False, name = 'helstm', 
                  off_slope = 1e-3, event_hidden_dim = None)(event_with_time)
