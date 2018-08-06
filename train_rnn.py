@@ -446,7 +446,7 @@ if __name__ == '__main__':
             model.save(setting['model_out'] + '.round%d' %(epoch_round + 1))
 
         if epoch_round >= 2:
-            nb_batch = 5
+            nb_batch = 10
         else:
             nb_batch = 1
         for batch_idx, train_index in enumerate(split_batch_index(datasets[0].size, nb_batch), start = 1):
