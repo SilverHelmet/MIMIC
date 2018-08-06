@@ -201,7 +201,7 @@ def define_simple_seg_rnn(setting):
             rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, event_hidden_dim = event_hidden_dim, inner_activation = 'tanh', activation = 'tanh', 
                  W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
                  input_length = None, return_sequences = False, name = 'helstm', 
-                 off_slope = 1e-3, event_hidden_dim = None)(event_with_time)
+                 off_slope = 1e-3)(event_with_time)
     else:
         assert False
     # elif rnn_model == "dlstm":
