@@ -8,6 +8,10 @@ batch_size=20
 
 post_model=HELSTM
 
+embedding_dim=64
+event_hidden_dim=128
+hidden_dim=64
+
 feature_dim=649
 numeric_feature_type=HELSTM
 gcn_numeric_feature=True
