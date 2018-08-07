@@ -1,5 +1,6 @@
 from keras.layers.recurrent import LSTM
 from keras import backend as K
+import numpy as np
 import theano.tensor as T 
 import theano
 from keras.layers.core import initializations
@@ -74,9 +75,6 @@ def period_variable_sampling(setting, length):
     lows = [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [24.0] * cnt_24
     highs = [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [24.0] * cnt_24
     return lows, highs
-
-
-
 
 
 class HELSTM(LSTM):
