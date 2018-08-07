@@ -401,8 +401,6 @@ if __name__ == '__main__':
             dataset.load(load_static_feature = setting['static_feature'], 
             load_time = setting['load_time'], load_transfer_time = setting['load_time'],
             load_normed_feature = setting['normed_feature'], setting = setting)
-            # if use_GCN:
-            #     dataset.trans_time()
 
 
 

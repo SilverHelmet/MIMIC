@@ -56,17 +56,24 @@ class Dataset:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
+            
             if load_transfer_time and '|S' in str(f['time'].dtype):
-                time_path = self.dataset_file.replace('.h5', '_time.npy')
+                time_off = setting.get('time_off', 3.0)
+                time_base = setting.get('time_base', 'first_event')
+                print 'load time diff / %.1f' %time_off
+                print 'user time base: %s' %time_base
+                if time_base == 'first_event':
+                    time_path = self.dataset_file.replace('.h5', '_time.npy')
+                else:
+                    time_path = self.dataset_file.replace('.h5', 'abs_time.npy')
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
-                    self.times = f['time'][:]
-                    self.trans_time(time_path)
+                    self.times = f['time'][:] 
+                    self.trans_time(time_path, time_base)
+                    self.times = self.times / time_off
                 else:
-                    time_off = setting.get('time_off', 3.0)
-                    print 'load time diff / %.1f' %time_off
-                    
                     self.times = np.load(time_path) / time_off
+                print "time max", self.times.max()
             else:
                 self.times = f['time'][:]
         f.close()
@@ -107,20 +114,24 @@ class Dataset:
 
 
 
-    def trans_time(self, outpath = None):
-
+    def trans_time(self, outpath, time_base):
         offset_hours = np.ones_like(self.events) * -1.0
         n, m = self.times.shape
         for i in range(n):
-            st = parse_time(self.times[i][0])
-            offset_hours[i][0] = 0.0
-            for j in range(1, m):
-                time_s = self.times[i][j]
-                if len(time_s) > 0:
-                    offset_hours[i][j] = (parse_time(time_s) - st).total_seconds()/3600.0
+            if time_base == 'first_event':
+                st = parse_time(self.times[i][0])
+                offset_hours[i][0] = 0.0
+                for j in range(1, m):
+                    time_s = self.times[i][j]
+                    if len(time_s) > 0:
+                        offset_hours[i][j] = (parse_time(time_s) - st).total_seconds()/3600.0
+            else:
+                for j in range(0, m):
+                    time_s = self.times[i][j]
+                    if len(time_s) > 0:
+                        t = parse_time(time_s)
+                        offset_hours[i][j] = t.hour + t.second / 3600.0
         self.times = offset_hours
-        if not outpath:
-            outpath = self.dataset_file.replace('.h5', '_time')
         np.save(outpath, offset_hours)
 
 
