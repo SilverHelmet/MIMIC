@@ -52,18 +52,40 @@ class FeatureEmbeddding(Layer):
         merged_feature_emd = K.sum(dist_feature_emd, axis = 2, keepdims = False)
         return merged_feature_emd
 
+def period_variable_sampling(setting, length):
+    '''
+        1 - 2
+        3 - 6
+        24
+    '''
+    ratio_1_2 = setting.get('period_1_2', 1.0)
+    ratio_3_6 = setting.get('period_3_6', 0.0)
+    ratio_24 = setting.get('period_24', 0.0)
+    sum_ratio = ratio_1_2 + ratio_3_6 + ratio_24
+    ratio_1_2 /= sum_ratio
+    ratio_3_6 /= sum_ratio
+    ratio_24 /= sum_ratio
 
+    cnt_1_2 = int(length * ratio_1_2)
+    cnt_3_6 = int(length * ratio_3_6)
+    cnt_24 = length - cnt_1_2 - cnt_3_6
+    print 'samping cnt [1, 2]:%d, [3, 6]:%d, [24]:%d' %(cnt_1_2, cnt_3_6, cnt_24)
+
+    lows = [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [24.0] * cnt_24
+    highs = [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [24.0] * cnt_24
+    return lows, highs
 
 
 
 
 
 class HELSTM(LSTM):
-    def __init__(self, event_emd_dim, off_slope = 1e-3, event_hidden_dim = None, **kwargs):
+    def __init__(self, event_emd_dim, off_slope = 1e-3, event_hidden_dim = None, setting = {}, **kwargs):
         super(HELSTM, self).__init__(consume_less = 'gpu', **kwargs)
         self.event_hidden_dim = event_hidden_dim
         self.off_slope = off_slope
         self.event_emd_dim = event_emd_dim
+        self.setting = setting
 
     def build(self, input_shape):
         x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim)
@@ -93,17 +115,23 @@ class HELSTM(LSTM):
                                 name='{}_event_out_b'.format(self.name),
                                 regularizer=self.b_regularizer)
 
-        def period_init(shape, name = None):
-            return K.random_uniform_variable(shape, 1.0, 2.0, name=name)
+        def period_init(shape, lows, highs, name = None):
+            x = []
+            for low, high in zip(lows, highs):
+                x.append(np.random.uniform(low, high))
+            return K.variable(x, name = name)
 
         def shift_init(shape, name = None):
             return K.random_uniform_variable(shape, 0.0, 1000.0, name=name)
 
         def onend_init(shape, name = None):
             return K.variable([0.05] * shape[0], name=name)
+        
+        lows, highs = period_variable_sampling(self.setting, self.output_dim)
+        period_init_lambda = lambda shape, name: period_init(shape = shape, lows = lows, highs = highs, name = name)
 
         self.period_timegate = self.add_weight((self.output_dim, ),  
-                                initializer = period_init,
+                                initializer = period_init_lambda,
                                 name = "{}_period".format(self.name))
 
         self.shift_timegate = self.add_weight((self.output_dim, ), 

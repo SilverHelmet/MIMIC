@@ -28,7 +28,7 @@ class Dataset:
             datasets.append(Dataset(file, seg))
         return tuple(datasets)
 
-    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, load_normed_feature = False, event_set = None):
+    def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, load_normed_feature = False, event_set = None, setting = {}):
         
         self.load_time = load_time
         self.load_static_feature = load_static_feature
@@ -63,8 +63,10 @@ class Dataset:
                     self.times = f['time'][:]
                     self.trans_time(time_path)
                 else:
-                    print 'load time diff /3'
-                    self.times = np.load(time_path) / 3.0
+                    time_off = setting.get('time_off', 3.0)
+                    print 'load time diff / %.1f' %time_off
+                    
+                    self.times = np.load(time_path) / time_off
             else:
                 self.times = f['time'][:]
         f.close()

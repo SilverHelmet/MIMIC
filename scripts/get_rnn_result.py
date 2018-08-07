@@ -15,7 +15,8 @@ def output(p):
     t = []
     p = map(lambda x: round(x, 4), p)
     for i in range(3):
-        t.append(str(p[i]) + '/' + str(p[i+4]))
+        t.append(str(p[i]))
+        # t.append(str(p[i]) + '/' + str(p[i+4]))
     print "\t".join(t)
     
 if __name__ == "__main__":
