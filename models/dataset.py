@@ -65,7 +65,7 @@ class Dataset:
                 if time_base == 'first_event':
                     time_path = self.dataset_file.replace('.h5', '_time.npy')
                 else:
-                    time_path = self.dataset_file.replace('.h5', 'abs_time.npy')
+                    time_path = self.dataset_file.replace('.h5', '_abstime.npy')
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
                     self.times = f['time'][:] 
