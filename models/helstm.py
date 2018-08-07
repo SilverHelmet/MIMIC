@@ -61,19 +61,22 @@ def period_variable_sampling(setting, length):
     '''
     ratio_1_2 = setting.get('period_1_2', 1.0)
     ratio_3_6 = setting.get('period_3_6', 0.0)
+    ratio_8 = setting.get('period_8', 0.0)
     ratio_24 = setting.get('period_24', 0.0)
-    sum_ratio = ratio_1_2 + ratio_3_6 + ratio_24
+    sum_ratio = ratio_1_2 + ratio_3_6 + ratio_8 +  ratio_24
     ratio_1_2 /= sum_ratio
     ratio_3_6 /= sum_ratio
+    ratio_8 /= sum_ratio
     ratio_24 /= sum_ratio
 
     cnt_1_2 = int(length * ratio_1_2)
     cnt_3_6 = int(length * ratio_3_6)
-    cnt_24 = length - cnt_1_2 - cnt_3_6
-    print 'samping cnt [1, 2]:%d, [3, 6]:%d, [24]:%d' %(cnt_1_2, cnt_3_6, cnt_24)
+    cnt_8 = int(length * ratio_8)
+    cnt_24 = length - cnt_1_2 - cnt_3_6 - cnt_8
+    print 'samping cnt [1, 2]:%d, [3, 6]:%d, [8]:%d, [24]:%d' %(cnt_1_2, cnt_3_6, cnt_8, cnt_24)
 
-    lows = [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [24.0] * cnt_24
-    highs = [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [24.0] * cnt_24
+    lows = [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
+    highs = [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
     return lows, highs
 
 
@@ -117,6 +120,7 @@ class HELSTM(LSTM):
             x = []
             for low, high in zip(lows, highs):
                 x.append(np.random.uniform(low, high))
+            print 'period init', x
             return K.variable(x, name = name)
 
         def shift_init(shape, name = None):
