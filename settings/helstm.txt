@@ -1,4 +1,8 @@
-embedding_dim=32
+# embedding_dim=32
+# hidden_dim=64
+
+embedding_dim=64
+event_hidden_dim=128
 hidden_dim=64
 
 GCN=False

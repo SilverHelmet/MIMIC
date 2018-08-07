@@ -130,7 +130,7 @@ class Dataset:
                     time_s = self.times[i][j]
                     if len(time_s) > 0:
                         t = parse_time(time_s)
-                        offset_hours[i][j] = t.hour + t.second / 3600.0
+                        offset_hours[i][j] = t.hour + t.minute / 60.0 + t.second / 3600.0
         self.times = offset_hours
         np.save(outpath, offset_hours)
 
