@@ -56,7 +56,6 @@ class Dataset:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
-            
             if load_transfer_time and '|S' in str(f['time'].dtype):
                 time_off = setting.get('time_off', 3.0)
                 time_base = setting.get('time_base', 'first_event')
@@ -458,6 +457,8 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     post_model = setting['post_model']    
     gcn_time_func = time_funcs[setting.get('gcn_time_func', 'one')]
     post_gcn_time_func = time_funcs[setting.get('post_gcn_time_func', 'invert')]
+    time_feature_flag = setting['time_feature']
+    time_feature_type = setting['time_feature_type']
     if setting['load_time']:
         times = dataset.times
 
@@ -465,6 +466,9 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     static_features = dataset.static_features
     use_static_feature = setting['static_feature']
     static_feature_size = setting.get('static_feature_size', 0)
+    if time_feature_flag:
+        time_hours = times.astype(int)
+    
     while  True:
         i = 0
         while i < nb_sample:
@@ -549,6 +553,9 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                     for j in range(ed - st):
                         gen_gcn_feature_mat(feature[j], gcn_numeric_width, feature_dim, event[j], gcn_num_feature_matries[j])
 
+            if time_feature_flag:
+                time_hour = time_hours[batch_indices]
+
             if gcn_seg:
                 gcn_seg_mat = np.zeros((ed - st, max_segs, max_seg_length, event_len))
                 for idx, batch_seg in enumerate(seg):
@@ -580,6 +587,8 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                     inputs.append(feature_value)
                 else:
                     inputs.append(gcn_num_feature_matries)
+            if time_feature_flag:
+                inputs.append(time_hour)
             if gcn:
                 inputs.append(As)
             if gcn_seg:

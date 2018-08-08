@@ -119,6 +119,7 @@ def define_simple_seg_rnn(setting):
     gcn_seg = setting['GCN_Seg']
     gcn_mode = setting['gcn_mode']
     post_model = setting['post_model']
+    time_feature_flag = setting['time_feature']
     if gcn_flag:
         print 'ues graph convolution network'
 
@@ -147,7 +148,25 @@ def define_simple_seg_rnn(setting):
         else:
             embedding = e_embedding
             emd_dim = embedding_dim
-            
+        
+        if time_feature_flag:
+            feature_t = setting['time_feature_type']
+            if feature_t == 'concat':
+                time_feature_dim = setting['time_feature_dim']
+                time_hour_input =  Input(shape = (event_len, ), name = 'hour input')
+                inputs.append(time_hour_input)
+                time_emd = Embedding(input_dim = 24, output_dim = time_feature_dim, 
+                    mask_zero = False, name = 'time feature embedding')(time_hour_input)
+                embedding = Merge(mode = 'concat', name = 'event embedding with time_emd')([embedding, time_emd])
+                emd_dim = emd_dim + time_feature_dim
+            else:
+                time_feature_dim = embedding_dim
+                time_hour_input = Input(shape = (event_len, ), name = 'hour input')
+                inputs.append(time_hour_input)
+                time_emd = Embedding(input_dim = 24, output_dim = time_feature_dim, 
+                    mask_zero = False, name = 'time feature embedding')(time_hour_input)
+                embedding = Merge(mode = 'sum', name = 'event embedding with time_emd')([embedding, time_emd])
+          
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
             edge_mat = Input(shape = (event_len, event_len), dtype = 'float32', name = 'adjacent matrix')
@@ -337,6 +356,10 @@ def default_setting():
         "post_model": "LSTM",
 
         "load_time": True,
+
+        'time_feature': False,
+        "time_feature_type": 'concat',
+        "time_feature_dim": 8,
     }
     return setting
 
