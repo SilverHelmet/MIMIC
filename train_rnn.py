@@ -152,6 +152,7 @@ def define_simple_seg_rnn(setting):
         
         if time_feature_flag:
             feature_t = setting['time_feature_type']
+            feature_t2gate = setting.get('tfea2gate', False)
             if feature_t == 'concat':
                 time_feature_dim = setting['time_feature_dim']
                 time_hour_input =  Input(shape = (event_len, ), name = 'hour input')
@@ -167,6 +168,9 @@ def define_simple_seg_rnn(setting):
                 time_emd = Embedding(input_dim = 24, output_dim = time_feature_dim, 
                     mask_zero = False, name = 'time feature embedding')(time_hour_input)
                 embedding = Merge(mode = 'sum', name = 'event embedding with time_emd')([embedding, time_emd])
+                if feature_t2gate:
+                    e_embedding = Merge(mode = 'sum', name = 'time feature to time gate')([e_embedding, time_emd])
+
           
         if gcn_flag:
             print('gcn input dim = %d' %emd_dim)
