@@ -120,6 +120,7 @@ def define_simple_seg_rnn(setting):
     gcn_mode = setting['gcn_mode']
     post_model = setting['post_model']
     time_feature_flag = setting['time_feature']
+    emd_post_fc_flag = setting['emd_post_fc']
     if gcn_flag:
         print 'ues graph convolution network'
 
@@ -190,6 +191,12 @@ def define_simple_seg_rnn(setting):
 
         # if setting.get('gcn_dense', False):
         #     gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
+
+
+        if emd_post_fc_flag:
+            fc_dim = setting.get('emd_post_fc_dim', emd_dim)
+            gcn = TimeDistributedDense(output_dim = emd_dim, name = 'emd post fc',
+                            activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
 
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
@@ -301,8 +308,6 @@ def define_simple_seg_rnn(setting):
         inputs = inputs[0]
     pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
 
-    for input in inputs:
-        print input
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
     opt = Adam(lr = lr)
@@ -360,6 +365,8 @@ def default_setting():
         'time_feature': False,
         "time_feature_type": 'concat',
         "time_feature_dim": 8,
+
+        "emd_post_fc": False,
     }
     return setting
 
