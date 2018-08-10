@@ -1,0 +1,4 @@
+time_base=abs
+period_v3=0.30
+period_1_2=0.20
+period_8=0.5
