@@ -437,10 +437,6 @@ if __name__ == '__main__':
             dataset.load(load_static_feature = setting['static_feature'], 
             load_time = setting['load_time'], load_transfer_time = setting['load_time'],
             load_normed_feature = setting['normed_feature'], setting = setting)
-            if not setting['sample_generator']:
-                dataset.generate_model_input(setting)
-
-
 
         setting['event_dim'] = int(datasets[0].events.max() + 1)
         print "get event_dim from dateset as %d" %setting['event_dim']
@@ -450,6 +446,11 @@ if __name__ == '__main__':
             setting['max_seg_length'] = datasets[0].max_seg_length
             print "max_segs = %d" %max_segs
             print "max_seg_length = %d" %setting['max_seg_length']
+
+
+        if not setting['sample_generator']:
+            for dataset in datasets:
+                dataset.generate_model_input(setting)
     print "train feature shape =", datasets[0].features.shape
     print "train event shape =", datasets[0].events.shape
     

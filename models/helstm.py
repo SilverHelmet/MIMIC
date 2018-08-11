@@ -84,7 +84,7 @@ def period_variable_sampling(setting, length):
     cnt_1_2 = int(length * ratio_1_2)
     cnt_3_6 = int(length * ratio_3_6)
     cnt_8 = int(length * ratio_8)
-    cnt_24 = length - cnt_v3 - cnt_1_2 - cnt_3_6 - cnt_8 — cnt_1v3
+    cnt_24 = length - cnt_v3 - cnt_1_2 - cnt_3_6 - cnt_8 - cnt_1v3
     assert cnt_24 >= 0
     print 'sampling ratio [[0.28, 0.38]:%.2f, [1.28, 1.38]:%.2f, [1, 2]:%.2f, [3, 6]:%.2f, [8]:%.2f, [24]:%.2f' \
         %(ratio_v3, ratio_1v3, ratio_1_2, ratio_3_6, ratio_8, ratio_24)

@@ -200,7 +200,13 @@ class Dataset:
 
     def generate_model_input(self, setting):
         batch_size = setting['batch_size']
-        self.inputs, self.labels = sample_generator(self, setting)
+        setting['batch_size'] = self.size
+        for x, y in sample_generator(self, setting):
+            self.inputs = x
+            self.i_labels = y
+            assert len(self.i_labels) == self.size
+            assert (self.i_labels != self.labels).sum() == 0
+            break
         setting['batch_size'] = batch_size
 
     def get_inputs(self, idxs):
@@ -211,14 +217,14 @@ class Dataset:
         return ret_inputs
 
     def get_labels(self, idxs):
-        return self.labels[idxs]
+        return self.i_labels[idxs]
 
 
     def eval(self, model, setting, event_set = None, info = None, verbose = False):
         if setting['sample_generator']:
             prediction = model.predict_generator(sample_generator(self, setting, False, event_set, info, verbose), val_samples = self.size)
         else:
-            prediction = model.predict(self.inputs, val_samples = self.size)
+            prediction = model.predict(self.inputs)
         calc_merged_score = 'sample_id' in self.feature_set
 
         auROC = roc_auc_score(self.labels, prediction)
