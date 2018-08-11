@@ -371,6 +371,8 @@ def default_setting():
         "time_feature_dim": 8,
 
         "emd_post_fc": False,
+
+        'sample_generator': False,
     }
     return setting
 
@@ -435,6 +437,8 @@ if __name__ == '__main__':
             dataset.load(load_static_feature = setting['static_feature'], 
             load_time = setting['load_time'], load_transfer_time = setting['load_time'],
             load_normed_feature = setting['normed_feature'], setting = setting)
+            if not setting['sample_generator']:
+                dataset.generate_model_input(setting)
 
 
 
@@ -478,12 +482,17 @@ if __name__ == '__main__':
         if "model_out" in setting:
             model.save(setting['model_out'] + '.round%d' %(epoch_round + 1))
 
-        if epoch_round >= 2:
+        if epoch_round >= 0:
             nb_batch = 10
         else:
             nb_batch = 1
         for batch_idx, train_index in enumerate(split_batch_index(datasets[0].size, nb_batch), start = 1):
-            model.fit_generator(sample_generator(datasets[0], setting, shuffle = True, train_index = train_index), len(train_index), nb_epoch = 1, verbose = 1)
+            if setting['sample_generator']:
+                model.fit_generator(sample_generator(datasets[0], setting, shuffle = True, train_index = train_index), len(train_index), nb_epoch = 1, verbose = 1)
+            else:
+                X_slice = datasets[0].get_inputs(train_index)
+                Y_slice = datasets[0].get_labels(train_index)
+                model.fit(X_slice, Y_slice, batch_size = setting['batch_size'], nb_epoch=1, verbose=1)
         
             val_eval = datasets[1].eval(model, setting)
             print_eval('Epoch %d/%d Batch %d/%d, validation' %(epoch_round+1, nb_epoch, batch_idx, nb_batch), val_eval)

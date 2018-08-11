@@ -198,8 +198,27 @@ class Dataset:
             else:
                 print "%s = %s" %(k, v)
 
+    def generate_model_input(self, setting):
+        batch_size = setting['batch_size']
+        self.inputs, self.labels = sample_generator(self, setting)
+        setting['batch_size'] = batch_size
+
+    def get_inputs(self, idxs):
+        if type(self.inputs) is list:
+            ret_inputs = [m_input[idxs] for m_input in self.inputs]
+        else:
+            ret_inputs = self.inputs[idxs]
+        return ret_inputs
+
+    def get_labels(self, idxs):
+        return self.labels[idxs]
+
+
     def eval(self, model, setting, event_set = None, info = None, verbose = False):
-        prediction = model.predict_generator(sample_generator(self, setting, False, event_set, info, verbose), val_samples = self.size)
+        if setting['sample_generator']:
+            prediction = model.predict_generator(sample_generator(self, setting, False, event_set, info, verbose), val_samples = self.size)
+        else:
+            prediction = model.predict(self.inputs, val_samples = self.size)
         calc_merged_score = 'sample_id' in self.feature_set
 
         auROC = roc_auc_score(self.labels, prediction)
