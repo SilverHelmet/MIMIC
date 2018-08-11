@@ -372,7 +372,7 @@ def default_setting():
 
         "emd_post_fc": False,
 
-        'sample_generator': False,
+        'sample_generator': True,
     }
     return setting
 
