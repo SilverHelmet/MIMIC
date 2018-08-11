@@ -449,6 +449,7 @@ if __name__ == '__main__':
 
 
         if not setting['sample_generator']:
+            print 'generate model sample all at once'
             for dataset in datasets:
                 dataset.generate_model_input(setting)
     print "train feature shape =", datasets[0].features.shape
