@@ -64,7 +64,7 @@ def period_variable_sampling(setting, length):
         period_v = "period_%s" %setting['period_v']
         periods = json.loads(setting[period_v])
         return periods[:], periods[:]
-    fix_period = setting.get('fix_period', Fl)
+    fix_period = setting.get('fix_period', False)
     ratio_v3 = setting.get('period_v3', 0.0)
     ratio_1v3 = setting.get('period_1v3', 0.0)
     ratio_1_2 = setting.get('period_1_2', 1.0)

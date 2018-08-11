@@ -70,7 +70,7 @@ def load_weights(filepath, event_dim, dim):
 
 
 def make_input(setting):
-    max_segs = setting['max_segs']
+    max_segs = setting.get('max_segs', -1)
     event_dim = setting['event_dim']
     rnn_model = setting['rnn']
     use_gcn = setting['GCN']
@@ -415,9 +415,9 @@ if __name__ == '__main__':
     if seg_mode is not None:
         print "seg_mode =", seg_mode
         if seg_mode == 'custom':
-            train_seg_file = setting["train_seg_file"]
-            valid_seg_file = setting['valid_seg_file']
-            test_seg_file = setting["test_seg_file"]
+            train_seg_file = setting.get("train_seg_file", None)
+            valid_seg_file = setting.get('valid_seg_file', None)
+            test_seg_file = setting.get("test_seg_file", None)
         else:
             # train_seg_file = gen_fix_segs.infer_path(train_file, seg_mode)
             # valid_seg_file = gen_fix_segs.infer_path(valid_file, seg_mode)
@@ -440,11 +440,12 @@ if __name__ == '__main__':
 
         setting['event_dim'] = int(datasets[0].events.max() + 1)
         print "get event_dim from dateset as %d" %setting['event_dim']
-        max_segs = datasets[0].segs.shape[1]
-        setting['max_segs'] = max_segs
-        setting['max_seg_length'] = datasets[0].max_seg_length
-        print "max_segs = %d" %max_segs
-        print "max_seg_length = %d" %setting['max_seg_length']
+        if train_seg_file:
+            max_segs = datasets[0].segs.shape[1]
+            setting['max_segs'] = max_segs
+            setting['max_seg_length'] = datasets[0].max_seg_length
+            print "max_segs = %d" %max_segs
+            print "max_seg_length = %d" %setting['max_seg_length']
     print "train feature shape =", datasets[0].features.shape
     print "train event shape =", datasets[0].events.shape
     

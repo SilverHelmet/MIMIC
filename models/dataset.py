@@ -437,15 +437,19 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     labels = dataset.labels
     features = dataset.features
     events = dataset.events
-    segs = dataset.segs
+    try:
+        segs = dataset.segs
+    except:
+        segs = np.zeros((len(labels, )))
+
     # nb_sample = len(labels)
     nb_sample = len(train_index)
     event_len = setting['event_len']
     batch_size = setting['batch_size']
     disturbance = setting['disturbance']
     segment_flag = setting['segment_flag']
-    max_segs = setting['max_segs']
-    max_seg_length = setting['max_seg_length']
+    max_segs = setting.get('max_segs', -1)
+    max_seg_length = setting.get('max_seg_length', -1)
     event_dim = setting['event_dim']
     rnn = setting['rnn']
     feature_dim = setting.get('feature_dim', None)
