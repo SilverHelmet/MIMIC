@@ -121,6 +121,7 @@ def define_simple_seg_rnn(setting):
     post_model = setting['post_model']
     time_feature_flag = setting['time_feature']
     emd_post_fc_flag = setting['emd_post_fc']
+    emd_post_fc_fc_flag = setting['emd_post_fc_fc']
     if gcn_flag:
         print 'ues graph convolution network'
 
