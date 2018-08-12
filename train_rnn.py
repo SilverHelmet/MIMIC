@@ -198,7 +198,7 @@ def define_simple_seg_rnn(setting):
         #     gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
 
         if emd_post_fc_fc_flag:
-            fc_hidden_dim = setting.get['emd_post_fc_hidden_dim']
+            fc_hidden_dim = setting['emd_post_fc_hidden_dim']
             gcn = TimeDistributed(output_dim = fc_hidden_dim, name = 'emd post fc',
                             activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
             gcn = TimeDistributed(output_dim = emd_dim, name = 'emd post fc fc',
