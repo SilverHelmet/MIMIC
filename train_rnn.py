@@ -219,7 +219,7 @@ def define_simple_seg_rnn(setting):
             # rnn = SimpleAttentionRNN(rnn)
             rnn = MaskedGlobalMaxPooling1D(name = 'max pooling after post_gcn')(rnn)
         elif post_model == 'LSTM':
-            rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
+            rnn = LSTM(output_dim = hidden_dim, inner_activation = 'tanh', activation='tanh', consume_less = 'gpu',
                 W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
                 input_length = None, return_sequences = False, name = 'lstm', unroll = False)(gcn)
         elif post_model == "HELSTM":

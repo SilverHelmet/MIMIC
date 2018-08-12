@@ -3,6 +3,7 @@ disturbance=False
 GCN=True
 GCN_Seg=True
 gcn_numeric_feature=True
+normed_feature=False
 gcn_numric_feature_hidden_dim=16
 gcn_numeric_width=1
 gcn_num_head=3
@@ -30,9 +31,9 @@ test_dataset=death_exper/sample/samples.h5
 # segment
 aggregation=sum
 seg_mode=custom
-# train_seg_file=death_exper/sample/samples_seg.h5
-# valid_seg_file=death_exper/sample/samples_seg.h5
-# test_seg_file=death_exper/sample/samples_seg.h5
+train_seg_file=death_exper/sample/samples_seg.h5
+valid_seg_file=death_exper/sample/samples_seg.h5
+test_seg_file=death_exper/sample/samples_seg.h5
 
 
 # embedding 
