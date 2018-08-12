@@ -2,7 +2,9 @@
 segment=True
 disturbance=True
 attention=False
-rnn=lstm
+GCN=False
+GCN_Seg=False
+post_model=LSTM
 
 #model args
 embedding_dim=64
@@ -34,4 +36,7 @@ seg_mode=custom
 # embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
 # embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
 
-
+# feature
+feature_dim=649
+numeric_feature_type=HELSTM
+gcn_numeric_feature=True
