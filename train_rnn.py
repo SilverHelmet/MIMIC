@@ -197,11 +197,18 @@ def define_simple_seg_rnn(setting):
         # if setting.get('gcn_dense', False):
         #     gcn = TimeDistributedDense(setting.get('gcn_dense_dim', 64), activation = 'tanh', name = 'gcn_dense')(gcn)
 
-
-        if emd_post_fc_flag:
-            fc_dim = setting.get('emd_post_fc_dim', emd_dim)
-            gcn = TimeDistributedDense(output_dim = emd_dim, name = 'emd post fc',
+        if emd_post_fc_fc_flag:
+            fc_hidden_dim = setting.get['emd_post_fc_hidden_dim']
+            gcn = TimeDistributed(output_dim = fc_hidden_dim, name = 'emd post fc',
                             activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
+            gcn = TimeDistributed(output_dim = emd_dim, name = 'emd post fc fc',
+                            activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
+        elif emd_post_fc_flag:
+            fc_dim = setting.get('emd_post_fc_dim', emd_dim)
+            gcn = TimeDistributedDense(output_dim = fc_dim, name = 'emd post fc',
+                            activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
+
+
 
         if gcn_seg:
             seg_mat = Input(shape = (max_segs, max_seg_length, event_len), name = 'segment matrix')
@@ -372,6 +379,8 @@ def default_setting():
         "time_feature_dim": 8,
 
         "emd_post_fc": False,
+        "emd_post_fc_fc": False,
+        "emd_post_fc_hidden_dim": 128,
 
         'sample_generator': True,
         'eventxtime': False,
