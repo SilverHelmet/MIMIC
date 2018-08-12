@@ -373,6 +373,7 @@ def default_setting():
         "emd_post_fc": False,
 
         'sample_generator': True,
+        'eventxtime': False,
     }
     return setting
 
@@ -439,6 +440,8 @@ if __name__ == '__main__':
             load_normed_feature = setting['normed_feature'], setting = setting)
 
         setting['event_dim'] = int(datasets[0].events.max() + 1)
+        if setting['eventxtime']:
+            setting['event_dim'] *= 24
         print "get event_dim from dateset as %d" %setting['event_dim']
         if train_seg_file:
             max_segs = datasets[0].segs.shape[1]

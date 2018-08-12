@@ -495,7 +495,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     static_features = dataset.static_features
     use_static_feature = setting['static_feature']
     static_feature_size = setting.get('static_feature_size', 0)
-    if time_feature_flag:
+    if time_feature_flag or setting['eventxtime']:
         time_hours = times.astype(int)
     
     while  True:
@@ -526,6 +526,11 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
 
             if gcn or gcn_seg or True: 
                 seged_event = event
+                if setting['eventxtime']:
+                    mask_idx = seged_event == 0
+                    time_hour = time_hours[batch_indices]
+                    time_hour[mask_idx] = 0
+                    seged_event = seged_event * 24 + time_hour
                 if gcn:
                     time = times[batch_indices]
                     As = np.zeros((ed - st, event_len, event_len))
