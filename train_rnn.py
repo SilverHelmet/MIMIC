@@ -199,9 +199,9 @@ def define_simple_seg_rnn(setting):
 
         if emd_post_fc_fc_flag:
             fc_hidden_dim = setting['emd_post_fc_hidden_dim']
-            gcn = TimeDistributed(output_dim = fc_hidden_dim, name = 'emd post fc',
+            gcn = TimeDistributedDense(output_dim = fc_hidden_dim, name = 'emd post fc',
                             activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
-            gcn = TimeDistributed(output_dim = emd_dim, name = 'emd post fc fc',
+            gcn = TimeDistributedDense(output_dim = emd_dim, name = 'emd post fc fc',
                             activation = 'tanh', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(gcn)
         elif emd_post_fc_flag:
             fc_dim = setting.get('emd_post_fc_dim', emd_dim)
