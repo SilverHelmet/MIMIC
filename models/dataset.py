@@ -43,7 +43,6 @@ class Dataset:
             self.predicting_times = f['predicting_time'][:]
         if 'feature' in f or "normed_feature" in f:
             if load_normed_feature:
-                
                 if 'normed_feature' in f:
                     print 'load normed_feature from h5py'
                     self.features = f['normed_feature'][:]
