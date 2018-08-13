@@ -112,9 +112,9 @@ def load_data_all(name, start, end):
 with open(os.path.join(lab_exper_dir, 'mv_dict.pkl'), 'rb') as f:
     mv_dict = pickle.load(f)
 size = 1139
-load_data_all('test', 0, 0 + size * 2)
-load_data_all('train', 9112, 9112 + size * 7)
-load_data_all('valid', 41006, 41006 + size)
-# load_data_all('test', 0, 9112)
-# load_data_all('train', 9112, 41006)
-# load_data_all('valid', 41006, 45563)
+# load_data_all('test', 0, 0 + size * 2)
+# load_data_all('train', 9112, 9112 + size * 7)
+# load_data_all('valid', 41006, 41006 + size)
+load_data_all('test', 0, 9112)
+load_data_all('train', 9112, 41006)
+load_data_all('valid', 41006, 45563)
