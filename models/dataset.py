@@ -41,13 +41,16 @@ class Dataset:
             self.label_times = f['label_time'][:]
         if 'predicting_time' in f:
             self.predicting_times = f['predicting_time'][:]
-        if 'feature' in f:
+        if 'feature' in f or "normed_feature" in f:
             if load_normed_feature:
-                nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
-                print 'load normed feature from [%s]' %nf_path
-                nf = h5py.File(nf_path, 'r')
-                self.features = nf['feature'][:]
-                nf.close()
+                if 'normed_feature' in f:
+                    self.features = f['normed_feature'][:]
+                else:
+                    nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
+                    print 'load normed feature from [%s]' %nf_path
+                    nf = h5py.File(nf_path, 'r')
+                    self.features = nf['feature'][:]
+                    nf.close()
             else:
                 self.features = f['feature'][:]
         else:
