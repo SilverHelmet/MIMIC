@@ -25,8 +25,4 @@ aggregation=sum
 seg_mode=custom
 
 
-# embedding 
-# embedding_in=ICU_exper/embeddings/fixLength25.emd.npy
-# embedding_out=ICU_exper/embeddings/timeAggre_sum_r1.emd
-
 
