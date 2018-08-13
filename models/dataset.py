@@ -77,7 +77,8 @@ class Dataset:
                     self.times = np.load(time_path) / time_off
                 print "time max", self.times.max()
             else:
-                self.times = f['time'][:]
+                self.times = f['time'][:] / time_off
+                print "time max", self.times.max()
         f.close()
         if self.seg_file is not None:
             f = h5py.File(self.seg_file)
