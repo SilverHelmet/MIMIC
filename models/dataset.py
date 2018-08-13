@@ -60,8 +60,8 @@ class Dataset:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
+            time_off = setting.get('time_off', 3.0)
             if load_transfer_time and '|S' in str(f['time'].dtype):
-                time_off = setting.get('time_off', 3.0)
                 time_base = setting.get('time_base', 'first_event')
                 print 'load time diff / %.1f' %time_off
                 print 'user time base: %s' %time_base
