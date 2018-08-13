@@ -43,7 +43,8 @@ def load_data(path, start, end):
         new_event_time = []
         for time in event_time:
             if len(time) > 0:
-                new_event_time.append((parse_time(time) - st).total_seconds()/3600.0)
+                t = parse_time(time)
+                new_event_time.append(t.hour + t.minute / 60.0 + t.second / 3600.0)
             else:
                 new_event_time.append(-1)
 
@@ -108,8 +109,8 @@ def load_data_all(name, start, end):
     f['label'] = labels
     f.close()
     
-# with open('mv_dict.pkl', 'rb') as f:
-#     mv_dict = pickle.load(f)
+with open(os.path.join(lab_exper_dir, 'mv_dict.pkl'), 'rb') as f:
+    mv_dict = pickle.load(f)
 # load_data_all('test', 0, 2278)
 # load_data_all('train', 2278, 10251)
 # load_data_all('valid', 10251, 11390)
