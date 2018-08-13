@@ -30,7 +30,7 @@ def load_data(path, start, end):
     events = f['event'][start:end]
     times = f['time'][start:end]
     features = f['feature'][start:end]
-    # features = feature_norm(features)
+    features = feature_norm(features)
 
     time_shift = []
     for id in xrange(times.shape[0]):
@@ -104,12 +104,15 @@ def load_data_all(name, start, end):
     events, times, chosen_feature, labels = load_data(lab_path, start, end)
     f['event'] = events
     f['time'] = times
-    f['feature'] = chosen_feature
+    f['normed_feature'] = chosen_feature
     f['label'] = labels
     f.close()
     
 # with open('mv_dict.pkl', 'rb') as f:
 #     mv_dict = pickle.load(f)
-load_data_all('test', 0, 2278)
-load_data_all('train', 2278, 10251)
-load_data_all('valid', 10251, 11390)
+# load_data_all('test', 0, 2278)
+# load_data_all('train', 2278, 10251)
+# load_data_all('valid', 10251, 11390)
+load_data_all('test', 0, 9112)
+load_data_all('train', 2278, 41006)
+load_data_all('valid', 10251, 45563)

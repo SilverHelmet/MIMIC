@@ -66,32 +66,38 @@ def period_variable_sampling(setting, length):
         return periods[:], periods[:]
     fix_period = setting.get('fix_period', False)
     ratio_v3 = setting.get('period_v3', 0.0)
+    ratio_fv3 = setting.get('period_fv3', 0.0)
     ratio_1v3 = setting.get('period_1v3', 0.0)
+    ratio_f1v3 = setting.get('period_f1v3', 0.0)
     ratio_1_2 = setting.get('period_1_2', 1.0)
     ratio_3_6 = setting.get('period_3_6', 0.0)
     ratio_8 = setting.get('period_8', 0.0)
     ratio_24 = setting.get('period_24', 0.0)
-    sum_ratio = ratio_v3 + ratio_1_2 + ratio_8 + ratio_3_6 + ratio_24 + ratio_1v3
+    sum_ratio = ratio_v3 + ratio_1_2 + ratio_8 + ratio_3_6 + ratio_24 + ratio_1v3 + ratio_fv3 + ratio_f1v3
     ratio_v3 /= sum_ratio
+    ratio_fv3 /= sum_ratio
     ratio_1v3 /= sum_ratio
+    ratio_f1v3 /= sum_ratio
     ratio_1_2 /= sum_ratio
     ratio_3_6 /= sum_ratio
     ratio_8 /= sum_ratio
     ratio_24 /= sum_ratio
 
     cnt_v3 = int(length * ratio_v3)
+    cnt_fv3 = int(length * ratio_fv3)
     cnt_1v3 = int(length * ratio_1v3)
+    cnt_f1v3 = int(length * ratio_f1v3)
     cnt_1_2 = int(length * ratio_1_2)
     cnt_3_6 = int(length * ratio_3_6)
     cnt_8 = int(length * ratio_8)
-    cnt_24 = length - cnt_v3 - cnt_1_2 - cnt_3_6 - cnt_8 - cnt_1v3
+    cnt_24 = length - cnt_v3 - cnt_1_2 - cnt_3_6 - cnt_8 - cnt_1v3 - cnt_fv3 - cnt_f1v3
     assert cnt_24 >= 0
-    print 'sampling ratio [[0.28, 0.38]:%.2f, [1.28, 1.38]:%.2f, [1, 2]:%.2f, [3, 6]:%.2f, [8]:%.2f, [24]:%.2f' \
-        %(ratio_v3, ratio_1v3, ratio_1_2, ratio_3_6, ratio_8, ratio_24)
-    print 'sampling cnt [0.28, 0.38]:%d, [1.28, 1.38]:%d, [1, 2]:%d, [3, 6]:%d, [8]:%d, [24]:%d' %(cnt_v3, cnt_1v3, cnt_1_2, cnt_3_6, cnt_8, cnt_24)
+    print 'sampling ratio [[0.28, 0.38]:%.2f, [0.3333333]:%2f, [1.28, 1.38]:%.2f, [1.3333333]:%.2f, [1, 2]:%.2f, [3, 6]:%.2f, [8]:%.2f, [24]:%.2f' \
+        %(ratio_v3, ratio_fv3, ratio_1v3, ratio_f1v3, ratio_1_2, ratio_3_6, ratio_8, ratio_24)
+    print 'sampling cnt [0.28, 0.38]:%d, [0.3333333]:%d, [1.28, 1.38]:%d, [1.3333333]:%d, [1, 2]:%d, [3, 6]:%d, [8]:%d, [24]:%d' %(cnt_v3, cnt_fv3, cnt_1v3, cnt_f1v3, cnt_1_2, cnt_3_6, cnt_8, cnt_24)
 
-    lows = [0.28] * cnt_v3 + [1.28] * cnt_1v3 + [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
-    highs = [0.38] * cnt_v3 + [1.38] * cnt_1v3 + [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
+    lows = [0.28] * cnt_v3 + [0.3333333] * cnt_fv3 + [1.28] * cnt_1v3 + [1.3333333] * cnt_f1v3 +  [1.0] * cnt_1_2 + [3.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
+    highs = [0.38] * cnt_v3 + [0.3333333] * cnt_fv3 + [1.38] * cnt_1v3 + [1.3333333] * cnt_f1v3 + [2.0] * cnt_1_2 + [6.0] * cnt_3_6 + [8.0] * cnt_8 + [24.0] * cnt_24
     return lows, highs
 
 
