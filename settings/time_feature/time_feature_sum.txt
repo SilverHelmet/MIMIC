@@ -1,0 +1,4 @@
+time_feature=True
+time_feature_type=sum
+time_base=abs
+time_off=1.0

@@ -1,0 +1,5 @@
+time_feature=True
+time_feature_type=concat
+time_faeture_dim=16
+time_base=abs
+time_off=1.0
