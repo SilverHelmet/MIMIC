@@ -1,9 +1,6 @@
 # model
 segment=True
 disturbance=False
-feature_dim=649
-numeric_feature_type=HELSTM
-gcn_numeric_feature=True
 GCN=False
 GCN_Seg=False
 post_model=LSTM
@@ -13,6 +10,10 @@ embedding_dim=64
 hidden_dim=64
 att_hidden_dim=64
 
+# feature
+feature_dim=649
+numeric_feature_type=HELSTM
+gcn_numeric_feature=True
 
 # model training 
 batch_size=128
