@@ -25,7 +25,6 @@ class FValueStat:
         hour2cnt[hour] += 1
 
     def to_json(self):
-        
         return {
             'sum_dict': self.label2hour2sum,
             'cnt_dict': self.label2hour2cnt,
@@ -68,8 +67,9 @@ def load_filepath(filepath, stat_dict):
 def stat_death():
     stat_dict = {}
     parttern = death_exper_dir + '/death_*_1000.h5'
-    parttern = "death_exper/sample/samples.h5"
+    # parttern = "death_exper/sample/samples.h5"
     for filepath in glob.glob(parttern):
+        # print filepath
         load_filepath(filepath, stat_dict)
     outpath = os.path.join(result_dir, 'death_value.stat.json')
     Print("write result to [%s]" %outpath)
