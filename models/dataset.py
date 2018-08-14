@@ -71,7 +71,7 @@ class Dataset:
                     time_path = self.dataset_file.replace('.h5', '_abstime.npy')
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
-                    self.times = f['time'][:] 
+                    self.times = f['time'][:]
                     self.trans_time(time_path, time_base)
                     self.times = self.times / time_off
                 else:
