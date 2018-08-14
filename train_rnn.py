@@ -497,7 +497,7 @@ if __name__ == '__main__':
         if "model_out" in setting:
             model.save(setting['model_out'] + '.round%d' %(epoch_round + 1))
 
-        if epoch_round >= 2:
+        if epoch_round >= setting.get('start_eval', 2):
             nb_batch = 10
         else:
             nb_batch = 1
