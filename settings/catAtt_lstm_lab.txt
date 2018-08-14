@@ -1,6 +1,9 @@
 # model
 segment=True
 disturbance=False
+feature_dim=649
+numeric_feature_type=HELSTM
+gcn_numeric_feature=True
 GCN=False
 GCN_Seg=False
 post_model=LSTM
