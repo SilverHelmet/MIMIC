@@ -81,31 +81,34 @@ def load_data(path, start, end):
             ap_time = this_time[this_start+1:this_end+1]
             chosen_time.append(
                 np.pad(ap_time, ((0, pad_num),), 'constant'))
-            chosen_feature.append(
-                np.pad(this_feature[this_start + 1: this_end + 1], ((0, pad_num), (0,0)), 'constant')
-            )
-            # chosen_feature_id.append(
-            #     np.pad(this_feature_id[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
-            # chosen_feature_value.append(
-            #     np.pad(this_feature_value[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
+            # chosen_feature.append(
+            #     np.pad(this_feature[this_start + 1: this_end + 1], ((0, pad_num), (0,0)), 'constant')
+            # )
+            chosen_feature_id.append(
+                np.pad(this_feature_id[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
+            chosen_feature_value.append(
+                np.pad(this_feature_value[this_start+1:this_end+1], ((0,pad_num),(0,0)), 'constant'))
             chosen_label.append(tmp[2])#use value as label
 
     chosen_event = np.asarray(chosen_event, dtype='int16')
     chosen_time = np.asarray(chosen_time)
-    chosen_feature = np.array(chosen_feature)
-    # chosen_feature_id = np.asarray(chosen_feature_id, dtype='int16')
-    # chosen_feature_value = np.asarray(chosen_feature_value, dtype='float32')
+    # chosen_feature = np.array(chosen_feature)
+    chosen_feature_id = np.asarray(chosen_feature_id, dtype='int16')
+    chosen_feature_value = np.asarray(chosen_feature_value, dtype='float32')
     chosen_label = np.asarray(chosen_label, dtype='float32')
     f.close()
-    return chosen_event, chosen_time, chosen_feature, chosen_label
+    return chosen_event, chosen_time, chosen_feature_id, chosen_feature_value, chosen_label
 
 def load_data_all(name, start, end):
     lab_path = os.path.join(lab_exper_dir, 'Lab.h5')
     f = h5py.File(lab_exper_dir + '/labtest_{}_1000.h5'.format(name), 'w')
-    events, times, chosen_feature, labels = load_data(lab_path, start, end)
+    events, times, chosen_feature_id, chosen_feature_value, labels = load_data(lab_path, start, end)
     f['event'] = events
     f['time'] = times
+    feature_id = 
     f['normed_feature'] = chosen_feature
+    f['feature_idx'] = chosen_feature_id
+    f['feature_value'] = chosen_feature_value
     f['label'] = labels
     f.close()
     
@@ -115,6 +118,6 @@ size = 1139
 # load_data_all('test', 0, 0 + size * 2)
 # load_data_all('train', 9112, 9112 + size * 7)
 # load_data_all('valid', 41006, 41006 + size)
+load_data_all('valid', 41006, 45563)
 load_data_all('test', 0, 9112)
 load_data_all('train', 9112, 41006)
-load_data_all('valid', 41006, 45563)

@@ -25,6 +25,32 @@ class FValueStat:
         hour2sum[hour] += value
         hour2cnt[hour] += 1
 
+    def get_size(self, label):
+        label = str(label)
+        hour2cnt = self.label2hour2cnt.get(label, {})
+        size = sum(hour2cnt.values())
+        return size
+
+    def check_size(self, size):
+        size0 = self.get_size(0)
+        size1 = self.get_size(1)
+        return size0 >= size and size1 >= size
+
+    def event_dis(self, label):
+        label = str(label)
+        if not label in self.label2hour2sum:
+            hour2cnt = {}
+            print 'error'
+        else:
+            hour2cnt = self.label2hour2cnt[label]
+    
+        cnts = []
+        for hour in range(24):
+            hour = str(hour)
+            cnt = hour2cnt.get(hour, .0)
+            cnts.append(cnt)
+        return np.array(cnts)
+
     def value_dis(self, label):
         label = str(label)
         if not label in self.label2hour2sum:
