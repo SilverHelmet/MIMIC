@@ -501,7 +501,8 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     use_static_feature = setting['static_feature']
     static_feature_size = setting.get('static_feature_size', 0)
     if time_feature_flag or setting['eventxtime']:
-        time_hours = times.astype(int)
+        mul = setting.get('time_mul', 3.0)
+        time_hours = (times * mul).astype(int)
     
     while  True:
         i = 0
