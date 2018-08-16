@@ -17,10 +17,10 @@ gcn_numeric_feature=True
 
 # model training 
 batch_size=128
-nb_epoch=10
+nb_epoch=20
 l2_reg_cof=0.0001
 lr=0.001
-start_eval=1
+start_eval=7
 
 
 # dataset

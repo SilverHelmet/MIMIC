@@ -81,7 +81,9 @@ def plot_one_event_dis(eidx, path):
         if _eidx != eidx:
             continue
         pos_cnts = fv.event_dis(1)
+        pos_cnts /= pos_cnts.sum()
         neg_cnts = fv.event_dis(0)
+        neg_cnts /= neg_cnts.sum()
         x = range(24)
         plt.plot(x, pos_cnts, 'r')
         plt.plot(x, neg_cnts, 'b')
@@ -111,9 +113,9 @@ def plot_event_dis(path):
 
     x = np.array(x)
     print 'size = %d' %len(x)
-    x = sorted(x)
+    x = sorted(x)[:-3]
     r = x[-1] - x[0]
-    bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7 ,x[-1]]
+    bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7]
     print bins
     plt.hist(x, bins = bins, normed=False)
     graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
@@ -132,8 +134,8 @@ if __name__ == "__main__":
     # for eidx, fidx in value_list:
     #     plot_one_value_dis(eidx, fidx, death_stat_path)
 
-    # plot_event_dis(death_stat_path)
-    event_list = [2731, 19, 1936, 1514, 2208]
-    for eidx in event_list:
-        plot_one_event_dis(eidx, death_stat_path)
+    plot_event_dis(death_stat_path)
+    # event_list = [2731, 19, 1936, 1514, 2208, 1047, 1748, 1224, 875, 2521, 1092, 3362]
+    # for eidx in event_list:
+    #     plot_one_event_dis(eidx, death_stat_path)
 
