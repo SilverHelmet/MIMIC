@@ -48,8 +48,8 @@ class Dataset:
         if 'predicting_time' in f:
             self.predicting_times = f['predicting_time'][:]
         
-        if 'feature_id' in self.feature_set:
-            self.feature_idxs = f['feature_id']
+        if 'feature_idx' in self.feature_set:
+            self.feature_idxs = f['feature_idx']
             self.feature_values = f['feature_value']
         else:
             nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)

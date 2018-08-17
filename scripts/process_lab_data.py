@@ -104,8 +104,7 @@ def load_data_all(name, start, end):
     events, times, chosen_feature_id, chosen_feature_value, labels = load_data(lab_path, start, end)
     f['event'] = events
     f['time'] = times
-    feature_id = 
-    f['normed_feature'] = chosen_feature
+    # f['normed_feature'] = chosen_feature
     f['feature_idx'] = chosen_feature_id
     f['feature_value'] = chosen_feature_value
     f['label'] = labels
