@@ -34,34 +34,58 @@ class Dataset:
         self.load_static_feature = load_static_feature
         f = h5py.File(self.dataset_file, 'r')
         self.feature_set = f.keys()
-        self.labels = f['label'][:]
+        if 'label' in self.feature_set:
+            self.labels = f['label'][:]
+        else:
+            self.labels = f['labels'][:]
         self.size = len(self.labels)
-        self.events = f['event'][:]
+        if 'event' in self.feature_set:
+            self.events = f['event'][:]
+        else:
+            self.events = f['events'][:]
         if 'label_time' in f:
             self.label_times = f['label_time'][:]
         if 'predicting_time' in f:
             self.predicting_times = f['predicting_time'][:]
-        if 'feature' in f or "normed_feature" in f:
-            if load_normed_feature:
-                if 'normed_feature' in f:
-                    print 'load normed_feature from h5py'
-                    self.features = f['normed_feature'][:]
-                else:
-                    nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
-                    print 'load normed feature from [%s]' %nf_path
-                    nf = h5py.File(nf_path, 'r')
-                    self.features = nf['feature'][:]
-                    nf.close()
-            else:
-                self.features = f['feature'][:]
+        
+        if 'feature_idx' in self.feature_set:
+            self.feature_idxs = f['feature_idx']
+            self.feature_values = f['feature_value']
         else:
-            self.features = np.zeros((1,1))
+            nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
+            if os.path.exists(nf_path):
+                print 'load normed feature from [%s]' %nf_path
+                nf = h5py.File(nf_path, 'r')
+                features = nf['feature'][:]
+                nf.close()
+            else:
+                features = f['feature']
+            self.feature_idxs = features[:, :, [0,2,4]]
+            self.feature_values = features[:, :, [1,3,5]]
+        # if 'feature' in f or "normed_feature" in f:
+        #     if load_normed_feature:
+        #         if 'normed_feature' in f:
+        #             print 'load normed_feature from h5py'
+        #             self.features = f['normed_feature'][:]
+        #         else:
+        #             nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
+        #             print 'load normed feature from [%s]' %nf_path
+        #             nf = h5py.File(nf_path, 'r')
+        #             self.features = nf['feature'][:]
+        #             nf.close()
+        #     else:
+        #         self.features = f['feature'][:]
+        # else:
+        #     self.features = np.zeros((1,1))
         if 'sample_id' in f:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
         if load_time:
             time_off = setting.get('time_off', 3.0)
-            if load_transfer_time and '|S' in str(f['time'].dtype):
+            time_key = 'time'
+            if time_key not in self.feature_set:
+                time_key = 'times'
+            if load_transfer_time and '|S' in str(f[time_key].dtype):
                 time_base = setting.get('time_base', 'first_event')
                 print 'load time diff / %.1f' %time_off
                 print 'user time base: %s' %time_base
@@ -71,14 +95,14 @@ class Dataset:
                     time_path = self.dataset_file.replace('.h5', '_abstime.npy')
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
-                    self.times = f['time'][:]
+                    self.times = f[time_key][:]
                     self.trans_time(time_path, time_base)
                     self.times = self.times / time_off
                 else:
                     self.times = np.load(time_path) / time_off
                 print "time max", self.times.max()
             else:
-                self.times = f['time'][:] / time_off
+                self.times = f[time_key][:] / time_off
                 print "time max", self.times.max()
         f.close()
         if self.seg_file is not None:
@@ -465,7 +489,9 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
         else:
             train_index = np.arange(dataset.size)
     labels = dataset.labels
-    features = dataset.features
+    # features = dataset.features
+    feature_idxs = dataset.feature_idxs
+    feature_values = dataset.feature_values
     events = dataset.events
     try:
         segs = dataset.segs
@@ -476,7 +502,6 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     nb_sample = len(train_index)
     event_len = setting['event_len']
     batch_size = setting['batch_size']
-    disturbance = setting['disturbance']
     segment_flag = setting['segment_flag']
     max_segs = setting.get('max_segs', -1)
     max_seg_length = setting.get('max_seg_length', -1)
@@ -520,61 +545,29 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
             label = labels[batch_indices]
             event = events[batch_indices]
             seg = segs[batch_indices]
-            feature = features[batch_indices]
-            if event_set is not None:
-                info['total'] += (event > 0).sum()
-                for i1, event_seq in enumerate(event):
-                    for i2, eid in enumerate(event_seq):
-                        if eid not in event_set and eid > 0:
-                            event[i1,i2] = 0
-                            feature[i1,i2] = 0
-                            info['mask'] += 1
 
-            if gcn or gcn_seg or True: 
-                seged_event = event
-                if setting['eventxtime']:
-                    mask_idx = seged_event == 0
-                    time_hour = time_hours[batch_indices]
-                    time_hour[mask_idx] = 0
-                    seged_event = seged_event * 24 + time_hour
-                if gcn:
-                    time = times[batch_indices]
-                    As = np.zeros((ed - st, event_len, event_len))
-                    for idx, sample_time in enumerate(time):
-                        build_time_graph_2(sample_time, gcn_time_width, As[idx])
-            elif rnn == 'dlstm':
-                seged_event = event
-            elif rnn == 'attlstm' or rnn == 'attgru':
-                # output shape (nb_sample, max_segs, max_seg_length)
-                seged_event = []
-                for j in range(ed - st):
-                    split_seg = seg[j]
-                    seged_event.append(gen_seged_event_seq(event[j], split_seg, max_seg_length))                    
-                seged_event = np.array(seged_event)
+            # feature = features[batch_indices]
+            # if event_set is not None:
+            #     info['total'] += (event > 0).sum()
+            #     for i1, event_seq in enumerate(event):
+            #         for i2, eid in enumerate(event_seq):
+            #             if eid not in event_set and eid > 0:
+            #                 event[i1,i2] = 0
+            #                 feature[i1,i2] = 0
+            #                 info['mask'] += 1
 
-                # output shape (nb_sample, max_segs, max_seg_length, feature_dim)
-                if disturbance:
-                    seg_feature_matrixes = []
-                    for j in range(ed - st):
-                        split_seg = seg[j]
-                        seg_feature_matrixes.append(gen_seged_feature_seq(feature[j], split_seg, max_seg_length, feature_dim))
-                    seg_feature_matrixes = np.array(seg_feature_matrixes)
-            else:
-                aggre_mode = setting['aggregation']
-                # output shape (nb_sample, max_segs, event_dim)
-                seged_event = []
-                for j in range(ed - st):
-                    split_seg = seg[j]
-                    seged_event.append(merge_event_by_seg(event[j], split_seg, event_dim, aggre_mode))
-                seged_event = np.array(seged_event)
-
-                # output shape (nb_sample, max_segs, feature_dim)
-                if disturbance:
-                    seg_feature_matrixes = []
-                    for j in range(ed - st):
-                        split_seg = seg[j]
-                        seg_feature_matrixes.append(merge_fea_by_seg(feature[j], split_seg, feature_dim))
-                    seg_feature_matrixes = np.array(seg_feature_matrixes)
+            seged_event = event
+            if setting['eventxtime']:
+                mask_idx = seged_event == 0
+                time_hour = time_hours[batch_indices]
+                time_hour[mask_idx] = 0
+                seged_event = seged_event * 24 + time_hour
+            if gcn:
+                time = times[batch_indices]
+                As = np.zeros((ed - st, event_len, event_len))
+                for idx, sample_time in enumerate(time):
+                    build_time_graph_2(sample_time, gcn_time_width, As[idx])
+    
 
             if use_static_feature:
                 static_feature_mat = []
@@ -585,9 +578,10 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
 
             if gcn_numeric_feature:
                 if setting['numeric_feature_type'] == "HELSTM":
-                    feature_idx = feature[:, :, [0,2,4]]
-                    feature_value = feature[:, :, [1,3,5]]                    
+                    feature_idx = feature_idxs[batch_indices]
+                    feature_value = feature_values[batch_indices]
                 else:
+                    assert False
                     feature_size = feature_dim * (gcn_numeric_width * 2 + 1)
                     gcn_num_feature_matries = np.zeros((ed - st, event_len, feature_size))
                     for j in range(ed - st):
@@ -619,8 +613,6 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
 
 
             inputs = [seged_event]
-            if disturbance:
-                inputs.append(seg_feature_matrixes)
             if gcn_numeric_feature:
                 if setting['numeric_feature_type'] == "HELSTM":
                     inputs.append(feature_idx)

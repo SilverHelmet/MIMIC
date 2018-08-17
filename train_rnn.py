@@ -465,7 +465,7 @@ if __name__ == '__main__':
             print 'generate model sample all at once'
             for dataset in datasets:
                 dataset.generate_model_input(setting)
-    print "train feature shape =", datasets[0].features.shape
+    print "train feature idx shape =", datasets[0].feature_idxs.shape
     print "train event shape =", datasets[0].events.shape
     
     
