@@ -34,7 +34,6 @@ def load_data(path, start, end):
 
     time_shift = []
     for id in xrange(times.shape[0]):
-
         event_time = times[id]
         st = parse_time(event_time[0])
         if not st:
