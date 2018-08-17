@@ -54,8 +54,8 @@ def load_data(path, start, end):
     chosen_time = []
     chosen_label = []
     chosen_feature = []
-    # chosen_feature_id = []
-    # chosen_feature_value = []
+    chosen_feature_id = []
+    chosen_feature_value = []
     # tic = time.time()
     for id in tqdm(xrange(labels.shape[0]), total = labels.shape[0]):
         this_label = labels[id]
