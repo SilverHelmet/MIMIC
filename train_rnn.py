@@ -446,8 +446,7 @@ if __name__ == '__main__':
         use_GCN = setting['GCN']
         for dataset in datasets:
             dataset.load(load_static_feature = setting['static_feature'], 
-            load_time = setting['load_time'], load_transfer_time = setting['load_time'],
-            load_normed_feature = setting['normed_feature'], setting = setting)
+            load_time = setting['load_time'], load_transfer_time = setting['load_time'], setting = setting)
 
         setting['event_dim'] = int(datasets[0].events.max() + 1)
         if setting['eventxtime']:
