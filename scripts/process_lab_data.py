@@ -60,9 +60,9 @@ def load_data(path, start, end):
     for id in tqdm(xrange(labels.shape[0]), total = labels.shape[0]):
         this_label = labels[id]
         this_event = events[id]
-        this_feature = features[id]
-        # this_feature_id = features[id][:,(0,2,4)]
-        # this_feature_value = features[id][:,(1,3,5)]
+        # this_feature = features[id]
+        this_feature_id = features[id][:,(0,2,4)]
+        this_feature_value = features[id][:,(1,3,5)]
         this_time = times[id]
 
         chosen = this_label[(this_label[:,0]==34)+(this_label[:,0]==35)]#choose id 34 or 35
