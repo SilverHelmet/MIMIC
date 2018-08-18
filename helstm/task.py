@@ -324,7 +324,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
             b_hour = train_hours[train_batch]
             inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
             if args.time_feature:
-                inpus.append(b_hour)
+                inputs.append(b_hour)
             err, acc, pre = train_fn(*inputs)
             dat = np.asarray(pre)
             dat_shape = dat.shape
@@ -339,7 +339,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
                 valid(train_times, valid_data, test_fn, 'valid')
                 valid(train_times, test_data, test_fn, 'test')
         
-    print('Completed.')
+    Print('Completed.')
 
 def choose_model(embed, hidden, attention, args, model_type, name, seed):
     name = '{}-{}'.format(name, seed)
