@@ -322,6 +322,8 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
             b_t = train_time[train_batch]
             b_label = train_label[train_batch]
             b_hour = train_hours[train_batch]
+            print train_hours.shape
+            print b_hour.shape
             inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
             if args.time_feature:
                 inputs.append(b_hour)
