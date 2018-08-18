@@ -3,7 +3,6 @@ import time
 import h5py
 import sys
 sys.path.insert(0, '.')
-print sys.path
 from util import Print
 from MergeEmbedding import MergeEmbeddingLayer
 import numpy as np 
@@ -340,7 +339,7 @@ if __name__ == '__main__':
     parser.add_argument('--emd_dim', type = int, default = 32)
     parser.add_argument('--event_hidden_dim', type = int, default = 64)
     parser.add_argument('--lstm_dim', type = int, default = 32)
-    parser.add_argument('--model', tpye = str, default = "HELSTM") # lstm,helstm,plstm
+    parser.add_argument('--model', type = str, default = "HELSTM") # lstm,helstm,plstm
     parser.add_argument('--time_feature', type = bool, default = False)
     parser.add_argument('--time_off', type = float, default = 3.0)
     parser.add_argument('--name', type = str, default = "exp_HELSTM")
