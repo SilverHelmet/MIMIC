@@ -97,6 +97,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
     l_mask = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=mask_var)
     l_t = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=time_var)
     if time_feature:
+        Print('get_rnn T')
         l_hour =  lasagne.layers.InputLayer(shape = (None, seq_len), input_var = input_hour)
 
     #embed event
