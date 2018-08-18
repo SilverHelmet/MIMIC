@@ -355,4 +355,4 @@ if __name__ == '__main__':
 
 
     
-    choose_model(args.emd_dim, args.event_hidden_dim, event.lstm_dim, args, args.model, args.name, args.seed)
+    choose_model(args.emd_dim, args.event_hidden_dim, args.lstm_dim, args, args.model, args.name, args.seed)
