@@ -199,7 +199,7 @@ def get_minibatches_idx(n, minibatch_size, shuffle=True):
 
     return zip(range(len(minibatches)), minibatches)
 
-def valid(train_times, valid_data, test_fn, valid_file):
+def valid(train_times, valid_data, test_fn, name):
     # valid the accuracy
     # And a full pass over the validation data:
     valid_err = 0
@@ -229,19 +229,16 @@ def valid(train_times, valid_data, test_fn, valid_file):
         valid_acc += acc
         valid_batches += 1
 
-        print("\tBatch {} of {}  : Loss: {} | Accuracy: {} ".format(valid_batches, num_valid_batches, 
-                                                                                         err, acc*100.))
-        print("Time:", (time.clock()-start_time))
+        # Print("name\tBatch {} of {}  : Loss: {} | Accuracy: {} ".format(valid_batches, num_valid_batches, 
+        #                                                                                  err, acc*100.))
+        # Print("Time:", (time.clock()-start_time))
     valid_err /= valid_batches
     valid_acc = valid_acc*100./valid_batches
     y_true_all = np.asarray(y_true_all)
     y_score_all = np.asarray(y_score_all)
     auc_all = roc_auc_score(y_true_all, y_score_all)
     ap_all = average_precision_score(y_true_all, y_score_all) 
-    print("Valid loss:", valid_err)
-    print("Valid acc:", valid_acc)
-    valid_file.write("Train times:{} Loss:{} Acc:{} Auc:{} Prc:{}\n".format(train_times, valid_err, valid_acc, auc_all, ap_all))
-    valid_file.flush()
+    Print("dataset = {} Train times:{} Loss:{} acc = {}, auROC = {}, auPRc = {}".format(name, train_times, valid_err, valid_acc, auc_all, ap_all))
         
 def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
     np.random.seed(seed)
@@ -252,7 +249,7 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
     arch_size = [None, hidden, 2]
     embed_size = embed 
     max_epoch = 30
-    batch_size = 128 
+    batch_size = 128
     valid_freq = 500 
 
     input_event = T.matrix('input_event', dtype='int16')
@@ -327,8 +324,8 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
                                                                                             epoch, err, acc*100. ))
             print("Time:", (time.clock()-start_time))
             if(train_times%valid_freq == 0):
-                valid(train_times, valid_data, test_fn, valid_file)
-                valid(train_times, test_data, test_fn, test_file)
+                valid(train_times, valid_data, test_fn, 'valid')
+                valid(train_times, test_data, test_fn, 'test')
         
     print('Completed.')
     train_file.close()
