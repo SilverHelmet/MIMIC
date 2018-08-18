@@ -240,7 +240,7 @@ def valid(train_times, valid_data, test_fn, name):
     ap_all = average_precision_score(y_true_all, y_score_all) 
     Print("dataset = {} Train times:{} Loss:{} acc = {}, auROC = {}, auPRc = {}".format(name, train_times, valid_err, valid_acc, auc_all, ap_all))
         
-def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
+def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     np.random.seed(seed)
     if model_type!="HELSTM":
         attention = 0
@@ -332,7 +332,7 @@ def choose_model(embed, hidden, attention, args, model_type, name, seed):
     # f = open(name+"/log.txt",'w')
     # f.write("model:{} embed:{} hidden:{} attention:{} period:{} {} seed:{}\n".format(model_type, embed, hidden, attention, period[0], period[1], seed))
     # f.close()
-    model(embed, hidden, attention, period, model_type, "ICU",  name, seed) 
+    model(embed, hidden, attention, args, model_type, "ICU",  name, seed) 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
