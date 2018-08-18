@@ -19,7 +19,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 
 def load_data(path, name, time_off):
     Print('loading %s' %(path + name))
-    f = h5py.File(path+name)
+    f = h5py.File(path+name, 'r')
     times = np.asarray(f['time'], dtype='float32')
     hours = np.asarray(times, dtype = 'int8')
     Print("hour_min = %.2f, hour_max = %.2f" %(hours.min(), hours.max()))
