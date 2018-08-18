@@ -74,6 +74,7 @@ class CustomInit(Initializer):
         self.p_v3 = args.period_v3 / s
         self.p_1v3 = args.period_1v3 / s
         self.p_8 = args.period_8 / s
+        self.vibrate = args.vibrate
     
     def sample(self, shape):
         size = shape[0]
@@ -83,8 +84,12 @@ class CustomInit(Initializer):
         cnt_v3 = int(size * self.p_v3)
         cnt_1v3 = int(size * self.p_1v3)
         cnt_8 = size - cnt_v3  - cnt_1v3
-        period = floatX([0.3333333] * cnt_v3 + [1.333333] * cnt_1v3 + [8] * cnt_8)
+        period = [0.3333333] * cnt_v3 + [1.333333] * cnt_1v3 + [8] * cnt_8
+        vibrate = [0] * size
+        for i in range(cnt_v3 + cnt_1v3):
+            period[i] += (random.random() * 2 - 1.0) * self.vibrate
         Print("period = %s" %str(period))
+        period = floatX(period)
         return period
 
 def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, hour_var, args, num_attention = 0, embed_size=40,
@@ -364,6 +369,7 @@ if __name__ == '__main__':
     parser.add_argument('--period_v3', type = float, default = .0)
     parser.add_argument('--period_1v3', type = float, default = 1.0)
     parser.add_argument('--period_8', type = float, default = .0)
+    parser.add_argument('--vibrate', type = float, default = .0)
     args = parser.parse_args()
     print args
 
