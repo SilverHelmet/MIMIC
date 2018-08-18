@@ -68,7 +68,23 @@ class ExponentialUniformInit(Initializer):
     def sample(self, shape):
         return floatX(np.exp(get_rng().uniform(low=self.range[0],high=self.range[1], size=shape)))
 
-def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, num_attention = 0, embed_size=40, init_period = (1, 3),
+class CustomInit(Initializer):
+    def __init__(self, args):
+        s = args.period_v3 + args.period_1v3 + args.period_8
+        self.p_v3 = args.period_v3 / s
+        self.p_1v3 = args.period_1v3 / s
+        self.p_8 = args.period_8 / s
+    
+    def sample(self, shape):
+        size = len(shape)
+        cnt_v3 = int(size * self.p_v3)
+        cnt_1v3 = int(size * self.p_1v3)
+        cnt_8 = size - cnt_v3  - cnt_1v3
+        period = floatX([0.3333333] * cnt_v3 + [1.333333] * cnt_1v3 + [8] * cnt_8)
+        Print("period = %s" %str(period))
+        return period
+
+def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, time_hour, args, num_attention = 0, embed_size=40,
             seq_len=1000, GRAD_CLIP=100, bn=False, model_type='LSTM', time_feature = False):
 
     #input layers
@@ -76,7 +92,9 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
     l_in_feature_idx = lasagne.layers.InputLayer(shape=(None, seq_len, 3), input_var = feature_idx)
     l_in_feature_value = lasagne.layers.InputLayer(shape=(None, seq_len, 3), input_var = feature_value)
     l_mask = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=mask_var)
-    l_t = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=time_var)    
+    l_t = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=time_var)
+    if time_feature:
+        l_hour =  lasagne.layers.InputLayer(shape = (None, seq_len), input_var = time_hour)
 
     #embed event
     embed_event = lasagne.layers.EmbeddingLayer(l_in_event, input_size=3418, output_size=embed_size)
@@ -89,8 +107,17 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
 
     embed_params = [embed_event.W, embed_feature_idx.W, embed_feature_b.W, embed_feature_trans.W]
 
+    if time_feature:
+        embed_hour = lasagne.layers.EmbeddingLayer(l_hour, input_size = 24, output_size = embed_size)
+        embed_params.append(embed_hour.W)
+        l_in_merge = MergeEmbeddingLayer(embed_event, embed_feature_idx, embed_feature_b, 
+            embed_feature_trans, l_in_feature_value, embed_hour = embed_hour)
+    else:
+        l_in_merge = MergeEmbeddingLayer(embed_event, embed_feature_idx, embed_feature_b, 
+            embed_feature_trans, l_in_feature_value, embed_hour = None)
+
     #get input_var
-    l_in_merge = MergeEmbeddingLayer(embed_event, embed_feature_idx, embed_feature_b, embed_feature_trans, l_in_feature_value)
+    
     
     if model_type=="LSTM":
         l_in_merge = lasagne.layers.ConcatLayer([l_in_merge, lasagne.layers.ReshapeLayer(l_t, [-1, seq_len, 1])], axis=2)
@@ -106,7 +133,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
                             bn=bn,
                             only_return_final=True,
                             timegate=HELSTMGate(
-                                     Period=ExponentialUniformInit(init_period),
+                                     Period=CustomInit(args)),
                                      Shift=lasagne.init.Uniform((0., 1000)),
                                      On_End=lasagne.init.Constant(0.05)))
   
@@ -233,30 +260,32 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
     input_feature_value = T.tensor3('input_value', dtype='float32')
     input_time = T.matrix('input_time', dtype='float32')
     input_mask = T.matrix('input_mask', dtype='int8')
+    input_hour = T.matrix('input_hour', dtype='int8')
     input_target = T.ivector('input_target')
 
     print 'load test data'
-    test_event, test_feature_idx, test_feature_value, test_label, test_time, test_mask = get_data(data_set, "test")
+    test_event, test_feature_idx, test_feature_value, test_label, test_time, test_mask, test_hours = get_data(data_set, "test")
     num_test = len(test_event)
     #pack them all for further valid use
-    test_data = (test_event, test_feature_idx, test_feature_value, test_mask, test_time, test_label, num_test, batch_size) 
+    test_data = (test_event, test_feature_idx, test_feature_value, test_mask, test_time, test_hours, test_label, num_test, batch_size) 
     
     print 'load train data' 
-    train_event, train_feature_idx, train_feature_value, train_label, train_time, train_mask = get_data(data_set, "train")
+    train_event, train_feature_idx, train_feature_value, train_label, train_time, train_mask, train_hours = get_data(data_set, "train")
     num_train = len(train_event)
     #pack them all for further valid use
-    train_data = (train_event, train_feature_idx, train_feature_value, train_mask, train_time, train_label, num_train, batch_size)     
+    train_data = (train_event, train_feature_idx, train_feature_value, train_mask, train_time, train_hours, train_label, num_train, batch_size)     
 
     print 'load valid data'
-    valid_event, valid_feature_idx, valid_feature_value, valid_label, valid_time, valid_mask = get_data(data_set, "valid")
+    valid_event, valid_feature_idx, valid_feature_value, valid_label, valid_time, valid_mask, valid_hours = get_data(data_set, "valid")
     num_valid = len(valid_event)
     #pack them all for further valid use
-    valid_data = (valid_event, valid_feature_idx, valid_feature_value, valid_mask, valid_time, valid_label, num_valid, batch_size) 
+    valid_data = (valid_event, valid_feature_idx, valid_feature_value, valid_mask, valid_time, valid_hours, valid_label, num_valid, batch_size) 
     
     
     print 'Build network'
     network, gate_params, embed_params = get_rnn(input_event, input_feature_idx, input_feature_value, input_mask, 
-                      input_time, arch_size, num_attention = num_attention, embed_size = embed_size, init_period = _period, model_type = model_type)
+                      input_time, arch_size, time_hour, num_attention = num_attention, embed_size = embed_size, 
+                      args = args, model_type = model_type, time_feature = args.time_feature)
 
     print 'Compile'
     train_fn, test_fn = get_train_and_val_fn([input_event, input_feature_idx, input_feature_value, input_time, input_mask], input_target, network)
@@ -306,7 +335,7 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
     valid_file.close()
     test_file.close()
 
-def choose_model(embed, hidden, attention, period, model_type, name, seed):
+def choose_model(embed, hidden, attention, args, model_type, name, seed):
     name = '{}-{}'.format(name, seed)
     os.mkdir(name)
     f = open(name+"/log.txt",'w')
@@ -325,7 +354,9 @@ if __name__ == '__main__':
     parser.add_argument('--name', type = str, default = "exp_HELSTM")
     parser.add_argument('--seed', type = str, default = 1)
     parser.add_argument('--dataset', type = str, default = 'labtest')
-    parser.add_argument('--period_1v3', type)
+    parser.add_argument('--period_v3', type = float, default = .0)
+    parser.add_argument('--period_1v3', type = float, default = 1.0)
+    parser.add_argument('--period_8', type = float, default = .0)
     args = parser.parse_args()
     print args
 
@@ -333,4 +364,4 @@ if __name__ == '__main__':
 
 
     
-    choose_model(args.emd_dim, args.event_hidden_dim, event.lstm_dim, args, args.model, args.name, 1)
+    choose_model(args.emd_dim, args.event_hidden_dim, event.lstm_dim, args, args.model, args.name, args.seed)

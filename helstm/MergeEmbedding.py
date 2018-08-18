@@ -12,8 +12,11 @@ class MergeEmbeddingLayer(MergeLayer):
 	output: embed_event + T.sum(embed_feature_idx * tanh(feature_trans*(feature_value + embed_feature_b)), axis=2)
 	"""
 
-	def __init__(self, embed_event, embed_feature_idx, embed_feature_b, embed_feature_trans, feature_value, **kwargs):
+	def __init__(self, embed_event, embed_feature_idx, embed_feature_b, embed_feature_trans, feature_value, embed_hour = None, **kwargs):
+		self.time_feature = embed_hour is not None
 		incomings = [embed_event, embed_feature_idx, embed_feature_b, embed_feature_trans, feature_value]
+		if self.time_feature:
+			incomings.append(embed_hour)
 		super(MergeEmbeddingLayer, self).__init__(incomings, **kwargs)
 
 	def get_output_shape_for(self, input_shapes):
@@ -30,5 +33,9 @@ class MergeEmbeddingLayer(MergeLayer):
 		bias_value = feature_trans*(value_up + feature_b)
 		bias_value_broad = T.addbroadcast(bias_value, 3)#make the last axis broadcastable
 		v_idx = T.sum(feature_idx * lasagne.nonlinearities.tanh(bias_value_broad), axis=2)#(None, 1000, embed)
-		return v_idx + event
+		merged_event = v_idx + event
+		if self.time_feature:
+			time_hour = inputs[5]
+			merged_event += time_hour
+		return merged_event
 

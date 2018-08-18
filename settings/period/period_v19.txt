@@ -3,3 +3,4 @@ time_off=3.0
 period_fv3=0.25
 period_f1v3=0.25
 period_8=0.5
+period_1_2=.0
