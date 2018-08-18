@@ -326,6 +326,8 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
             inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
             if args.time_feature:
                 inputs.insert(5, b_hour)
+            for input in inputs:
+                print input.shape
             err, acc, pre = train_fn(*inputs)
             dat = np.asarray(pre)
             dat_shape = dat.shape
