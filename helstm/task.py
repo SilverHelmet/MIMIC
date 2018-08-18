@@ -296,7 +296,6 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     print 'Compile'
     inputs = [input_event, input_feature_idx, input_feature_value, input_time, input_mask]
     if args.time_feature:
-        Print("XXXX")
         inputs.append(input_hour)
     train_fn, test_fn = get_train_and_val_fn(inputs, input_target, network)
 
@@ -324,13 +323,9 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
             b_t = train_time[train_batch]
             b_label = train_label[train_batch]
             b_hour = train_hours[train_batch]
-            print train_hours.shape
-            print b_hour.shape
-            print b_t.shape
             inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
             if args.time_feature:
-                print "YYYYY"
-                inputs.append(b_hour)
+                inputs.insert(5, b_hour)
             err, acc, pre = train_fn(*inputs)
             dat = np.asarray(pre)
             dat_shape = dat.shape
