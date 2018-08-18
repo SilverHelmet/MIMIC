@@ -288,9 +288,6 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
     train_fn, test_fn = get_train_and_val_fn([input_event, input_feature_idx, input_feature_value, input_time, input_mask], input_target, network)
 
     print 'Start training'
-    train_file = open(name+"/"+prefix+"train.txt",'w')
-    valid_file = open(name+"/"+prefix+"valid.txt",'w')
-    test_file = open(name+"/"+prefix + "test.txt",'w')
 
     train_times = 0
     for epoch in xrange(max_epoch):
@@ -328,16 +325,13 @@ def model(embed, hidden, attention, _period, model_type, data_set, name, seed):
                 valid(train_times, test_data, test_fn, 'test')
         
     print('Completed.')
-    train_file.close()
-    valid_file.close()
-    test_file.close()
 
 def choose_model(embed, hidden, attention, args, model_type, name, seed):
     name = '{}-{}'.format(name, seed)
-    os.mkdir(name)
-    f = open(name+"/log.txt",'w')
-    f.write("model:{} embed:{} hidden:{} attention:{} period:{} {} seed:{}\n".format(model_type, embed, hidden, attention, period[0], period[1], seed))
-    f.close()
+    # os.mkdir(name)
+    # f = open(name+"/log.txt",'w')
+    # f.write("model:{} embed:{} hidden:{} attention:{} period:{} {} seed:{}\n".format(model_type, embed, hidden, attention, period[0], period[1], seed))
+    # f.close()
     model(embed, hidden, attention, period, model_type, "ICU",  name, seed) 
 
 if __name__ == '__main__':
