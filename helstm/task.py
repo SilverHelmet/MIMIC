@@ -259,7 +259,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     embed_size = embed 
     max_epoch = 30
     batch_size = 128
-    valid_freq = 10 
+    valid_freq = 500 
 
     input_event = T.matrix('input_event', dtype='int16')
     input_feature_idx = T.tensor3('input_idx', dtype='int16')
