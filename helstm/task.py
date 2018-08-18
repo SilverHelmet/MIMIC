@@ -253,7 +253,7 @@ def valid(train_times, valid_data, test_fn, name):
     y_score_all = np.asarray(y_score_all)
     auc_all = roc_auc_score(y_true_all, y_score_all)
     ap_all = average_precision_score(y_true_all, y_score_all) 
-    Print("dataset = {} Train times:{} Loss:{} acc = {}, auROC = {}, auPRc = {}".format(name, train_times, valid_err, valid_acc, auc_all, ap_all))
+    Print("dataset = {} Train times:{} Loss:{} acc = {}, auROC = {}, auPRC = {}".format(name, train_times, valid_err, valid_acc, auc_all, ap_all))
         
 def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     np.random.seed(seed)
