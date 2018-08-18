@@ -87,7 +87,7 @@ class CustomInit(Initializer):
         Print("period = %s" %str(period))
         return period
 
-def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, input_hour, args, num_attention = 0, embed_size=40,
+def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, hour_var, args, num_attention = 0, embed_size=40,
             seq_len=1000, GRAD_CLIP=100, bn=False, model_type='LSTM', time_feature = False):
 
     #input layers
@@ -98,7 +98,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
     l_t = lasagne.layers.InputLayer(shape=(None, seq_len), input_var=time_var)
     if time_feature:
         Print('get_rnn T')
-        l_hour =  lasagne.layers.InputLayer(shape = (None, seq_len), input_var = input_hour)
+        l_hour =  lasagne.layers.InputLayer(shape = (None, seq_len), input_var = hour_var)
 
     #embed event
     embed_event = lasagne.layers.EmbeddingLayer(l_in_event, input_size=3418, output_size=embed_size)
@@ -296,6 +296,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     print 'Compile'
     inputs = [input_event, input_feature_idx, input_feature_value, input_time, input_mask]
     if args.time_feature:
+        Print("XXXX")
         inputs.append(input_hour)
     train_fn, test_fn = get_train_and_val_fn(inputs, input_target, network)
 
