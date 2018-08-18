@@ -76,12 +76,10 @@ class CustomInit(Initializer):
         self.p_8 = args.period_8 / s
     
     def sample(self, shape):
-        size = len(shape)
+        size = shape[0]
         Print(self.p_v3)
         Print(self.p_1v3)
         Print(self.p_8)
-        print size
-        print shape
         cnt_v3 = int(size * self.p_v3)
         cnt_1v3 = int(size * self.p_1v3)
         cnt_8 = size - cnt_v3  - cnt_1v3
