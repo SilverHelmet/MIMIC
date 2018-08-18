@@ -2,6 +2,7 @@ import os
 import time
 import h5py
 import sys
+import random
 sys.path.insert(0, '.')
 from util import Print
 from MergeEmbedding import MergeEmbeddingLayer
