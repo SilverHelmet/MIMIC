@@ -2,7 +2,7 @@ import os
 import time
 import h5py
 import sys
-sys.path.insert(0, '..')
+sys.path.insert(0, '.')
 print sys.path
 from util import Print
 from MergeEmbedding import MergeEmbeddingLayer
