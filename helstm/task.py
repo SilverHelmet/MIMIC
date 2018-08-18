@@ -133,7 +133,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
                             bn=bn,
                             only_return_final=True,
                             timegate=HELSTMGate(
-                                     Period=CustomInit(args)),
+                                     Period=CustomInit(args),
                                      Shift=lasagne.init.Uniform((0., 1000)),
                                      On_End=lasagne.init.Constant(0.05)))
   
