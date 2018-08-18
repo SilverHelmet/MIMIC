@@ -111,6 +111,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
     embed_params = [embed_event.W, embed_feature_idx.W, embed_feature_b.W, embed_feature_trans.W]
 
     if time_feature:
+        Print('add time feature')
         embed_hour = lasagne.layers.EmbeddingLayer(l_hour, input_size = 24, output_size = embed_size)
         embed_params.append(embed_hour.W)
         l_in_merge = MergeEmbeddingLayer(embed_event, embed_feature_idx, embed_feature_b, 
@@ -212,7 +213,7 @@ def valid(train_times, valid_data, test_fn, name):
     y_true_all = []
     y_score_all = []
 
-    valid_event, valid_feature_idx, valid_feature_value, valid_mask, valid_time, valid_label, num_valid, batch_size = valid_data 
+    valid_event, valid_feature_idx, valid_feature_value, valid_mask, valid_time, valid_hour, valid_label, num_valid, batch_size = valid_data 
     valid_kf = get_minibatches_idx(num_valid, batch_size)
     num_valid_batches = len(valid_kf)
     for _, valid_batch in valid_kf:
@@ -223,7 +224,11 @@ def valid(train_times, valid_data, test_fn, name):
         b_mask = valid_mask[valid_batch]
         b_t = valid_time[valid_batch]
         b_label = valid_label[valid_batch]
-        err, acc, pre = test_fn(b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label)
+        b_hour = valid_hour[valid_batch]
+        inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
+        if args.time_feature:
+            inputs.append(b_hour)
+        err, acc, pre = test_fn(*inputs)
         y_true = np.asarray(b_label)
         y_score = np.asarray(pre)[:,1]
         y_true_all += list(y_true)
@@ -288,13 +293,16 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
                       args = args, model_type = model_type, time_feature = args.time_feature)
 
     print 'Compile'
-    train_fn, test_fn = get_train_and_val_fn([input_event, input_feature_idx, input_feature_value, input_time, input_mask], input_target, network)
+    inputs = [input_event, input_feature_idx, input_feature_value, input_time, input_mask]
+    if args.time_feature:
+        inputs.append(input_hour)
+    train_fn, test_fn = get_train_and_val_fn(inputs, input_target, network)
 
     print 'Start training'
 
     train_times = 0
     for epoch in xrange(max_epoch):
-        print epoch
+        Print("epoch = %d" %epoch)
         train_err = 0
         train_acc = 0
         train_auc = 0
@@ -313,7 +321,11 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
             b_mask = train_mask[train_batch]
             b_t = train_time[train_batch]
             b_label = train_label[train_batch]
-            err, acc, pre = train_fn(b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label)
+            b_hour = train_hours[train_batch]
+            inputs = [b_event, b_feature_idx, b_feature_value, b_t, b_mask, b_label]
+            if args.time_feature:
+                inpus.append(b_hour)
+            err, acc, pre = train_fn(*inputs)
             dat = np.asarray(pre)
             dat_shape = dat.shape
             train_err += err
