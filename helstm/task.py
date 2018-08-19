@@ -267,7 +267,7 @@ def valid(train_times, valid_data, test_fn, name):
         #                                                                                  err, acc*100.))
         # Print("Time:", (time.clock()-start_time))
     valid_err /= valid_batches
-    valid_acc = valid_acc*100./valid_batches
+    valid_acc = valid_acc * 1.0/valid_batches
     y_true_all = np.asarray(y_true_all)
     y_score_all = np.asarray(y_score_all)
     auc_all = roc_auc_score(y_true_all, y_score_all)
