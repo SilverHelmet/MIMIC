@@ -29,13 +29,14 @@ def parse_time(time_str):
     return None
 
 
-def process_icd_data(data, name, st, ed, chosen_label, seq_len):
+def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
+    d_idxs = idxs[st:ed]
     print ('process {}'.format(name))
-    t = data['time'][st:ed, :seq_len]
-    l = data['label'][st:ed]
-    feature_idx = np.asarray(data['feature'][st:ed, :seq_len, [0,2,4]], dtype = 'int16')
-    feature_value = np.asarray(data['feature'][st:ed, :seq_len, [1,3,5]], dtype = 'float32')
-    event = np.asarray(data['event'][st:ed, :seq_len], dtype = 'int16')
+    t = data['time'][d_idxs, :seq_len]
+    l = data['label'][d_idxs]
+    feature_idx = np.asarray(data['feature'][d_idxs, :seq_len, [0,2,4]], dtype = 'int16')
+    feature_value = np.asarray(data['feature'][d_idxs, :seq_len, [1,3,5]], dtype = 'float32')
+    event = np.asarray(data['event'][d_idxs, :seq_len], dtype = 'int16')
     time_hour = np.zeros(event.shape, dtype = 'float32')
     print feature_idx.shape
     print feature_value.shape
@@ -94,8 +95,8 @@ if __name__ == "__main__":
     f = open(data_path, "rb") 
     data = pickle.load(f)
     f.close()
-
-    process_icd_data(data, 'valid', 0, 3500, label, seq_len)
-    process_icd_data(data, 'test', 3500, 3500*3, label, seq_len)
-    process_icd_data(data, 'train', 3500*3, 35017, label, seq_len)
+    idxs = np.random.permutation(size)
+    process_icd_data(idxs, data, 'valid', 0, 3500, label, seq_len)
+    process_icd_data(idxs, data, 'test', 3500, 3500*3, label, seq_len)
+    process_icd_data(idxs, data, 'train', 3500*3, 35017, label, seq_len)
 
