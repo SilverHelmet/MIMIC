@@ -36,7 +36,7 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     feature_idx = np.asarray(data['feature'][st:ed, :, [0,2,4]], dtype = 'int16')
     feature_value = np.asarray(data['feature'][st:ed, :, [1,3,5]], dtype = 'float32')
     event = np.asarray(data['event'][st:ed], dtype = 'int16')
-    time_hour = np.zeros_like(t)
+    time_hour = np.zeros_like(event)
 
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
