@@ -33,10 +33,14 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     print ('process {}'.format(name))
     t = data['time'][st:ed]
     l = data['label'][st:ed]
-    feature_idx = np.asarray(data['feature'][st:ed, :, [0,2,4]], dtype = 'int16')
-    feature_value = np.asarray(data['feature'][st:ed, :, [1,3,5]], dtype = 'float32')
-    event = np.asarray(data['event'][st:ed], dtype = 'int16')
-    time_hour = np.zeros_like(event)
+    feature_idx = np.asarray(data['feature'][st:ed, :seq_len, [0,2,4]], dtype = 'int16')
+    feature_value = np.asarray(data['feature'][st:ed, :seq_len, [1,3,5]], dtype = 'float32')
+    event = np.asarray(data['event'][st:ed, :seq_len], dtype = 'int16')
+    time_hour = np.zeros(event.shape, dtype = 'float32')
+    print feature_idx.shape
+    print feature_value.shape
+    print event.shape
+    print time_hour.shape
 
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
@@ -53,7 +57,7 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
                 hour = date.hour + date.minute / 60.0 + date.second / 3600.0
                 time_hour[i][j] = hour
             else:
-                time_hour[i][j] = 0
+                time_hour[i][j] = .0
     time_hour = np.asarray(time_hour, dtype = 'float32')
 
     new_labels = []
