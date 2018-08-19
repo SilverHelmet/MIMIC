@@ -1,6 +1,7 @@
 import pickle
 import h5py
 import os
+import datetime
 from tqdm import tqdm
 import numpy as np
 
@@ -40,10 +41,8 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
         for j in range(len(row)):
-            time_str = str(row[j])[2:-1]
+            time_str = str(row[j])
             if len(time_str) > 0:
-                if len(time_str) < 18:
-                    time_str = time_str[:-1] + '0' + time_str[-1]
                 date = parse_time(time_str)
                 if date is None:
                     print ''
