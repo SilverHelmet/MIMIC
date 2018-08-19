@@ -110,7 +110,10 @@ class HELSTM(LSTM):
         self.setting = setting
 
     def build(self, input_shape):
-        x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim)
+        if self.setting['time_gate_type'] != 'nn':
+            x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim)
+        else:
+            x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim * 2)
         super(HELSTM, self).build(x_input_shape)
         self.input_spec = [InputSpec(shape = (input_shape))]
         if self.event_hidden_dim is None:
@@ -156,20 +159,50 @@ class HELSTM(LSTM):
         def onend_init(shape, name = None):
             return K.variable([0.05] * shape[0], name=name)
         
-        lows, highs = period_variable_sampling(self.setting, num_head)
-        period_init_lambda = lambda shape, name: period_init(shape = shape, lows = lows, highs = highs, name = name)
+        time_gate_type = self.setting.get('time_gate_type', 'phase') # phase, ones, nn
+        self.time_gate_type = time_gate_type
+        if time_gate_type == 'phase':
+            print 'using time gate phase'
+            lows, highs = period_variable_sampling(self.setting, num_head)
+            period_init_lambda = lambda shape, name: period_init(shape = shape, lows = lows, highs = highs, name = name)
 
-        self.period_timegate = self.add_weight((num_head, ),  
-                                initializer = period_init_lambda,
-                                name = "{}_period".format(self.name))
+            self.period_timegate = self.add_weight((num_head, ),  
+                                    initializer = period_init_lambda,
+                                    name = "{}_period".format(self.name))
 
-        self.shift_timegate = self.add_weight((num_head, ), 
-                                initializer = shift_init,
-                                name = "{}_shift".format(self.name))
+            self.shift_timegate = self.add_weight((num_head, ), 
+                                    initializer = shift_init,
+                                    name = "{}_shift".format(self.name))
 
-        self.on_end_timegate = self.add_weight((num_head, ), 
-                                initializer = onend_init,
-                                name = "{}_onend".format(self.name))
+            self.on_end_timegate = self.add_weight((num_head, ), 
+                                    initializer = onend_init,
+                                    name = "{}_onend".format(self.name))
+        elif time_gate_type == 'ones':
+            print 'using time_gate ones'
+        elif time_gate_type == 'nn':
+            print 'using time_gate nn'
+            self.time_hidden_dim = self.event_hidden_dim
+            self.time_hid_w = self.add_weight((self.event_emd_dim, self.time_hidden_dim),
+                                        initializer=self.init,
+                                        name='{}_time_hid_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
+
+            self.time_hid_b = self.add_weight((self.time_hidden_dim,),
+                                            initializer='zero',
+                                            name='{}_time_hid_b'.format(self.name),
+                                            regularizer=self.b_regularizer)
+
+            self.time_out_w = self.add_weight((self.time_hidden_dim, num_head),
+                                        initializer=self.init,
+                                        name='{}_time_out_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
+
+            self.time_out_b = self.add_weight((num_head, ),
+                                    initializer='zero',
+                                    name='{}_time_out_b'.format(self.name),
+                                    regularizer=self.b_regularizer)
+        else:
+            assert False
 
     def calc_time_gate(self, time_input_n):
         '''
@@ -197,8 +230,12 @@ class HELSTM(LSTM):
     def step(self, x, states):
         # input_x = x[:, : self.input_dim]
         # event_emd = input_x[:, :self.event_emd_dim]
-        event_emd = x[:, : self.event_emd_dim]
-        input_x = x[:, self.event_emd_dim: self.event_emd_dim + self.input_dim]
+        event_emd = x[:, :self.event_emd_dim]
+        base = self.event_emd_dim
+        if self.time_gate_type == 'nn':
+            hour_emd = x[:, base: base + self.event_emd_dim]
+            base += self.event_emd_dim
+        input_x = x[:, base: base + self.input_dim]
         time_input_n = x[:, -1]
         prev_h = states[0]
         prev_c = states[1]
@@ -210,13 +247,28 @@ class HELSTM(LSTM):
         event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
         event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
 
-        sleep_wake_mask = self.calc_time_gate(time_input_n)
+        if self.time_gate_type == 'phase':
+            sleep_wake_mask = self.calc_time_gate(time_input_n)
+        elif self.time_gate_type == 'ones':
+            pass
+        elif self.time_gate_type == 'nn':
+            time_hidden = K.tanh(K.dot(hour_emd, self.time_hid_w) + self.time_hid_b)
+            sleep_wake_mask = K.sigmoid(K.dot(time_hidden, self.time_out_w) + self.time_out_b)
+        else:
+            assert False
+
         if self.view_size != 1:
             _sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
             _event_attn = K.repeat_elements(event_attn, self.view_size, -1)
-            attn = _sleep_wake_mask * _event_attn
+            if self.time_gate_type == 'ones':
+                attn = _event_attn
+            else:
+                attn = _sleep_wake_mask * _event_attn
         else:
-            attn = sleep_wake_mask * event_attn
+            if self.time_gate_type == 'ones':
+                attn = event_attn
+            else:
+                attn = sleep_wake_mask * event_attn
 
         cell = attn*c + (1.-attn)*prev_c
         hid = attn*h + (1.-attn)*prev_h
@@ -247,7 +299,7 @@ if __name__ == "__main__":
     merge_layer = Merge(mode = 'concat', concat_axis = 2)
     med_time = merge_layer([e_emd, emd, Time])
 
-    helstm = HELSTM(event_emd_dim = emd_dim, output_dim = output_dim)(med_time)
+    helstm = HELSTM(event_emd_dim = emd_dim, output_dim = output_dim, setting = {'time_gate_type': 'ones'})(med_time)
     model = Model(input = [X, F_idx, F_value, Time], output = helstm)
 
     # x = np.random.random((batch, input_length, emd_dim))

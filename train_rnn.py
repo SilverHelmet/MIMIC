@@ -233,7 +233,10 @@ def define_simple_seg_rnn(setting):
         elif post_model == "HELSTM":
             time_input = Input(shape = (event_len, 1), name = 'time input')
             inputs.append(time_input)
-            event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, gcn, time_input])
+            if setting['time_gate_type'] == 'nn':
+                event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, time_emd, gcn, time_input])
+            else:
+                event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, gcn, time_input])
             event_hidden_dim = setting.get('event_hidden_dim', embedding_dim)
             print 'event_hidden_dim = %d' %(event_hidden_dim)
             rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, event_hidden_dim = event_hidden_dim, inner_activation = 'tanh', activation = 'tanh', 
@@ -384,6 +387,8 @@ def default_setting():
 
         'sample_generator': True,
         'eventxtime': False,
+
+        'time_gate_type': 'phase'
     }
     return setting
 
