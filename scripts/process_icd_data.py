@@ -31,7 +31,7 @@ def parse_time(time_str):
 
 def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     print ('process {}'.format(name))
-    t = data['time'][st:ed]
+    t = data['time'][st:ed, :seq_len]
     l = data['label'][st:ed]
     feature_idx = np.asarray(data['feature'][st:ed, :seq_len, [0,2,4]], dtype = 'int16')
     feature_value = np.asarray(data['feature'][st:ed, :seq_len, [1,3,5]], dtype = 'float32')
