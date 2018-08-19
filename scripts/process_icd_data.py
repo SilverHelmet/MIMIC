@@ -30,6 +30,7 @@ def parse_time(time_str):
 
 
 def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
+    global real_time
     d_idxs = idxs[st:ed]
     print ('process {}'.format(name))
     t = data['time'][d_idxs, :seq_len]
@@ -47,21 +48,26 @@ def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
 
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
+        st = parse_time(str(row[0]))
         for j in range(len(row)):
             time_str = str(row[j])
             if len(time_str) > 0:
                 date = parse_time(time_str)
                 if date is None:
                     print ''
-                    print  row[j]
+                    print row[j]
                     print time_str
                     print ''
                 assert date is not None
-                hour = date.hour + date.minute / 60.0 + date.second / 3600.0
+                if real_time:
+                    hour = (date - st).total_seconds()/3600.0
+                else:
+                    hour = date.hour + date.minute / 60.0 + date.second / 3600.0
                 time_hour[i][j] = hour
             else:
                 time_hour[i][j] = .0
     time_hour = np.asarray(time_hour, dtype = 'float32')
+    print ('time max = %.2f' %time_hour.max())
 
     new_labels = []
     for labels in l:
@@ -74,7 +80,10 @@ def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
     num_neg = (new_labels == 0).sum()
     print("#pos = %d, #neg = %d" %(num_pos, num_neg))
 
-    outpath = 'icd_exper/icd9_{}_{}.h5'.format(name, seq_len)
+    if real_time:
+        outpath = 'icd_exper/icd9_{}_{}_rt.h5'.format(name, seq_len)
+    else:
+        outpath = 'icd_exper/icd9_{}_{}.h5'.format(name, seq_len)
     if not os.path.exists('icd_exper'):
         os.mkdir('icd_exper')
     f = h5py.File(outpath, 'w')
@@ -93,6 +102,7 @@ if __name__ == "__main__":
     label = 8
     seq_len = 1000
     data_path = 'icd_exper/icd.pkl'
+    real_time=True
     f = open(data_path, "rb") 
     data = pickle.load(f)
     f.close()

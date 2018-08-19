@@ -47,6 +47,14 @@ def load_data_all(dataset, time_off):
         ICU_train_data = load_data(data_path, file_name, time_off)
         file_name = "labtest_valid_1000.h5"
         ICU_valid_data = load_data(data_path, file_name, time_off) 
+    elif dataset == 'icd9':
+        data_path = 'icd_exper/'
+        file_name = "icd9_test_1000.h5"
+        ICU_test_data = load_data(data_path, file_name, time_off)
+        file_name = "icd9_train_1000.h5"
+        ICU_train_data = load_data(data_path, file_name, time_off)
+        file_name = "icd9_valid_1000.h5"
+        ICU_valid_data = load_data(data_path, file_name, time_off) 
 
 def get_data(set_name, kind):
     global ICU_test_data
