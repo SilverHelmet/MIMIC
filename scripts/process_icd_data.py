@@ -42,7 +42,8 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
         for j in range(len(row)):
             time_str = row[j]
             if len(time_str) > 0:
-                date = parse_time(time_str)
+                date = parse_time(str(time_str)[2:-1])
+                if date is 
                 assert date is not None
                 hour = date.hour + date.minute / 60.0 + date.second / 3600.0
                 time_hour[i][j] = hour
@@ -81,7 +82,6 @@ if __name__ == "__main__":
     f = open(data_path, "rb") 
     data = pickle.load(f)
     f.close()
-
 
     process_icd_data(data, 'valid', 0, 3500, label, seq_len)
     process_icd_data(data, 'test', 3500, 3500*3, label, seq_len)
