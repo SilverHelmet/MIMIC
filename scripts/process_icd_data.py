@@ -103,7 +103,7 @@ if __name__ == "__main__":
     label = 8
     seq_len = 1000
     data_path = 'icd_exper/icd.pkl'
-    if not os.path.exists('icd_exper/idxs.npy')
+    if not os.path.exists('icd_exper/idxs.npy'):
         idxs = np.load('icd_exper/idxs.npy')
     else:
         idxs = np.random.permutation(size)
