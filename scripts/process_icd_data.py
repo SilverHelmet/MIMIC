@@ -6,22 +6,22 @@ def parse_time(time_str):
     if len(time_str) in [18, 19]:
         try:
             return datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
-        except Exception, e:
+        except Exception as e:
             return None
     elif len(time_str) == 10:
         try:
             return datetime.datetime.strptime(time_str, '%Y-%m-%d')
-        except Exception, e:
+        except Exception as e:
             return None
     elif len(time_str) in [12, 13, 14]:
         try:
             return datetime.datetime.strptime(time_str, '%m/%d/%y %H:%M')
-        except Exception, e:
+        except Exception as e:
             return None
     elif len(time_str) == 16:
         try:
             return datetime.datetime.strptime(time_str, "%Y/%m/%d %H:%M")
-        except Exception, e:
+        except Exception as e:
             return None
     return None
 
