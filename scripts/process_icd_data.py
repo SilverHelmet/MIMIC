@@ -41,6 +41,7 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     print feature_value.shape
     print event.shape
     print time_hour.shape
+    print t.shape
 
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
