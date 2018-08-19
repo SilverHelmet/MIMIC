@@ -84,6 +84,7 @@ def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
         outpath = 'icd_exper/icd9_{}_{}_rt.h5'.format(name, seq_len)
     else:
         outpath = 'icd_exper/icd9_{}_{}.h5'.format(name, seq_len)
+    print "outpath = %s" %outpath
     if not os.path.exists('icd_exper'):
         os.mkdir('icd_exper')
     f = h5py.File(outpath, 'w')
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     else:
         idxs = np.random.permutation(size)
         np.save('icd_exper/idxs.npy', idxs)
-    real_time=True
+    real_time=False
     f = open(data_path, "rb") 
     data = pickle.load(f)
     f.close()
