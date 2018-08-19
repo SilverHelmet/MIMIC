@@ -177,7 +177,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
     l_out = lasagne.layers.NonlinearityLayer(l_dense, nonlinearity=lasagne.nonlinearities.softmax)
     return l_out, gate_params, embed_params 
 
-def get_train_and_val_fn(inputs, target_var, network):
+def get_train_and_val_fn(inputs, target_var, network, lr):
     # Get network output
     prediction = lasagne.layers.get_output(network)
     # Calculate training accuracy
@@ -189,7 +189,7 @@ def get_train_and_val_fn(inputs, target_var, network):
     # Fetch trainable parameters
     params = lasagne.layers.get_all_params(network, trainable=True)
     # Calculate updates for the parameters given the loss
-    updates = lasagne.updates.adam(loss, params, learning_rate=1e-3)
+    updates = lasagne.updates.adam(loss, params, learning_rate=lr)
 
     # Fetch network output, using deterministic methods
     test_prediction = lasagne.layers.get_output(network, deterministic=True)
@@ -323,7 +323,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     inputs = [input_event, input_feature_idx, input_feature_value, input_time, input_mask]
     if args.time_feature:
         inputs.append(input_hour)
-    train_fn, test_fn = get_train_and_val_fn(inputs, input_target, network)
+    train_fn, test_fn = get_train_and_val_fn(inputs, input_target, network, args.lr)
 
     print 'Start training'
 
@@ -393,6 +393,7 @@ if __name__ == '__main__':
     parser.add_argument('--vibrate', type = float, default = .0)
     parser.add_argument('--epoch', type = int, default = 20)
     parser.add_argument('--freq', type = int, default = 500)
+    parser.add_argument('--lr', type = float, default = 1e-3)
     args = parser.parse_args()
     print args
 
