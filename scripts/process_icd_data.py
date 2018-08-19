@@ -34,8 +34,9 @@ def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
     print ('process {}'.format(name))
     t = data['time'][d_idxs, :seq_len]
     l = data['label'][d_idxs]
-    feature_idx = np.asarray(data['feature'][d_idxs, :seq_len, [0,2,4]], dtype = 'int16')
-    feature_value = np.asarray(data['feature'][d_idxs, :seq_len, [1,3,5]], dtype = 'float32')
+    feature = data['feature'][d_idxs]
+    feature_idx = np.asarray(feature[:, :seq_len, [0,2,4]], dtype = 'int16')
+    feature_value = np.asarray(feature[:, :seq_len, [1,3,5]], dtype = 'float32')
     event = np.asarray(data['event'][d_idxs, :seq_len], dtype = 'int16')
     time_hour = np.zeros(event.shape, dtype = 'float32')
     print feature_idx.shape
