@@ -1,6 +1,7 @@
 import pickle
 import h5py
 import os
+from tqdm import tqdm
 
 def parse_time(time_str):
     if len(time_str) in [18, 19]:
@@ -35,7 +36,7 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     event = np.asarray(data['event'][st:ed], dtype = 'int16')
     time_hour = np.zeros_like(t)
 
-    for i in range(len(t)):
+    for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
         for j in range(len(row)):
             time_str = row[j]
