@@ -114,9 +114,10 @@ class CustomInit(Initializer):
         return period
 
 def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size, hour_var, args, num_attention = 0, embed_size=40,
-            seq_len=1000, GRAD_CLIP=100, bn=False, model_type='LSTM', time_feature = False):
+            GRAD_CLIP=100, bn=False, model_type='LSTM', time_feature = False):
 
     #input layers
+    seq_len = args.seq_len
     l_in_event = lasagne.layers.InputLayer(shape=(None, seq_len), input_var = event_var)    
     l_in_feature_idx = lasagne.layers.InputLayer(shape=(None, seq_len, 3), input_var = feature_idx)
     l_in_feature_value = lasagne.layers.InputLayer(shape=(None, seq_len, 3), input_var = feature_value)
@@ -394,6 +395,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type = int, default = 20)
     parser.add_argument('--freq', type = int, default = 500)
     parser.add_argument('--lr', type = float, default = 1e-3)
+    parser.add_argument('--seq_len', type = int, default = 1000)
     args = parser.parse_args()
     print args
 
