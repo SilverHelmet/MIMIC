@@ -2,6 +2,7 @@ import pickle
 import h5py
 import os
 from tqdm import tqdm
+import numpy as np
 
 def parse_time(time_str):
     if len(time_str) in [18, 19]:
