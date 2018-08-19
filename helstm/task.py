@@ -39,6 +39,7 @@ def load_data_all(dataset, time_off):
     global ICU_test_data
     global ICU_train_data
     global ICU_valid_data
+    Print('dataset is %s' %dataset)
     if dataset == 'labtest':
         data_path = "lab_exper/"
         file_name = "labtest_test_1000.h5"
