@@ -126,13 +126,19 @@ class HELSTM(LSTM):
                                         initializer='zero',
                                         name='{}_event_hid_b'.format(self.name),
                                         regularizer=self.b_regularizer)
+        
+        num_head = self.setting.get('num_gate_head', self.output_dim)
+        
+        assert self.output_dim % num_head == 0
+        self.view_size = self.output_dim / num_head
+        print 'num_head = %d, view_size = %d' %(num_head, self.view_size)
 
-        self.event_out_w = self.add_weight((self.event_hidden_dim, self.output_dim),
+        self.event_out_w = self.add_weight((self.event_hidden_dim, num_head),
                                        initializer=self.init,
                                        name='{}_event_out_w'.format(self.name),
                                        regularizer=self.W_regularizer)
 
-        self.event_out_b = self.add_weight((self.output_dim, ),
+        self.event_out_b = self.add_weight((num_head, ),
                                 initializer='zero',
                                 name='{}_event_out_b'.format(self.name),
                                 regularizer=self.b_regularizer)
@@ -150,18 +156,18 @@ class HELSTM(LSTM):
         def onend_init(shape, name = None):
             return K.variable([0.05] * shape[0], name=name)
         
-        lows, highs = period_variable_sampling(self.setting, self.output_dim)
+        lows, highs = period_variable_sampling(self.setting, num_head)
         period_init_lambda = lambda shape, name: period_init(shape = shape, lows = lows, highs = highs, name = name)
 
-        self.period_timegate = self.add_weight((self.output_dim, ),  
+        self.period_timegate = self.add_weight((num_head, ),  
                                 initializer = period_init_lambda,
                                 name = "{}_period".format(self.name))
 
-        self.shift_timegate = self.add_weight((self.output_dim, ), 
+        self.shift_timegate = self.add_weight((num_head, ), 
                                 initializer = shift_init,
                                 name = "{}_shift".format(self.name))
 
-        self.on_end_timegate = self.add_weight((self.output_dim, ), 
+        self.on_end_timegate = self.add_weight((num_head, ), 
                                 initializer = onend_init,
                                 name = "{}_onend".format(self.name))
 
@@ -205,7 +211,9 @@ class HELSTM(LSTM):
         event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
 
         sleep_wake_mask = self.calc_time_gate(time_input_n)
-        # sleep_wake_mask = K.tile(sleep_wake_mask, (1, self.output_dim))
+        if self.view_size != 1:
+            sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
+            event_attn = K.repeat_elements(event_attn, self.view_size, -1)
         sleep_wake_mask = sleep_wake_mask * event_attn
 
         cell = sleep_wake_mask*c + (1.-sleep_wake_mask)*prev_c
