@@ -40,7 +40,7 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
     for i in tqdm(range(len(t)), total = len(t)):
         row = t[i]
         for j in range(len(row)):
-            time_str = row[j]
+            time_str = str(row[j])[2:-1]
             if len(time_str) > 0:
                 date = parse_time(str(time_str)[2:-1])
                 if date is 
