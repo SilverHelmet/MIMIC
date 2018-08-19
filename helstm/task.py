@@ -284,7 +284,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     embed_size = embed 
     max_epoch = args.epoch
     batch_size = 128
-    valid_freq = 500 
+    valid_freq = args.freq 
 
     input_event = T.matrix('input_event', dtype='int16')
     input_feature_idx = T.tensor3('input_idx', dtype='int16')
@@ -391,6 +391,7 @@ if __name__ == '__main__':
     parser.add_argument('--period_8', type = float, default = 0.5)
     parser.add_argument('--vibrate', type = float, default = .0)
     parser.add_argument('--epoch', type = int, default = 20)
+    parser.add_argument('--freq', type = int, default = 500)
     args = parser.parse_args()
     print args
 
