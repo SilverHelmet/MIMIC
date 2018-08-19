@@ -52,6 +52,8 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
                 assert date is not None
                 hour = date.hour + date.minute / 60.0 + date.second / 3600.0
                 time_hour[i][j] = hour
+            else:
+                time_hour[i][j] = 0
     time_hour = np.asarray(time_hour, dtype = 'float32')
 
     new_labels = []
