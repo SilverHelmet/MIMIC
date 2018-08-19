@@ -102,11 +102,16 @@ if __name__ == "__main__":
     label = 8
     seq_len = 1000
     data_path = 'icd_exper/icd.pkl'
+    if not os.path.exists('icd_exper/idxs.npy')
+        idxs = np.load('icd_exper/idxs.npy')
+    else:
+        idxs = np.random.permutation(size)
+        np.save('icd_exper/idxs.npy', idxs)
     real_time=True
     f = open(data_path, "rb") 
     data = pickle.load(f)
     f.close()
-    idxs = np.random.permutation(size)
+    
     process_icd_data(idxs, data, 'valid', 0, 3500, label, seq_len)
     process_icd_data(idxs, data, 'test', 3500, 3500*3, label, seq_len)
     process_icd_data(idxs, data, 'train', 3500*3, 35017, label, seq_len)
