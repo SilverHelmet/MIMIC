@@ -43,6 +43,11 @@ def process_icd_data(data, name, st, ed, chosen_label, seq_len):
             time_str = str(row[j])[2:-1]
             if len(time_str) > 0:
                 date = parse_time(time_str)
+                if date is None:
+                    print ''
+                    print  row[j]
+                    print time_str
+                    print ''
                 assert date is not None
                 hour = date.hour + date.minute / 60.0 + date.second / 3600.0
                 time_hour[i][j] = hour
