@@ -212,12 +212,14 @@ class HELSTM(LSTM):
 
         sleep_wake_mask = self.calc_time_gate(time_input_n)
         if self.view_size != 1:
-            sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
-            event_attn = K.repeat_elements(event_attn, self.view_size, -1)
-        sleep_wake_mask = sleep_wake_mask * event_attn
+            _sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
+            _event_attn = K.repeat_elements(event_attn, self.view_size, -1)
+            attn = _sleep_wake_mask * _event_attn
+        else:
+            attn = sleep_wake_mask * event_attn
 
-        cell = sleep_wake_mask*c + (1.-sleep_wake_mask)*prev_c
-        hid = sleep_wake_mask*h + (1.-sleep_wake_mask)*prev_h
+        cell = attn*c + (1.-attn)*prev_c
+        hid = attn*h + (1.-attn)*prev_h
         return hid, [hid, cell]
 
 
