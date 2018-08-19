@@ -263,7 +263,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     num_attention = attention
     arch_size = [None, hidden, 2]
     embed_size = embed 
-    max_epoch = 30
+    max_epoch = args.epoch
     batch_size = 128
     valid_freq = 500 
 
@@ -371,6 +371,7 @@ if __name__ == '__main__':
     parser.add_argument('--period_1v3', type = float, default = 1.0)
     parser.add_argument('--period_8', type = float, default = .0)
     parser.add_argument('--vibrate', type = float, default = .0)
+    parser.add_argument('--epoch', type = int, default = 20)
     args = parser.parse_args()
     print args
 
