@@ -101,7 +101,7 @@ def process_icd_data(idxs, data, name, st, ed, chosen_label, seq_len):
 if __name__ == "__main__":
     size = 35017
     label = 8
-    seq_len = 1000
+    seq_len = 5000
     data_path = 'icd_exper/icd.pkl'
     if os.path.exists('icd_exper/idxs.npy'):
         idxs = np.load('icd_exper/idxs.npy')
