@@ -18,11 +18,11 @@ from lasagne.random import get_rng
 import argparse
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-def load_data(path, name, time_off):
+def load_data(path, name, time_off, hour_mul):
     Print('loading %s' %(path + name))
     f = h5py.File(path+name, 'r')
     times = np.asarray(f['time'], dtype='float32')
-    hours = np.asarray(times, dtype = 'int8')
+    hours = np.asarray(times * hour_mul, dtype = 'int8')
     Print("hour_min = %.2f, hour_max = %.2f" %(hours.min(), hours.max()))
     times /= time_off
     Print("time_min = %.2f, time_max = %.2f" %(times.min(), times.max()))
@@ -35,7 +35,7 @@ def load_data(path, name, time_off):
     Print('done.')
     return event, feature_id, feature_value, label, times, mask, hours
 
-def load_data_all(dataset, time_off):
+def load_data_all(dataset, time_off, hour_mul):
     global ICU_test_data
     global ICU_train_data
     global ICU_valid_data
@@ -43,27 +43,27 @@ def load_data_all(dataset, time_off):
     if dataset == 'labtest':
         data_path = "lab_exper/"
         file_name = "labtest_test_1000.h5"
-        ICU_test_data = load_data(data_path, file_name, time_off)
+        ICU_test_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "labtest_train_1000.h5"
-        ICU_train_data = load_data(data_path, file_name, time_off)
+        ICU_train_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "labtest_valid_1000.h5"
-        ICU_valid_data = load_data(data_path, file_name, time_off) 
+        ICU_valid_data = load_data(data_path, file_name, time_off, hour_mul) 
     elif dataset == 'icd9':
         data_path = 'icd_exper/'
         file_name = "icd9_test_5000.h5"
-        ICU_test_data = load_data(data_path, file_name, time_off)
+        ICU_test_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "icd9_train_5000.h5"
-        ICU_train_data = load_data(data_path, file_name, time_off)
+        ICU_train_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "icd9_valid_5000.h5"
-        ICU_valid_data = load_data(data_path, file_name, time_off)
+        ICU_valid_data = load_data(data_path, file_name, time_off, hour_mul)
     elif dataset == 'icd9_rt':
         data_path = 'icd_exper/'
         file_name = "icd9_test_1000_rt.h5"
-        ICU_test_data = load_data(data_path, file_name, time_off)
+        ICU_test_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "icd9_train_1000_rt.h5"
-        ICU_train_data = load_data(data_path, file_name, time_off)
+        ICU_train_data = load_data(data_path, file_name, time_off, hour_mul)
         file_name = "icd9_valid_1000_rt.h5"
-        ICU_valid_data = load_data(data_path, file_name, time_off)
+        ICU_valid_data = load_data(data_path, file_name, time_off, hour_mul)
     else:
         assert False
     
@@ -140,7 +140,7 @@ def get_rnn(event_var, feature_idx, feature_value, mask_var, time_var, arch_size
 
     if time_feature:
         Print('add time feature')
-        embed_hour = lasagne.layers.EmbeddingLayer(l_hour, input_size = 24, output_size = embed_size)
+        embed_hour = lasagne.layers.EmbeddingLayer(l_hour, input_size = 48, output_size = embed_size)
         embed_params.append(embed_hour.W)
         l_in_merge = MergeEmbeddingLayer(embed_event, embed_feature_idx, embed_feature_b, 
             embed_feature_trans, l_in_feature_value, embed_hour = embed_hour)
@@ -392,14 +392,15 @@ if __name__ == '__main__':
     parser.add_argument('--period_1v3', type = float, default = 0.25)
     parser.add_argument('--period_8', type = float, default = 0.5)
     parser.add_argument('--vibrate', type = float, default = .0)
-    parser.add_argument('--epoch', type = int, default = 20)
+    parser.add_argument('--epoch', type = int, default = 30)
     parser.add_argument('--freq', type = int, default = 500)
     parser.add_argument('--lr', type = float, default = 1e-3)
     parser.add_argument('--seq_len', type = int, default = 1000)
+    parser.add_argument('--hour_mul', type = int, default = 1)
     args = parser.parse_args()
     print args
 
-    load_data_all(args.dataset, args.time_off)
+    load_data_all(args.dataset, args.time_off, args.hour_mul)
 
 
     
