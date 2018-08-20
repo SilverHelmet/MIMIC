@@ -129,6 +129,7 @@ def load_lab_filepath(filepath, stat_dict):
     for idx in tqdm(range(d.size), total = d.size):
         feature_idxs = d.feature_idxs[idx]
         feature_values = d.feature_values[idx]
+        times = d.times[idx]
         events = d.events[idx]
         label = d.labels[idx]
         for i in range(len(times)):
