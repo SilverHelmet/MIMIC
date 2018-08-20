@@ -177,5 +177,5 @@ def stat_labtest():
     outf.close()
 
 if __name__ == "__main__":
-    stat_death()
+    # stat_death()
     stat_labtest()
