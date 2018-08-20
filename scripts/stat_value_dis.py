@@ -117,6 +117,35 @@ def load_filepath(filepath, stat_dict):
                     stat_dict[key] = FValueStat(eidx, fidx)
                 stat_dict[key].add(time, label, fv)
 
+def load_lab_filepath(filepath, stat_dict):
+    d = Dataset(filepath)
+    setting = {
+        'time_off': 1.0,
+        'time_base': 'abs'
+        }
+    d.load(True, False, True, True, setting = setting)
+
+    Print("load %s" %filepath)
+    for idx in tqdm(range(d.size), total = d.size):
+        feature_idxs = d.feature_idxs[idx]
+        feature_values = d.feature_values[idx]
+        events = d.events[idx]
+        label = d.labels[idx]
+        for i in range(len(times)):
+            time = times[i]
+            idxs = features_idxs[i]
+            values = feature_values[i]
+            eidx = events[i]
+            if eidx == 0:
+                continue
+            for fidx, fv in zip(idxs, values):
+                if fidx == 0:
+                    continue
+                key = make_key(eidx, fidx)
+                if not key in stat_dict:
+                    stat_dict[key] = FValueStat(eidx, fidx)
+                stat_dict[key].add(time, label, fv)
+    
 def stat_death():
     stat_dict = {}
     parttern = death_exper_dir + '/death_*_1000.h5'
@@ -132,7 +161,21 @@ def stat_death():
         json_obj = stat_dict[key].to_json()
         outf.write("%d\t%d\t%s\n" %(eidx, fidx, json.dumps(json_obj)))
     outf.close()
-        
+
+def stat_labtest():
+    stat_dict = {}
+    parttern = 'lab_exper/labtest_*_1000.h5'
+    for filepath in glob.glob(parttern):
+        load_lab_filepath(filepath, stat_dict)
+    outpath = os.path.join(result_dir, 'labtest_value.stat.json')
+    Print("write result to [%s]" %outpath)
+    outf = file(outpath, 'w')
+    for key in sorted(stat_dict.keys()):
+        eidx, fidx = key
+        json_obj = stat_dict[key].to_json()
+        outf.write("%d\t%d\t%s\n" %(eidx, fidx, json.dumps(json_obj)))    
+    outf.close()
 
 if __name__ == "__main__":
     stat_death()
+    stat_labtest()
