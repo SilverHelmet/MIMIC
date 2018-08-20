@@ -282,7 +282,7 @@ class HELSTM(LSTM):
     def get_config(self):
         config = {
             'event_emd_dim': self.event_emd_dim,
-            'off_slope': self.off_slope = 1e-3,
+            'off_slope': self.off_slope,
             'event_hidden_dim': self.event_hidden_dim,
             'setting': self.setting,
         }
