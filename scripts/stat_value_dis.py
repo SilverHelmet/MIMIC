@@ -134,7 +134,7 @@ def load_lab_filepath(filepath, stat_dict):
         label = d.labels[idx]
         for i in range(len(times)):
             time = times[i]
-            idxs = features_idxs[i]
+            idxs = feature_idxs[i]
             values = feature_values[i]
             eidx = events[i]
             if eidx == 0:
