@@ -92,7 +92,7 @@ def load_filepath(filepath, stat_dict):
         'time_off': 1.0,
         'time_base': 'abs'
         }
-    d.load(True, False, True, True, setting = setting)
+    d.load(True, False, True, True, None, setting = setting)
     # d.load(True, False, True, False, setting = setting)
 
     Print("load %s" %filepath)
@@ -123,7 +123,7 @@ def load_lab_filepath(filepath, stat_dict):
         'time_off': 1.0,
         'time_base': 'abs'
         }
-    d.load(True, False, True, True, setting = setting)
+    d.load(True, False, True, True, None, setting = setting)
 
     Print("load %s" %filepath)
     for idx in tqdm(range(d.size), total = d.size):

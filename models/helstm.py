@@ -279,6 +279,16 @@ class HELSTM(LSTM):
         input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1)
         return super(HELSTM, self).get_output_shape_for(input_shape)
 
+    def get_config(self):
+        config = {
+            'event_emd_dim': self.event_emd_dim
+            'off_slope': self.off_slope = 1e-3
+            'event_hidden_dim': self.event_hidden_dim,
+            'setting': self.setting
+        }
+        base_config = super(HELSTM, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+
 if __name__ == "__main__":
     from keras.layers import Input, Embedding
     from keras.models import Model
