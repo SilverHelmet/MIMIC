@@ -163,7 +163,7 @@ def stat_death():
     outf.close()
 
 def stat_labtest():
-    stat_dict = {}
+    stat_dict = {}
     parttern = 'lab_exper/labtest_*_1000.h5'
     for filepath in glob.glob(parttern):
         load_lab_filepath(filepath, stat_dict)
