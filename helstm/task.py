@@ -285,7 +285,7 @@ def model(embed, hidden, attention, args, model_type, data_set, name, seed):
     arch_size = [None, hidden, 2]
     embed_size = embed 
     max_epoch = args.epoch
-    batch_size = 128
+    batch_size = args.batch_size
     valid_freq = args.freq 
 
     input_event = T.matrix('input_event', dtype='int16')
@@ -397,6 +397,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type = float, default = 1e-3)
     parser.add_argument('--seq_len', type = int, default = 1000)
     parser.add_argument('--hour_mul', type = int, default = 1)
+    parser.add_argument('--batch_size', type = int, default = 128)
     args = parser.parse_args()
     print args
 
