@@ -27,8 +27,14 @@ def calc_event_distance(fv):
     return KLD(pos_dis, neg_dis)
 
 def plot_one_value_dis(eidx, fidx, path):
+    filename = os.path.basename(path)
+    if 'death' in filename:
+        dataset = 'death'
+    else:
+        dataset = 'labtest'
     for line in file(path):
         fv = FValueStat.load_from_line(line)
+        dis = calc_event_distance(fv)
         _eidx = fv.eidx
         _fidx = fv.fidx
         if eidx != _eidx or fidx != _fidx:
@@ -38,7 +44,7 @@ def plot_one_value_dis(eidx, fidx, path):
         x = range(24)
         plt.plot(x, pos_v, 'r')
         plt.plot(x, neg_v, 'b')
-        outpath = os.path.join(result_dir, 'graph/' + "%d_%d_value.png" %(eidx, fidx))
+        outpath = os.path.join(result_dir, 'graph/' + "valueDist_data=%s_eid=%d_fid=%d_dis=%.3f.png" %(dataset, eidx, fidx, dis))
         plt.savefig(outpath)
         plt.close('all')
 
@@ -61,9 +67,10 @@ def plot_value_dis(path):
     outf.close()
     x = np.array(x)
     print 'size = %d' %len(x)
-    x = sorted(x)
+
+    x = sorted(x)[:int(0.99 * len(x))]
     r = x[-1] - x[0]
-    step = r / 10
+    step = r / 15
     bins = np.arange(x[0], x[-1], step)
     # bins = bins[[0] + range(3, len(bins))]
     print bins
@@ -74,9 +81,18 @@ def plot_value_dis(path):
         os.mkdir(result_dir + '/graph')
     plt.savefig(graph_outpath)
 
+    plt.close('all')
+
+
 def plot_one_event_dis(eidx, path):
+    filename = os.path.basename(path)
+    if 'death' in filename:
+        dataset = 'death'
+    else:
+        dataset = 'labtest'
     for line in file(path):
         fv = FValueStat.load_from_line(line)
+        dis = calc_event_distance(fv)
         _eidx = fv.eidx
         if _eidx != eidx:
             continue
@@ -87,7 +103,7 @@ def plot_one_event_dis(eidx, path):
         x = range(24)
         plt.plot(x, pos_cnts, 'r')
         plt.plot(x, neg_cnts, 'b')
-        outpath = os.path.join(result_dir, 'graph/' + "%d_event.png" %(eidx,))
+        outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
         plt.savefig(outpath)
         plt.close('all')
 
@@ -113,29 +129,44 @@ def plot_event_dis(path):
 
     x = np.array(x)
     print 'size = %d' %len(x)
-    x = sorted(x)[:-3]
+    x = sorted(x)[:int(0.99 * len(x))]
     r = x[-1] - x[0]
-    bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7]
+    # bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7]
+    step = r / 15
+    bins = np.arange(x[0], x[-1], step)
     print bins
     plt.hist(x, bins = bins, normed=False)
     graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
     if not os.path.exists(result_dir + '/graph'):
         os.mkdir(result_dir + '/graph')
     plt.savefig(graph_outpath)
+    plt.close('all')
 
 
 if __name__ == "__main__":
     plt.style.use('ggplot')
     death_stat_path = os.path.join(result_dir, 'death_value.stat.json')    
+    labtest_stat_path = os.path.join(result_dir, 'labtest_value.stat.json')
 
-    # plot_value_dis(death_stat_path)
-    # value_list = [(2996, 569),
-    #     (2844, 535)]
-    # for eidx, fidx in value_list:
-    #     plot_one_value_dis(eidx, fidx, death_stat_path)
+    stat_path = death_stat_path
+    # stat_path = labtest_stat_path
 
-    plot_event_dis(death_stat_path)
-    # event_list = [2731, 19, 1936, 1514, 2208, 1047, 1748, 1224, 875, 2521, 1092, 3362]
-    # for eidx in event_list:
-    #     plot_one_event_dis(eidx, death_stat_path)
+    # plot_value_dis(stat_path)
+    value_list = [(2996, 569),
+        (2054, 375),
+        (2251, 420),
+        (1129, 143),
+        (2041, 366),
+        (3234, 606),
+        (1755, 247),
+        (3313, 625),
+        (3270, 614),
+        (2728, 521)]
+    for eidx, fidx in value_list:
+        plot_one_value_dis(eidx, fidx, stat_path)
+
+    # plot_event_dis(stat_path)
+    event_list = [1936, 2699, 2730, 2726, 2729, 2633, 1889, 1883, 1827]
+    for eidx in event_list:
+        plot_one_event_dis(eidx, death_stat_path)
 

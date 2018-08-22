@@ -1,9 +1,24 @@
 from train_rnn import define_simple_seg_rnn, load_argv
 from keras.models import Model, load_model
-from models.dataset import Dataset, print_eval
+from models.dataset import Dataset, print_eval, sample_generator
 import sys
+import numpy as np
 
 
+def print_probs(model, data, setting, outpath):
+    size = data.size
+    results = []
+    pred_size = 0
+    for inputs, labels in sample_generator(data, setting):
+        probs_list = model.predict(inputs)
+        results.append(probs_list)
+        pred_size += len(labels)
+        if pred_size >= size:
+            break
+        break
+    prob_matrix = np.concatenate(results, axis = 0)
+    prob_matrix = np.squeeze(prob_matrix)
+    np.save(outpath, prob_matrix)
 
 
 if __name__ == "__main__":
@@ -11,14 +26,12 @@ if __name__ == "__main__":
     setting = load_argv(args)
     setting['event_dim'] = 3418
     model_path = sys.argv[1]
-    model = define_simple_seg_rnn(setting)
-    model.load_weights(model_path)
+    model = define_simple_seg_rnn(setting, True)
+    model.load_weights(model_path, by_name=True)
 
-
-    # debug
+    # data = Dataset('death_exper/sample/samples.h5')
     data = Dataset('death_exper/death_test_1000.h5')
     data.load(True, False, True, None, setting)
 
-    val_eval = datasets[1].eval(model, setting)
-    print_eval('test', val_eval)
-    
+    print_probs(model, data, setting, 'result/death_test_probs.npy')
+

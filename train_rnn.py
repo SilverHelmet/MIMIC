@@ -82,7 +82,7 @@ def make_input(setting):
     else:
         return Input(shape = (max_segs, event_dim), name = 'seg event input')
 
-def define_simple_seg_rnn(setting):
+def define_simple_seg_rnn(setting, return_sequences = False):
     hidden_dim = setting['hidden_dim']
     event_len = setting['event_len']
     event_dim = setting['event_dim']
@@ -241,7 +241,7 @@ def define_simple_seg_rnn(setting):
             print 'event_hidden_dim = %d' %(event_hidden_dim)
             rnn = HELSTM(output_dim = hidden_dim, event_emd_dim = embedding_dim, event_hidden_dim = event_hidden_dim, inner_activation = 'tanh', activation = 'tanh', 
                  W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-                 input_length = None, return_sequences = False, name = 'helstm', 
+                 input_length = None, return_sequences = return_sequences, name = 'helstm', 
                  setting = setting, off_slope = 1e-3)(event_with_time)
     else:
         assert False
@@ -321,7 +321,10 @@ def define_simple_seg_rnn(setting):
     
     if len(inputs) == 0:
         inputs = inputs[0]
-    pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
+    if return_sequences:
+        pred = TimeDistributedDense(1, activation = 'sigmoid', name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
+    else:
+        pred = Dense(1, activation = "sigmoid", name = 'prediction', W_regularizer = l2(l2_cof), b_regularizer = l2(l2_cof))(linear_features)
 
     model = Model(input = inputs, output = pred)
     lr = setting['lr']
