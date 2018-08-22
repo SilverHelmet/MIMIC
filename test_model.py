@@ -5,6 +5,7 @@ import sys
 import numpy as np
 from collections import defaultdict
 from tqdm import tqdm
+import os
 
 
 def print_probs(model, data, setting, outpath):
