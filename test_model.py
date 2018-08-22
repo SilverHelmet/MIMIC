@@ -15,7 +15,7 @@ def print_probs(model, data, setting, outpath):
         pred_size += len(labels)
         if pred_size >= size:
             break
-        break
+        print pred_size, size
     prob_matrix = np.concatenate(results, axis = 0)
     prob_matrix = np.squeeze(prob_matrix)
     np.save(outpath, prob_matrix)
