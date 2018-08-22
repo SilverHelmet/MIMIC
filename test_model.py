@@ -25,8 +25,8 @@ def print_probs(model, data, setting, outpath):
 
 def calc_event_effect(data, prob_path, outpath):
     prob_mat = np.load(prob_path)
-    e2sum = defaultdict(.0)
-    e2cnt = defaultdict(.0)
+    e2sum = defaultdict(float)
+    e2cnt = defaultdict(int)
     for i, event_seq in tqdm(enumerate(data.events), total = data.size):
         row = prob_mat[i]
         for j, e in enumerate(event_seq):
