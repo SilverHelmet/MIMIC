@@ -61,6 +61,6 @@ if __name__ == "__main__":
     if not os.path.exists(outpath):
         print_probs(model, data, setting, outpath)
     
-    effect_outpath = 'result/death_event_effect.txt'
+    effect_outpath = 'result/death_event_time_effect.json'
     calc_event_effect(data, outpath, effect_outpath)
 
