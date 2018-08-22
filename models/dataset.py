@@ -29,7 +29,6 @@ class Dataset:
         return tuple(datasets)
 
     def load(self, load_time = False, load_static_feature = False, load_transfer_time = False, event_set = None, setting = {}):
-        
         self.load_time = load_time
         self.load_static_feature = load_static_feature
         f = h5py.File(self.dataset_file, 'r')

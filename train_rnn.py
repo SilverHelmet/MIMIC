@@ -405,9 +405,6 @@ def split_batch_index(size, nb_split):
     for st, ed  in st_ed_pair:
         yield idxs[st:ed]
 
-
-
-
 def load_argv(argv):
     setting = default_setting()
     if len(argv) >= 2:
