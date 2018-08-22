@@ -36,7 +36,7 @@ def calc_event_effect(data, prob_path, outpath):
     
     e2effect = {e:e2sum[e] / e2cnt[e] for e in e2cnt}
     outf = file(outpath, 'w')
-    for e in sorted(e2effect.keys(), key = lambda x:e2effect[e], reverse=True)
+    for e in sorted(e2effect.keys(), key = lambda x:e2effect[e], reverse=True):
         outf.write('%d\t%.4f\t%d\n' %(e, e2effect[e], e2cnt[e]))
     outf.close()
 
