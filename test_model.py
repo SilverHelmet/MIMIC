@@ -45,7 +45,7 @@ if __name__ == "__main__":
     setting = load_argv(args)
     setting['event_dim'] = 3418
     # model_path = sys.argv[1]
-    model = define_simple_seg_rnn(setting, True)
+    
     
 
     # data = Dataset('death_exper/sample/samples.h5')
@@ -56,6 +56,7 @@ if __name__ == "__main__":
     data.load(True, False, True, None, setting)
     fv_dict = {}
     for model_path, label in zip(models, labels):
+        model = define_simple_seg_rnn(setting, True)
         model.load_weights(model_path, by_name=True)
         prob_outpath = 'result/death_test_probs_{}.npy'.format(os.path.basename(model))
         if not os.path.exists(prob_outpath):
