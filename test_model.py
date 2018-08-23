@@ -25,10 +25,9 @@ def print_probs(model, data, setting, outpath):
     prob_matrix = np.squeeze(prob_matrix)
     np.save(outpath, prob_matrix)
 
-def calc_event_effect(data, prob_path, outpath):
+def calc_event_effect(data, prob_path, fv_dict, label):
     prob_mat = np.load(prob_path)
     hours = np.asarray(data.times * 3, dtype = 'int16')
-    fv_dict = {}
     for i, event_seq in tqdm(enumerate(data.events), total = data.size):
         row = prob_mat[i]
         hour_seq = hours[i]
@@ -39,15 +38,10 @@ def calc_event_effect(data, prob_path, outpath):
                 fv_dict[e] = FValueStat(e, 0)
             diff = prob_mat[i][j] - prob_mat[i][j-1]
             hour = hour_seq[j]
-            fv_dict[e].add(hour, 0, diff)
-    outf = file(outpath, 'w')
-    for e in fv_dict:
-        stat = fv_dict[e].to_json()
-        outf.write('%d\t%s\n' %(e, json.dumps(stat)))
-    outf.close()
+            fv_dict[e].add(hour, label, diff)
 
 if __name__ == "__main__":
-    args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v19.txt @time_gate_type=ones|model_out=RNNmodels/death_helstm.model'.split(' ')
+    args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v14.txt "@num_gate_head=8|model_out=RNNmodels/death_t23.model"'.split(' ')
     setting = load_argv(args)
     setting['event_dim'] = 3418
     model_path = sys.argv[1]
@@ -56,11 +50,21 @@ if __name__ == "__main__":
 
     # data = Dataset('death_exper/sample/samples.h5')
     data = Dataset('death_exper/death_test_1000.h5')
+    models = ['death_t23_notime.model.round8', 'death_t23.model.round5']
+    labels = [0, 1]
+    models = [os.path.join('RNNmodels', model) for model in models]
     data.load(True, False, True, None, setting)
-    outpath = 'result/death_test_probs.npy'
-    if not os.path.exists(outpath):
-        print_probs(model, data, setting, outpath)
-    
+    fv_dict = {}
+    for model, label in zip(models, labels):
+        prob_outpath = 'result/death_test_probs_{}.npy'.format(os.path.basename(model))
+        if not os.path.exists(prob_outpath):
+            print_probs(model, data, setting, prob_outpath)
+        calc_event_effect(data, prob_outpath, fv_dict, label)
+
     effect_outpath = 'result/death_event_time_effect.json'
-    calc_event_effect(data, outpath, effect_outpath)
+    outf = file(outpath, 'w')
+    for e in fv_dict:
+        stat = fv_dict[e].to_json()
+        outf.write('%d\t%s\n' %(e, json.dumps(stat)))
+    outf.close()
 
