@@ -61,7 +61,7 @@ if __name__ == "__main__":
         calc_event_effect(data, prob_outpath, fv_dict, label)
 
     effect_outpath = 'result/death_event_time_effect.json'
-    outf = file(outpath, 'w')
+    outf = file(effect_outpath, 'w')
     for e in fv_dict:
         stat = fv_dict[e].to_json()
         outf.write('%d\t%s\n' %(e, json.dumps(stat)))

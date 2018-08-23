@@ -143,8 +143,7 @@ def plot_event_dis(path):
     plt.close('all')
 
 
-if __name__ == "__main__":
-    plt.style.use('ggplot')
+def plot_label_event():
     death_stat_path = os.path.join(result_dir, 'death_value.stat.json')    
     labtest_stat_path = os.path.join(result_dir, 'labtest_value.stat.json')
 
@@ -169,4 +168,12 @@ if __name__ == "__main__":
     event_list = [1936, 2699, 2730, 2726, 2729, 2633, 1889, 1883, 1827]
     for eidx in event_list:
         plot_one_event_dis(eidx, death_stat_path)
+
+def plot_time_event():
+    
+
+if __name__ == "__main__":
+    plt.style.use('ggplot')
+
+
 
