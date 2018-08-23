@@ -44,9 +44,6 @@ if __name__ == "__main__":
     args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v14.txt @num_gate_head=8|model_out=RNNmodels/death_t23.model'.split(' ')
     setting = load_argv(args)
     setting['event_dim'] = 3418
-    # model_path = sys.argv[1]
-    
-    
 
     # data = Dataset('death_exper/sample/samples.h5')
     data = Dataset('death_exper/death_test_1000.h5')
@@ -58,7 +55,7 @@ if __name__ == "__main__":
     for model_path, label in zip(models, labels):
         model = define_simple_seg_rnn(setting, True)
         model.load_weights(model_path, by_name=True)
-        prob_outpath = 'result/death_test_probs_{}.npy'.format(os.path.basename(model))
+        prob_outpath = 'result/death_test_probs_{}.npy'.format(os.path.basename(model_path))
         if not os.path.exists(prob_outpath):
             print_probs(model, data, setting, prob_outpath)
         calc_event_effect(data, prob_outpath, fv_dict, label)
