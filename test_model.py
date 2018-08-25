@@ -145,7 +145,7 @@ if __name__ == "__main__":
     setting = load_argv(args)
     setting['event_dim'] = 3418
 
-    mode = sys.argv[1]:
+    mode = sys.argv[1]
     if mode == 'event_effect':
         get_death_event_effect(setting)
     elif mode == 'view':
