@@ -139,7 +139,7 @@ def load_filepath(filepath, stat_dict):
                 stat_dict[key].add(time, label, fv)
             key = make_key(eidx, 0)
             if not key in stat_dict:
-                stat_dict[key] = FValueStat(edix, 0)
+                stat_dict[key] = FValueStat(eidx, 0)
             stat_dict[key].add(time, label, 0)
 
 def load_lab_filepath(filepath, stat_dict):
