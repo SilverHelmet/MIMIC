@@ -118,25 +118,29 @@ def load_filepath(filepath, stat_dict):
 
     Print("load %s" %filepath)
     for idx in tqdm(range(d.size), total = d.size):
-        features = d.features[idx]
+        feature_idxs = d.feature_idxs[idx]
+        feature_values = d.feature_values[idx]
         times = d.times[idx]
         events = d.events[idx]
         label = d.labels[idx]
         for i in range(len(times)):
             time = times[i]
-            feature_pair = features[i]
+            idxs = feature_idxs[i]
+            values = feature_values[i]
             eidx = events[i]
             if eidx == 0:
                 continue
-            for j in range(3):
-                fidx = feature_pair[j * 2]
+            for fidx, fv in zip(idxs, values):
                 if fidx == 0:
                     continue
-                fv = feature_pair[j * 2 + 1]
                 key = make_key(eidx, fidx)
                 if not key in stat_dict:
                     stat_dict[key] = FValueStat(eidx, fidx)
                 stat_dict[key].add(time, label, fv)
+            key = make_key(eidx, 0)
+            if not key in stat_dict:
+                stat_dict[key] = FValueStat(edix, 0)
+            stat_dict[key].add(time, label, 0)
 
 def load_lab_filepath(filepath, stat_dict):
     d = Dataset(filepath)
