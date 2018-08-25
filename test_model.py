@@ -114,9 +114,6 @@ def get_death_time_view(setting, model):
     other_attn = 1e-3 * in_period_time / weights_map['helstm_period']
     time_attn = in_up_phase * up_attn + in_down_phase * down_attn + other_phase * other_attn
 
-    e_set = set()
-    for row in events:
-        e_set = e_set.union(events)
     time_attn_list = []
     for e in range(3418):
         idxs = events == e
