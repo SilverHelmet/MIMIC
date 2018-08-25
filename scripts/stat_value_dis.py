@@ -36,6 +36,17 @@ class FValueStat:
         size1 = self.get_size(1)
         return size0 >= size and size1 >= size
 
+    def mean(self, label):
+        label = str(label)
+        hour2cnt = self.label2hour2cnt.get(label, {})
+        hour2sum = self.label2hour2sum.get(label, {})
+        cnt = sum(hour2cnt.values())
+        v_sum = sum(hour2sum.values())
+        if cnt == 0:
+            return None
+        else:
+            return v_sum / (cnt + 0.0)
+
     def event_dis(self, label):
         label = str(label)
         if not label in self.label2hour2sum:
@@ -78,6 +89,16 @@ class FValueStat:
     def load_from_line(line):
         eidx, fidx, json_str = line.split('\t')
         obj = json.loads(json_str)
+        fv = FValueStat(int(eidx), int(fidx))
+        fv.label2hour2sum = obj['sum_dict']
+        fv.label2hour2cnt = obj['cnt_dict']
+        return fv
+
+    @staticmethod
+    def load_from_line_onlye(line):
+        eidx, json_str = line.split('\t')
+        obj = json.loads(json_str)
+        fidx = 0
         fv = FValueStat(int(eidx), int(fidx))
         fv.label2hour2sum = obj['sum_dict']
         fv.label2hour2cnt = obj['cnt_dict']
@@ -149,7 +170,8 @@ def load_lab_filepath(filepath, stat_dict):
     
 def stat_death():
     stat_dict = {}
-    parttern = death_exper_dir + '/death_*_1000.h5'
+    # parttern = death_exper_dir + '/death_*_1000.h5'
+    parttern = death_exper_dir + '/death_test_1000.h5'
     # parttern = "death_exper/sample/samples.h5"
     for filepath in glob.glob(parttern):
         # print filepath
@@ -165,7 +187,9 @@ def stat_death():
 
 def stat_labtest():
     stat_dict = {}
-    parttern = 'lab_exper/labtest_*_1000.h5'
+    # parttern = 'lab_exper/labtest_*_1000.h5'
+    parttern = 'lab_exper/labtest_test_1000.h5'
+
     for filepath in glob.glob(parttern):
         load_lab_filepath(filepath, stat_dict)
     outpath = os.path.join(result_dir, 'labtest_value.stat.json')
@@ -178,5 +202,5 @@ def stat_labtest():
     outf.close()
 
 if __name__ == "__main__":
-    # stat_death()
-    stat_labtest()
+    stat_death()
+    # stat_labtest()

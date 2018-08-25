@@ -169,11 +169,56 @@ def plot_label_event():
     for eidx in event_list:
         plot_one_event_dis(eidx, death_stat_path)
 
+def plot_time_event_effect_dis(fv, diff):
+    pos_value = fv.value_dis(1)
+    neg_value = fv.value_dis(0)
+    x = range(24)
+    plt.plot(x, pos_value, 'r', label ='+time')
+    plt.plot(x, neg_value, 'b', label ='-time')
+    plt.legend()
+    plt.savefig('result/graph/effectDist_data=death_eid={}_dis={}.png'.format(fv.eidx, diff))
+    plt.close('all')
+
+
+def plot_event_effect_dis(stat_path):
+    outpath = stat_path + ".effect_dis.tsv"
+    outf = file(outpath, 'w')
+    outs = []
+    error_cnt = 0
+    for line in file(stat_path):
+        fv = FValueStat.load_from_line_onlye(line)
+        eidx = fv.eidx
+        if fv.get_size(1) < 100:
+            error_cnt += 1
+        time_mean = fv.mean(1)
+        no_time_mean = fv.mean(0)
+        if time_mean is None or no_time_mean is None:
+            error_cnt += 1
+            continue
+        diff = time_mean - no_time_mean
+        out = [eidx, time_mean, no_time_mean, diff, fv]
+        outs.append(out)
+    print 'error size = %d' %error_cnt
+    outs.sort(key = lambda x: x[3], reverse = True)
+    step = 50
+    idx = 0
+    for eidx, time_mean, no_time_mean, diff, fv in outs:
+        if idx % step == 0 or idx == len(outs) - 1:
+            plot_time_event_effect_dis(fv, diff)
+        idx += 1
+        
+        out = [eidx, round(time_mean, 4), round(no_time_mean, 4), round(diff, 4)]
+        outf.write('\t'.join(map(str, out)) + '\n')
+    outf.close()
+
 def plot_time_event():
-    
+    death_stat_path = 'result/death_event_time_effect.json'
+    plot_event_effect_dis(death_stat_path)
+
 
 if __name__ == "__main__":
     plt.style.use('ggplot')
+    plot_time_event()
 
 
 
