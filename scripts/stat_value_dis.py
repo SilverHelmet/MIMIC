@@ -187,9 +187,8 @@ def stat_death():
 
 def stat_labtest():
     stat_dict = {}
-    # parttern = 'lab_exper/labtest_*_1000.h5'
-    parttern = 'lab_exper/labtest_test_1000.h5'
-
+    parttern = 'lab_exper/labtest_*_1000.h5'
+    
     for filepath in glob.glob(parttern):
         load_lab_filepath(filepath, stat_dict)
     outpath = os.path.join(result_dir, 'labtest_value.stat.json')
