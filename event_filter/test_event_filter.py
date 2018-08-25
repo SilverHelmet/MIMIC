@@ -5,6 +5,7 @@ from keras.models import load_model
 from models.models import get_custom_objects
 from models.dataset import Dataset, print_eval
 from train_rnn import load_argv    
+from event_filter.calc_event_score import get_weights
 
 def load_event_rank(filepath):
     scores = []
