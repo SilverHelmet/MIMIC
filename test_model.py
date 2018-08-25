@@ -117,7 +117,11 @@ def get_death_time_view(setting, model):
     time_attn_list = []
     for e in range(3418):
         idxs = events == e
-        attn = time_attn[idxs].mean(0)
+        attn = time_attn[idxs]
+        if attn.size == 0:
+            attn = [0] * 8
+        else:
+            attn = time_attn[idxs].mean(0)
         time_attn_list.append(attn)
     time_attn_list = np.array(time_attn_list)
     np.save(outpath, time_attn_list)
