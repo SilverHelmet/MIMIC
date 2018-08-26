@@ -79,7 +79,7 @@ def get_death_event_view(setting, model):
     if os.path.exists(event_out_path):
         event_attn = np.load(event_out_path)
         return event_attn
-
+    Print('calc event view')
     keys = ['helstm_event_hid_w', 'helstm_event_hid_b', 'helstm_event_out_w', 'helstm_event_out_b', 'embedding_W']
     weights_map = get_weights(model, keys)
     event_attn = calc_event_attn(weights_map)
@@ -131,7 +131,7 @@ def get_death_view(ssetting):
     outpath = 'result/death_view.npy'
     if os.path.exists(outpath):
         return np.load(outpath)
-    Print('calc death view')
+
     models = ['death_t23.model.round5']
     models = [os.path.join('RNNmodels', model) for model in models]
 
@@ -140,6 +140,12 @@ def get_death_view(ssetting):
 
     event_attn = get_death_event_view(setting, model)
     time_attn = get_death_time_view(setting, model)
+
+    attn = event_attn * time_attn]
+    np.save(outpath, attn)
+
+
+
 
 if __name__ == "__main__":
     args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v14.txt @num_gate_head=8|model_out=RNNmodels/death_t23.model'.split(' ')
