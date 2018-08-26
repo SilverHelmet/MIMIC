@@ -141,7 +141,7 @@ def get_death_view(ssetting):
     event_attn = get_death_event_view(setting, model)
     time_attn = get_death_time_view(setting, model)
 
-    attn = event_attn * time_attn]
+    attn = event_attn * time_attn
     np.save(outpath, attn)
 
 
