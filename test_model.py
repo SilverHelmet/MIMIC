@@ -89,7 +89,7 @@ def get_death_event_view(setting, model):
 def get_death_time_view(setting, model):
     outpath = 'result/death_time_view.npy'
     if os.path.exists(outpath):
-        return np.loads(outpath)
+        return np.load(outpath)
     Print('calc time view')
     data = Dataset('death_exper/death_test_1000.h5')
     data.load(True, False, True, None, setting)
