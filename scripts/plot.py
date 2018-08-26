@@ -48,7 +48,7 @@ def plot_one_value_dis(eidx, fidx, path):
         plt.savefig(outpath)
         plt.close('all')
 
-def plot_value_dis(path):
+def plot_value_dis(path, ax):
     x = []
     key2dis = {}
     for line in file(path):
@@ -57,6 +57,8 @@ def plot_value_dis(path):
             continue
         eidx = fv.eidx
         fidx = fv.fidx
+        if fidx == 0:
+            continue
         key = (eidx, fidx)
         distance = calc_value_distance(fv)
         key2dis[key] = distance
@@ -66,22 +68,26 @@ def plot_value_dis(path):
         outf.write("%d\t%d\t%.4f\n" %(fe[0], fe[1], key2dis[fe]))
     outf.close()
     x = np.array(x)
-    print 'size = %d' %len(x)
-
-    x = sorted(x)[:int(0.99 * len(x))]
+    x[x > 1.0] = 1
+    print 'value_dis size = %d' %len(x)
+    x = sorted(x)
+    # x = sorted(x)[:int(0.99 * len(x))]
     r = x[-1] - x[0]
-    step = r / 15
+    step = r / 10
     bins = np.arange(x[0], x[-1], step)
     # bins = bins[[0] + range(3, len(bins))]
     print bins
-    plt.hist(x, bins = bins, normed=False)
+    if ax is None:
+        ax = plt.subplot(1, 1, 1)
+    ax.hist(x, bins = bins, normed=True)
+    ax.set_xlabel('MSE')
+    ax.set_title('distribution of MSE of attributes distribution')
     # plt.show()
-    graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.value_dis.png')
-    if not os.path.exists(result_dir + '/graph'):
-        os.mkdir(result_dir + '/graph')
-    plt.savefig(graph_outpath)
-
-    plt.close('all')
+    # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.value_dis.png')
+    # if not os.path.exists(result_dir + '/graph'):
+    #     os.mkdir(result_dir + '/graph')
+    # plt.savefig(graph_outpath)
+    # plt.close('all')
 
 
 def plot_one_event_dis(eidx, path):
@@ -107,7 +113,7 @@ def plot_one_event_dis(eidx, path):
         plt.savefig(outpath)
         plt.close('all')
 
-def plot_event_dis(path):
+def plot_event_dis(path, ax = None):
     x = []
     key2dis = {}
     for line in file(path):
@@ -116,6 +122,8 @@ def plot_event_dis(path):
             continue
         eidx = fv.eidx
         fidx = fv.fidx
+        if fidx != 0:
+            continue
         key = eidx
         if key in key2dis:
             continue
@@ -128,19 +136,25 @@ def plot_event_dis(path):
     outf.close()
 
     x = np.array(x)
-    print 'size = %d' %len(x)
-    x = sorted(x)[:int(0.99 * len(x))]
+    x[x > 1.0] = 1.0
+    print 'event_dis size = %d' %len(x)
+    x = sorted(x)
+    # x = sorted(x)[:int(0.99 * len(x))]
     r = x[-1] - x[0]
     # bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7]
-    step = r / 15
+    step = r / 10
     bins = np.arange(x[0], x[-1], step)
     print bins
-    plt.hist(x, bins = bins, normed=False)
-    graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
-    if not os.path.exists(result_dir + '/graph'):
-        os.mkdir(result_dir + '/graph')
-    plt.savefig(graph_outpath)
-    plt.close('all')
+    if ax is None:
+        ax = plt.subplot(1, 1, 1)
+    ax.hist(x, bins = bins, normed=True)
+    ax.set_xlabel('KL-distance')
+    ax.set_title('distribution of KL-distance of events distribution')
+    # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
+    # if not os.path.exists(result_dir + '/graph'):
+    #     os.mkdir(result_dir + '/graph')
+    # plt.savefig(graph_outpath)
+    # plt.close('all')
 
 
 def plot_label_event():
@@ -150,7 +164,7 @@ def plot_label_event():
     stat_path = death_stat_path
     # stat_path = labtest_stat_path
 
-    # plot_value_dis(stat_path)
+    plot_value_dis(stat_path)
     value_list = [(2996, 569),
         (2054, 375),
         (2251, 420),
@@ -164,7 +178,7 @@ def plot_label_event():
     for eidx, fidx in value_list:
         plot_one_value_dis(eidx, fidx, stat_path)
 
-    # plot_event_dis(stat_path)
+    plot_event_dis(stat_path)
     event_list = [1936, 2699, 2730, 2726, 2729, 2633, 1889, 1883, 1827]
     for eidx in event_list:
         plot_one_event_dis(eidx, death_stat_path)
@@ -177,13 +191,14 @@ def plot_time_event_effect_dis(fv, diff):
     plt.plot(x, neg_value, 'b', label ='-time')
     plt.legend()
     plt.savefig('result/graph/effectDist_data=death_eid={}_dis={}.png'.format(fv.eidx, diff))
-    plt.close('all')
+    plt.close('all')   
 
 
-def plot_event_effect_dis(stat_path):
-    outpath = stat_path + ".effect_dis.tsv"
-    outf = file(outpath, 'w')
+def plot_event_effect_dis(stat_path, ax):
+    # outpath = stat_path + ".effect_dis.tsv"
+    # outf = file(outpath, 'w')
     outs = []
+    x = []
     error_cnt = 0
     for line in file(stat_path):
         fv = FValueStat.load_from_line_onlye(line)
@@ -196,29 +211,52 @@ def plot_event_effect_dis(stat_path):
             error_cnt += 1
             continue
         diff = time_mean - no_time_mean
+        x.append(diff)
         out = [eidx, time_mean, no_time_mean, diff, fv]
         outs.append(out)
     print 'error size = %d' %error_cnt
-    outs.sort(key = lambda x: x[3], reverse = True)
-    step = 50
-    idx = 0
-    for eidx, time_mean, no_time_mean, diff, fv in outs:
-        if idx % step == 0 or idx == len(outs) - 1:
-            plot_time_event_effect_dis(fv, diff)
-        idx += 1
+    print 'event effect size = %d' %len(x)
+    x.sort()
+    r = x[-1] - x[0]
+    step = r / 10
+    bins = np.arange(x[0], x[-1], step)
+    ax.hist(x, bins = bins, normed=True)
+    # ax.set_xlabel('mean effect')
+    # ax.set_title('distribution of difference from event with time feature to event without time feature')
+    # outs.sort(key = lambda x: x[3], reverse = True)
+    # step = 50
+    # idx = 0
+    # for eidx, time_mean, no_time_mean, diff, fv in outs:
+    #     if idx % step == 0 or idx == len(outs) - 1:
+    #         plot_time_event_effect_dis(fv, diff)
+    #     idx += 1
         
-        out = [eidx, round(time_mean, 4), round(no_time_mean, 4), round(diff, 4)]
-        outf.write('\t'.join(map(str, out)) + '\n')
-    outf.close()
+    #     out = [eidx, round(time_mean, 4), round(no_time_mean, 4), round(diff, 4)]
+    #     outf.write('\t'.join(map(str, out)) + '\n')
+    # outf.close()
 
 def plot_time_event():
     death_stat_path = 'result/death_event_time_effect.json'
     plot_event_effect_dis(death_stat_path)
 
+def plot_total_effect():
+    death_stat_path = os.path.join(result_dir, 'death_value.stat.json')
+    death_effect_path = os.path.join(result_dir,'')
+    plt.rcParams['figure.figsize'] = (12.0, 4.0)
+    plot_event_dis(death_stat_path, plt.subplot(1,2,1))
+    plot_value_dis(death_stat_path, plt.subplot(1,2,2))
+    effect_path = 'result/death_event_time_effect.json'
+    # plot_event_effect_dis(effect_path, plt.subplot(1,3,3))
+    plt.savefig('result/graph/event&attr_dis.png')
+    
+    # plt.show() 
+
 
 if __name__ == "__main__":
     plt.style.use('ggplot')
-    plot_time_event()
+    plot_total_effect()
+    # plot_label_event()
+    # plot_time_event()
 
 
 
