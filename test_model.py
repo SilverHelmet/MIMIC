@@ -146,11 +146,11 @@ def get_death_view(ssetting):
     #     return np.load(outpath)
 
     model = None
-    # models = ['death_t23.model.round5']
-    # models = [os.path.join('RNNmodels', model) for model in models]
+    models = ['death_t23.model.round5']
+    models = [os.path.join('RNNmodels', model) for model in models]
 
-    # model = define_simple_seg_rnn(setting, True)
-    # model.load_weights(models[0], by_name=True)
+    model = define_simple_seg_rnn(setting, True)
+    model.load_weights(models[0], by_name=True)
 
     event_attn = get_death_event_view(setting, model)
     time_attn = get_death_time_view(setting, model)
