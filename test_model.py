@@ -75,7 +75,7 @@ def calc_event_attn(weights_map):
     return event_attn
 
 def get_death_event_view(setting, model):
-    event_out_path = 'result/death_event_view.npy'
+    event_out_path = 'result/death_train_event_view.npy'
     if os.path.exists(event_out_path):
         event_attn = np.load(event_out_path)
         return event_attn
@@ -87,11 +87,12 @@ def get_death_event_view(setting, model):
     return event_attn
 
 def get_death_time_view(setting, model):
-    outpath = 'result/death_time_view.npy'
+    outpath = 'result/death_train_time_view.npy'
     if os.path.exists(outpath):
         return np.load(outpath)
     Print('calc time view')
-    data = Dataset('death_exper/death_test_1000.h5')
+    # data = Dataset('death_exper/death_test_1000.h5')
+    data = Dataset('death_exper/death_train_1000.h5')
     data.load(True, False, True, None, setting)
 
     events = data.events
@@ -127,16 +128,29 @@ def get_death_time_view(setting, model):
     np.save(outpath, time_attn_list)
     return time_attn_list
 
+def topk_event(attn, k):
+    view_size = attn.shape[1]
+    view_topk = []
+    for view_idx in range(view_size):
+        view = attn[:, view_idx]
+        sorted_idxs = sorted(range(len(view)), key = lambda x: view[x], reverse = True)
+        topk = sorted_idxs[:k]
+        view_topk.append(topk)
+    return view_topk
+
+
+
 def get_death_view(ssetting):
-    outpath = 'result/death_view.npy'
-    if os.path.exists(outpath):
-        return np.load(outpath)
+    outpath = 'result/death_train_view.npy'
+    # if os.path.exists(outpath):
+    #     return np.load(outpath)
 
-    models = ['death_t23.model.round5']
-    models = [os.path.join('RNNmodels', model) for model in models]
+    model = None
+    # models = ['death_t23.model.round5']
+    # models = [os.path.join('RNNmodels', model) for model in models]
 
-    model = define_simple_seg_rnn(setting, True)
-    model.load_weights(models[0], by_name=True)
+    # model = define_simple_seg_rnn(setting, True)
+    # model.load_weights(models[0], by_name=True)
 
     event_attn = get_death_event_view(setting, model)
     time_attn = get_death_time_view(setting, model)
@@ -144,6 +158,24 @@ def get_death_view(ssetting):
     attn = event_attn * time_attn
     np.save(outpath, attn)
 
+    event_view_topk = topk_event(event_attn, 10)
+    view_topk = topk_event(attn, 10)
+    for idx in range(8):
+        event_topk = event_view_topk[idx]
+        topk = view_topk[idx]
+        print 'event view: {}'.format(event_topk)
+        print 'view: {}'.format(topk)
+        print ""
+
+def sorted_idx_by_view(view):
+    scores = view.mean(1)
+    sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
+    return sorted_idx
+
+def test_event_filter():
+    view = np.load('result/death_view.npy')
+    sorted_idx = sorted_idx_by_view(view)
+    print view.mean(1)[sorted_idx][:100]
 
 
 
@@ -157,4 +189,5 @@ if __name__ == "__main__":
         get_death_event_effect(setting)
     elif mode == 'view':
         get_death_view(setting)
-    
+    elif mode == 'event_filter':
+        test_event_filter()

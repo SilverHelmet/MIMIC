@@ -26,7 +26,7 @@ def calc_event_distance(fv):
     neg_dis = neg_values / (neg_values.sum() + .0)
     return KLD(pos_dis, neg_dis)
 
-def plot_one_value_dis(eidx, fidx, path):
+def plot_one_value_dis(eidx, fidx, path, ax):
     filename = os.path.basename(path)
     if 'death' in filename:
         dataset = 'death'
@@ -42,11 +42,15 @@ def plot_one_value_dis(eidx, fidx, path):
         pos_v = fv.value_dis(1)
         neg_v = fv.value_dis(0)
         x = range(24)
-        plt.plot(x, pos_v, 'r')
-        plt.plot(x, neg_v, 'b')
-        outpath = os.path.join(result_dir, 'graph/' + "valueDist_data=%s_eid=%d_fid=%d_dis=%.3f.png" %(dataset, eidx, fidx, dis))
-        plt.savefig(outpath)
-        plt.close('all')
+        ax.plot(x, pos_v, 'r', label = 'postive samples')
+        ax.plot(x, neg_v, 'b', label = 'negtive samples')
+        ax.legend()
+        ax.set_xlabel('hour')
+        ax.set_ylabel('mean value')
+        ax.set_title('distribution of attributes')
+        # outpath = os.path.join(result_dir, 'graph/' + "valueDist_data=%s_eid=%d_fid=%d_dis=%.3f.png" %(dataset, eidx, fidx, dis))
+        # plt.savefig(outpath)
+        # plt.close('all')
 
 def plot_value_dis(path, ax):
     x = []
@@ -74,14 +78,14 @@ def plot_value_dis(path, ax):
     # x = sorted(x)[:int(0.99 * len(x))]
     r = x[-1] - x[0]
     step = r / 10
-    bins = np.arange(x[0], x[-1], step)
+    bins = np.arange(x[0], x[-1] + step, step)
     # bins = bins[[0] + range(3, len(bins))]
     print bins
     if ax is None:
         ax = plt.subplot(1, 1, 1)
     ax.hist(x, bins = bins, normed=True)
     ax.set_xlabel('MSE')
-    ax.set_title('distribution of MSE of attributes distribution')
+    ax.set_title('distribution of MSE of attributes')
     # plt.show()
     # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.value_dis.png')
     # if not os.path.exists(result_dir + '/graph'):
@@ -90,7 +94,7 @@ def plot_value_dis(path, ax):
     # plt.close('all')
 
 
-def plot_one_event_dis(eidx, path):
+def plot_one_event_dis(eidx, path, ax):
     filename = os.path.basename(path)
     if 'death' in filename:
         dataset = 'death'
@@ -100,18 +104,22 @@ def plot_one_event_dis(eidx, path):
         fv = FValueStat.load_from_line(line)
         dis = calc_event_distance(fv)
         _eidx = fv.eidx
-        if _eidx != eidx:
+        if _eidx != eidx or fv.fidx != 0:
             continue
         pos_cnts = fv.event_dis(1)
         pos_cnts /= pos_cnts.sum()
         neg_cnts = fv.event_dis(0)
         neg_cnts /= neg_cnts.sum()
         x = range(24)
-        plt.plot(x, pos_cnts, 'r')
-        plt.plot(x, neg_cnts, 'b')
-        outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
-        plt.savefig(outpath)
-        plt.close('all')
+        ax.plot(x, pos_cnts, 'r', label = 'postive samples')
+        ax.plot(x, neg_cnts, 'b', label = 'negtive samples')
+        ax.legend()
+        ax.set_xlabel('hour')
+        ax.set_ylabel('occur prob')
+        ax.set_title('distrbution of event')
+        # outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
+        # plt.savefig(outpath)
+        # plt.close('all')
 
 def plot_event_dis(path, ax = None):
     x = []
@@ -143,13 +151,13 @@ def plot_event_dis(path, ax = None):
     r = x[-1] - x[0]
     # bins = [x[0], 0.01, 0.02, 0.03, 0.04, 0.06, .1, .2, .3, .4, .5, .6, .7]
     step = r / 10
-    bins = np.arange(x[0], x[-1], step)
+    bins = np.arange(x[0], x[-1] + step, step)
     print bins
     if ax is None:
         ax = plt.subplot(1, 1, 1)
     ax.hist(x, bins = bins, normed=True)
     ax.set_xlabel('KL-distance')
-    ax.set_title('distribution of KL-distance of events distribution')
+    ax.set_title('distribution of KL-distance of events')
     # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
     # if not os.path.exists(result_dir + '/graph'):
     #     os.mkdir(result_dir + '/graph')
@@ -193,10 +201,27 @@ def plot_time_event_effect_dis(fv, diff):
     plt.savefig('result/graph/effectDist_data=death_eid={}_dis={}.png'.format(fv.eidx, diff))
     plt.close('all')   
 
+def plot_one_event_effect_dis(eidx, path):
+    for line in file(path):
+        fv = FValueStat.load_from_line_onlye(line)
+        if fv.eidx != eidx:
+            continue
+        pos_value = fv.value_dis(1)
+        neg_value = fv.value_dis(0)
+        x = range(24)
+        ax = plt.subplot(1, 1, 1)
+        ax.plot(x, pos_value, 'r', label ='with time feature')
+        ax.plot(x, neg_value, 'b', label ='without time feature')
+        ax.legend()
+        ax.set_xlabel('hour')
+        ax.set_ylabel('effect')
+        ax.set_title('mean effect of event {}'.format(eidx))
+        plt.savefig('result/graph/effect_eid={}'.format(eidx))
+        plt.close('all')
 
 def plot_event_effect_dis(stat_path, ax):
-    # outpath = stat_path + ".effect_dis.tsv"
-    # outf = file(outpath, 'w')
+    outpath = stat_path + ".effect_dis.tsv"
+    outf = file(outpath, 'w')
     outs = []
     x = []
     error_cnt = 0
@@ -216,28 +241,40 @@ def plot_event_effect_dis(stat_path, ax):
         outs.append(out)
     print 'error size = %d' %error_cnt
     print 'event effect size = %d' %len(x)
+    x = np.array(x)
+    x[x < -0.05] = -0.05
+    x[x > 0.05] = 0.05
     x.sort()
+
     r = x[-1] - x[0]
     step = r / 10
-    bins = np.arange(x[0], x[-1], step)
+    bins = np.arange(x[0] - 0.0001, x[-1] + step, step)
+    print bins
     ax.hist(x, bins = bins, normed=True)
-    # ax.set_xlabel('mean effect')
-    # ax.set_title('distribution of difference from event with time feature to event without time feature')
-    # outs.sort(key = lambda x: x[3], reverse = True)
-    # step = 50
-    # idx = 0
-    # for eidx, time_mean, no_time_mean, diff, fv in outs:
-    #     if idx % step == 0 or idx == len(outs) - 1:
-    #         plot_time_event_effect_dis(fv, diff)
-    #     idx += 1
+    ax.set_xlabel('mean effect')
+    ax.set_title('distribution of difference between events with/without time_feature')
+    outs.sort(key = lambda x: x[3], reverse = True)
+    step = 50
+    idx = 0
+    for eidx, time_mean, no_time_mean, diff, fv in outs:
+        # if idx % step == 0 or idx == len(outs) - 1:
+        #     plot_time_event_effect_dis(fv, diff)
+        idx += 1
         
-    #     out = [eidx, round(time_mean, 4), round(no_time_mean, 4), round(diff, 4)]
-    #     outf.write('\t'.join(map(str, out)) + '\n')
-    # outf.close()
+        out = [eidx, round(time_mean, 4), round(no_time_mean, 4), round(diff, 4)]
+        outf.write('\t'.join(map(str, out)) + '\n')
+    outf.close()
 
 def plot_time_event():
     death_stat_path = 'result/death_event_time_effect.json'
     plot_event_effect_dis(death_stat_path)
+
+def plot_one_event(eidx, fidx, death_stat_path):
+    plot_one_event_dis(eidx, death_stat_path, plt.subplot(1 ,2, 1))
+    plot_one_value_dis(eidx, fidx, death_stat_path, plt.subplot(1, 2, 2))
+    plt.savefig('result/graph/event_dis_eid=%d,fidx=%d.png' %(eidx, fidx))
+    plt.close('all')
+
 
 def plot_total_effect():
     death_stat_path = os.path.join(result_dir, 'death_value.stat.json')
@@ -245,9 +282,23 @@ def plot_total_effect():
     plt.rcParams['figure.figsize'] = (12.0, 4.0)
     plot_event_dis(death_stat_path, plt.subplot(1,2,1))
     plot_value_dis(death_stat_path, plt.subplot(1,2,2))
-    effect_path = 'result/death_event_time_effect.json'
-    # plot_event_effect_dis(effect_path, plt.subplot(1,3,3))
     plt.savefig('result/graph/event&attr_dis.png')
+    plt.close('all')
+
+    ef_pairs = [(71, 28), (1514, 199), (43, 15), (1500, 189), (1756, 247)]
+    for eidx, fdix in ef_pairs:
+        plot_one_event(eidx, fdix,death_stat_path)
+
+    effect_path = 'result/death_event_time_effect.json'
+    plot_event_effect_dis(effect_path, plt.subplot(1,1,1))
+    plt.savefig('result/graph/event_effect_dis.png')
+    plt.close('all')
+
+    eidxs = [253, 2018, 2842, 2527]
+    for eidx in eidxs:
+        plot_one_event_effect_dis(eidx, effect_path)
+
+    
     
     # plt.show() 
 
