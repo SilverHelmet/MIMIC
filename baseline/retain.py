@@ -82,7 +82,7 @@ def init_tparams(params, options):
         tparams[key] = theano.shared(value, name=key)
     return tparams
 
-def dropout_layer(state_before, use_noise, trng, dropout_rate=0.5):
+-def dropout_layer(state_before, use_noise, trng, dropout_rate=0.5):
     proj = T.switch(use_noise, (state_before * trng.binomial(state_before.shape, p=dropout_rate, n=1, dtype=state_before.dtype)), state_before * 0.5)
     return proj
 
@@ -389,11 +389,11 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
         print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
     else:
         labels = dataset[1]
-        # auc = roc_auc_score(list(labels), list(scoreVec))
-        ids = dataset[3]
-        merged_labels = merge_label(labels, ids)
-        merged_score = merge_prob(scoreVec, ids, max)
-        merged_auROC = roc_auc_score(merged_labels, merged_score)
+        auc = roc_auc_score(list(labels), list(scoreVec))
+        # ids = dataset[3]
+        # merged_labels = merge_label(labels, ids)
+        # merged_score = merge_prob(scoreVec, ids, max)
+        # merged_auROC = roc_auc_score(merged_labels, merged_score)
         
     
     
@@ -564,7 +564,7 @@ def train_RETAIN(
         if validAuc > bestValidAuc: 
             bestValidAuc = validAuc
             bestValidEpoch = epoch
-            bestTestAuc = calculate_auc(get_prediction, testSet, options, calc_all = True)
+            bestTestAuc = calculate_auc(get_prediction, testSet, options, calc_all = False)
             buf = 'Currently the best validation AUC found. Test AUC:%f at epoch:%d' % (bestTestAuc, epoch)
             print buf
             print2file(buf, logFile)
