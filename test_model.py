@@ -1,5 +1,6 @@
 from train_rnn import define_simple_seg_rnn, load_argv
 from keras.models import Model, load_model
+from models.models import np_sigmoid
 from models.dataset import Dataset, print_eval, sample_generator
 import sys
 import numpy as np
@@ -68,14 +69,14 @@ def calc_event_attn(weights_map):
     embedding_w = weights_map['embedding_W']
     hid_w = weights_map['helstm_event_hid_w']
     hid_b = weights_map['helstm_event_hid_b']
-    hidden = np.dot(embedding_w  , hid_w) + hid_b
+    hidden = np.tanh(np.dot(embedding_w  , hid_w) + hid_b)
     out_w = weights_map['helstm_event_out_w']
     out_b = weights_map['helstm_event_out_b']
-    event_attn = np.dot(hidden, out_w) + out_b
+    event_attn = np_sigmoid(np.dot(hidden, out_w) + out_b)
     return event_attn
 
 def get_death_event_view(setting, model):
-    event_out_path = 'result/death_train_event_view.npy'
+    event_out_path = 'result/death_event_view.npy'
     if os.path.exists(event_out_path):
         event_attn = np.load(event_out_path)
         return event_attn
@@ -86,8 +87,8 @@ def get_death_event_view(setting, model):
     np.save(event_out_path, event_attn)
     return event_attn
 
-def get_death_time_view(setting, model):
-    outpath = 'result/death_train_time_view.npy'
+def get_death_time_view(setting, model, data):
+    outpath = 'result/death_{}_time_view.npy'.format(data)
     if os.path.exists(outpath):
         return np.load(outpath)
     Print('calc time view')
@@ -140,8 +141,9 @@ def topk_event(attn, k):
 
 
 
-def get_death_view(ssetting):
-    outpath = 'result/death_train_view.npy'
+def get_death_view(ssetting, data):
+    assert data in ['test', 'train']
+    outpath = 'result/death_{}_view.npy'.format(data)
     # if os.path.exists(outpath):
     #     return np.load(outpath)
 
@@ -153,7 +155,7 @@ def get_death_view(ssetting):
     model.load_weights(models[0], by_name=True)
 
     event_attn = get_death_event_view(setting, model)
-    time_attn = get_death_time_view(setting, model)
+    time_attn = get_death_time_view(setting, model, data)
 
     attn = event_attn * time_attn
     np.save(outpath, attn)
@@ -179,6 +181,7 @@ def test_event_filter():
 
 
 
+
 if __name__ == "__main__":
     args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v14.txt @num_gate_head=8|model_out=RNNmodels/death_t23.model'.split(' ')
     setting = load_argv(args)
@@ -188,6 +191,7 @@ if __name__ == "__main__":
     if mode == 'event_effect':
         get_death_event_effect(setting)
     elif mode == 'view':
-        get_death_view(setting)
+        get_death_view(setting, 'train')
+        get_death_view(setting, 'test')
     elif mode == 'event_filter':
         test_event_filter()

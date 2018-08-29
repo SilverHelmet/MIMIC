@@ -82,7 +82,7 @@ def init_tparams(params, options):
         tparams[key] = theano.shared(value, name=key)
     return tparams
 
--def dropout_layer(state_before, use_noise, trng, dropout_rate=0.5):
+def dropout_layer(state_before, use_noise, trng, dropout_rate=0.5):
     proj = T.switch(use_noise, (state_before * trng.binomial(state_before.shape, p=dropout_rate, n=1, dtype=state_before.dtype)), state_before * 0.5)
     return proj
 
