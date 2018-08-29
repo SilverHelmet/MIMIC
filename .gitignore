@@ -37,3 +37,5 @@ data_bk
 
 # test
 test
+MIMIC.ipynb
+.ipynb_checkpoints/
