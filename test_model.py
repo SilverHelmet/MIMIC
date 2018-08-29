@@ -117,7 +117,7 @@ def get_death_time_view(setting, model, data):
     time_attn = in_up_phase * up_attn + in_down_phase * down_attn + other_phase * other_attn
 
     time_attn_list = []
-    for e in range(3418):
+    for e in tqdm(range(3418), total = 3418):
         idxs = events == e
         attn = time_attn[idxs]
         if attn.size == 0:
