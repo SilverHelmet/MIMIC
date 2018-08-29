@@ -162,6 +162,7 @@ def get_death_view(ssetting, data):
 
     event_view_topk = topk_event(event_attn, 10)
     view_topk = topk_event(attn, 10)
+    Print("dataset is {}".format(data))
     for idx in range(8):
         event_topk = event_view_topk[idx]
         topk = view_topk[idx]
