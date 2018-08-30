@@ -142,9 +142,10 @@ def build_model(tparams, options, W_emb=None):
 
         preAlpha = T.dot(reverse_h_a, tparams['w_alpha']) + tparams['b_alpha']
         preAlpha = preAlpha.reshape((preAlpha.shape[0], preAlpha.shape[1]))
-        alpha = (T.nnet.softmax(preAlpha.T)).T
+        alpha = (T.nnet.softmax(preAlpha.T)).T  
 
         beta = T.tanh(T.dot(reverse_h_b, tparams['W_beta']) + tparams['b_beta'])
+
         c_t = (alpha[:,:,None] * beta * emb[:att_timesteps]).sum(axis=0)
         return c_t
 
@@ -573,6 +574,10 @@ def train_RETAIN(
     buf = 'The best validation & test AUC:%f, %f at epoch:%d' % (bestValidAuc, bestTestAuc, bestValidEpoch)
     print buf
     print2file(buf, logFile)
+
+    if options['attention_outpath']:
+        
+
     
 def parse_arguments(parser):
     parser.add_argument('seq_file', type=str, metavar='<visit_file>', help='The path to the Pickled file containing visit information of patients')
@@ -599,6 +604,7 @@ def parse_arguments(parser):
     parser.add_argument('--log_eps', type=float, default=1e-8, help='A small value to prevent log(0) (default value: 1e-8)')
     parser.add_argument('--solver', type=str, default='adadelta', choices=['adadelta','adam'], help='Select which solver to train RETAIN: adadelta, or adam. (default: adadelta)')
     parser.add_argument('--verbose', action='store_true', help='Print output after every 100 mini-batches (default false)')
+    parser.add_argument('--attention_outpath', type = str, defualt = "")
     args = parser.parse_args()
     return args
 
@@ -630,5 +636,6 @@ if __name__ == '__main__':
         dropoutRateContext=args.dropout_context, 
         logEps=args.log_eps, 
         solver=args.solver,
-        verbose=args.verbose
+        verbose=args.verbose,
+        attention_outpath = arg.attention_outpath
     )

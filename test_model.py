@@ -93,7 +93,7 @@ def get_death_time_view(setting, model, data):
         return np.load(outpath)
     Print('calc time view')
     # data = Dataset('death_exper/death_test_1000.h5')
-    data = Dataset('death_exper/death_train_1000.h5')
+    data = Dataset('death_exper/death_{}_1000.h5'.format(data))
     data.load(True, False, True, None, setting)
 
     events = data.events
