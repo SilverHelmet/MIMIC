@@ -150,6 +150,7 @@ def build_model(tparams, options, W_emb=None):
         return c_t
 
     def test_attentionStep(att_timesteps):
+        reverse_emb_t = temb[:att_timesteps][::-1]
         reverse_h_a = gru_layer(tparams, reverse_emb_t, 'a', alphaHiddenDimSize)[::-1] * 0.5
         reverse_h_b = gru_layer(tparams, reverse_emb_t, 'b', betaHiddenDimSize)[::-1] * 0.5
 
@@ -161,7 +162,8 @@ def build_model(tparams, options, W_emb=None):
         return alpha
 
     counts = T.arange(n_timesteps)+ 1
-    alpha = theano.scan(fn=test_attentionStep, sequences=[counts], outputs_info=None, name='attention_layer', n_steps=n_timesteps)
+    alpha, updates = theano.scan(fn=attentionStep, sequences=[counts], 
+        outputs_info=None, name='attention_layer', n_steps=n_timesteps, return_list = True)
     return alpha, x, lengths
 
 
@@ -379,7 +381,8 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
             x, lengths = padMatrixWithoutTime(batchX, options)
             print x.shape
             print lengths.shape
-            scores = test_model(x, lengths)
+            # scores = test_model(x, lengths)
+            scores = test_model(x)
             print scores.shape
             break
         scoreVec.extend(list(scores))
@@ -409,7 +412,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
         print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
     else:
         labels = dataset[1]
-        auc = roc_auc_score(list(labels), list(scoreVec))
+        merged_auc = roc_auc_score(list(labels), list(scoreVec))
         # ids = dataset[3]
         # merged_labels = merge_label(labels, ids)
         # merged_score = merge_prob(scoreVec, ids, max)
@@ -512,15 +515,17 @@ def train_RETAIN(
         get_cost = theano.function(inputs=[x, y, t, lengths], outputs=cost_noreg, name='get_cost')
     elif not useTime and embFineTune:
         print 'not using time information, fine-tuning code representations'
-        use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
-        if solver=='adadelta':
-            grads = T.grad(cost, wrt=tparams.values())
-            f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
-        elif solver=='adam':
-            updates = adam(cost, tparams)
-            update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
-        get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
-        get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
+        alpha, x, lengths = build_model(tparams, options)
+        get_alpha = theano.function(inputs = [x], outputs = alpha, name = 'get_alpha')
+        # use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
+        # if solver=='adadelta':
+        #     grads = T.grad(cost, wrt=tparams.values())
+        #     f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
+        # elif solver=='adam':
+        #     updates = adam(cost, tparams)
+        #     update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
+        # get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
+        # get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
     elif not useTime and not embFineTune:
         print 'not using time information, not fine-tuning code representations'
         W_emb = theano.shared(params['W_emb'], name='W_emb')
@@ -597,10 +602,6 @@ def train_RETAIN(
     buf = 'The best validation & test AUC:%f, %f at epoch:%d' % (bestValidAuc, bestTestAuc, bestValidEpoch)
     print buf
     print2file(buf, logFile)
-
-    if options['attention_outpath']:
-        
-
     
 def parse_arguments(parser):
     parser.add_argument('seq_file', type=str, metavar='<visit_file>', help='The path to the Pickled file containing visit information of patients')
@@ -627,7 +628,7 @@ def parse_arguments(parser):
     parser.add_argument('--log_eps', type=float, default=1e-8, help='A small value to prevent log(0) (default value: 1e-8)')
     parser.add_argument('--solver', type=str, default='adadelta', choices=['adadelta','adam'], help='Select which solver to train RETAIN: adadelta, or adam. (default: adadelta)')
     parser.add_argument('--verbose', action='store_true', help='Print output after every 100 mini-batches (default false)')
-    parser.add_argument('--attention_outpath', type = str, defualt = "")
+    parser.add_argument('--attention_outpath', type = str, default = "")
     args = parser.parse_args()
     return args
 
@@ -659,6 +660,6 @@ if __name__ == '__main__':
         dropoutRateContext=args.dropout_context, 
         logEps=args.log_eps, 
         solver=args.solver,
-        verbose=args.verbose,
-        attention_outpath = arg.attention_outpath
+        verbose=args.verbose
+        # attention_outpath = args.attention_outpath
     )
