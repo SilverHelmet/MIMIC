@@ -383,7 +383,8 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
             print lengths.shape
             # scores = test_model(x, lengths)
             scores = test_model(x)
-            print scores.shape
+            for x in scores:
+                print x.shape
             break
         scoreVec.extend(list(scores))
     
