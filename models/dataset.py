@@ -41,7 +41,7 @@ class Dataset:
 
         if setting['use_merged_event']:
             merged_f = h5py.File(self.dataset_file.replace('.h5', '_merged.h5'), 'r')
-            self.events = merged_f[:]
+            self.events = merged_f['event'][:]
             merged_f.close()
         else:
             if 'event' in self.feature_set:
