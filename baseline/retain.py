@@ -383,8 +383,8 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
             betas.append(batch_beta)
         alpha = np.concatenate(alphas)
         beta = np.concatenate(betas)
-        np.save(outpath + '_alpha.npy', events)
-        np.save(outpath + '_beta.npy', events)
+        np.save(outpath + '_alpha.npy', alpha)
+        np.save(outpath + '_beta.npy', beta)
         return
     
     n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
@@ -531,21 +531,22 @@ def train_RETAIN(
         print 'not using time information, fine-tuning code representations'
         if options['calc_attention']:
             alpha, bate, x = build_model(tparams, options)
-            
-        use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
-        if solver=='adadelta':
-            grads = T.grad(cost, wrt=tparams.values())
-            f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
-        elif solver=='adam':
-            updates = adam(cost, tparams)
-            update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
-        get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
-        get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
+            get_attention = theano.function(inputs = [x, lengths], outputs = [alpha, bata], name = 'get_attention')
+        else:
+            use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
+            if solver=='adadelta':
+                grads = T.grad(cost, wrt=tparams.values())
+                f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
+            elif solver=='adam':
+                updates = adam(cost, tparams)
+                update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
+            get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
+            get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
     elif not useTime and not embFineTune:
         print 'not using time information, not fine-tuning code representations'
         W_emb = theano.shared(params['W_emb'], name='W_emb')
         use_noise, x, y, t, lengths, cost_noreg, cost, y_hat = build_model(tparams, options, W_emb)
-        get_alpha = theano.function(inputs = [x, lengths], outputs = alpha, name = 'get_alpha')
+        
         use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options, W_emb)
         if solver=='adadelta':
             grads = T.grad(cost, wrt=tparams.values())
@@ -561,7 +562,10 @@ def train_RETAIN(
     n_batches = int(np.ceil(float(len(trainSet[0])) / float(batchSize)))
     print 'done'
 
-    calculate_auc(get_alpha, validSet, options)
+    if options['calc_attention']:
+        print 'calc attention'
+        calculate_auc(get_attention, testSet, options, dataset = 'death')
+        return
 
     bestValidAuc = 0.0
     bestTestAuc = 0.0
@@ -643,7 +647,7 @@ def parse_arguments(parser):
     parser.add_argument('--log_eps', type=float, default=1e-8, help='A small value to prevent log(0) (default value: 1e-8)')
     parser.add_argument('--solver', type=str, default='adadelta', choices=['adadelta','adam'], help='Select which solver to train RETAIN: adadelta, or adam. (default: adadelta)')
     parser.add_argument('--verbose', action='store_true', help='Print output after every 100 mini-batches (default false)')
-    parser.add_argument('--attention_outpath', type = str, default = "")
+    parser.add_argument('--calc_attention', type = bool, default = False)
     args = parser.parse_args()
     return args
 
@@ -676,5 +680,5 @@ if __name__ == '__main__':
         logEps=args.log_eps, 
         solver=args.solver,
         verbose=args.verbose
-        # attention_outpath = args.attention_outpath
+        calc_attention = args.calc_attention
     )
