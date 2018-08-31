@@ -38,10 +38,16 @@ class Dataset:
         else:
             self.labels = f['labels'][:]
         self.size = len(self.labels)
-        if 'event' in self.feature_set:
-            self.events = f['event'][:]
+
+        if setting['use_merged_event']:
+            merged_f = h5py.File(self.dataset.replace('.h5', '_merged.h5'), 'r')
+            self.events = merged_f[:]
+            merged_f.close()
         else:
-            self.events = f['events'][:]
+            if 'event' in self.feature_set:
+                self.events = f['event'][:]
+            else:
+                self.events = f['events'][:]
         if 'label_time' in f:
             self.label_times = f['label_time'][:]
         if 'predicting_time' in f:

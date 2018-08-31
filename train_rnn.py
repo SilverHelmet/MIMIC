@@ -127,7 +127,7 @@ def define_simple_seg_rnn(setting, return_sequences = False):
 
 
 
-    if gcn_flag or gcn_numeric_feature or True:
+    if True:
         e_embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = 'embedding')(event_input)
         emd_dim = embedding_dim
         if gcn_numeric_feature:
@@ -392,6 +392,7 @@ def default_setting():
         'eventxtime': False,
 
         'time_gate_type': 'phase'
+        'use_merged_event': False,
     }
     return setting
 

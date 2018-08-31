@@ -4,6 +4,7 @@ from models.models import np_sigmoid
 from models.dataset import Dataset, print_eval, sample_generator
 import sys
 import numpy as np
+
 from collections import defaultdict
 from tqdm import tqdm
 import os

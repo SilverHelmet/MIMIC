@@ -149,25 +149,24 @@ def build_model(tparams, options, W_emb=None):
         c_t = (alpha[:,:,None] * beta * emb[:att_timesteps]).sum(axis=0)
         return c_t
 
-    def test_attentionStep(att_timesteps):
+    def get_attention(att_timesteps):
         reverse_emb_t = temb[:att_timesteps][::-1]
         reverse_h_a = gru_layer(tparams, reverse_emb_t, 'a', alphaHiddenDimSize)[::-1] * 0.5
-        reverse_h_b = gru_layer(tparams, reverse_emb_t, 'b', betaHiddenDimSize)[::-1] * 0.5
-
+        reverse_h_b = gru_layer(tparams, reverse_emb_t, 'b', betaHiddenDimSize)[::-1] * 0.5 #(att_timesteps, batch, hidden)
         preAlpha = T.dot(reverse_h_a, tparams['w_alpha']) + tparams['b_alpha']
-        preAlpha = preAlpha.reshape((preAlpha.shape[0], preAlpha.shape[1]))
+        preAlpha = preAlpha.reshape((preAlpha.shape[0], preAlpha.shape[1])) #(att_timesteps, batch)
         alpha = (T.nnet.softmax(preAlpha.T)).T
+        beta = T.tanh(T.dot(reverse_h_b, tparams['W_beta']) + tparams['b_beta'])  #(att_timesteps, batch, emd_size)
+        return alpha, beta
 
-        beta = T.tanh(T.dot(reverse_h_b, tparams['W_beta']) + tparams['b_beta'])
-        return alpha
+    counts = T.arange(n_timesteps) + 1
 
-    counts = T.arange(n_timesteps)+ 1
-    alpha, updates = theano.scan(fn=attentionStep, sequences=[counts], 
-        outputs_info=None, name='attention_layer', n_steps=n_timesteps, return_list = True)
-    return alpha, x, lengths
-
+    if options['calc_attention']:
+        alpha, beta = get_attention(n_timesteps + 1)
+        return alpha, beta, x
 
     c_t, updates = theano.scan(fn=attentionStep, sequences=[counts], outputs_info=None, name='attention_layer', n_steps=n_timesteps)
+    return c_t, x, lengths
     c_t = dropout_layer(c_t, use_noise, trng, doRate_context)
 
     preY = T.nnet.sigmoid(T.dot(c_t, tparams['w_output']) + tparams['b_output'])
@@ -365,9 +364,28 @@ def load_data(seqFile, labelFile, timeFile):
 
     return train_set, valid_set, test_set
 
-def calculate_auc(test_model, dataset, options, calc_all = False):
+def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death'):
     batchSize = options['batchSize']
     useTime = options['useTime']
+
+    if options['calc_attention']:
+        n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
+        events = dataset[0]
+        outpath = 'retainData/retain_{}'.format(dataset_name)
+        np.save(outpath + '_event.npy', events)
+        alphas = []
+        betas = []
+        for index in xrange(n_batches):
+            batchX = dataset[0][index*batchSize:(index+1)*batchSize]
+            x, lengths = padMatrixWithoutTime(batchX, options)
+            batch_alpha, batch_beta = test_model(x)
+            alphas.append(batch_alpha)
+            betas.append(batch_beta)
+        alpha = np.concatenate(alphas)
+        beta = np.concatenate(betas)
+        np.save(outpath + '_alpha.npy', events)
+        np.save(outpath + '_beta.npy', events)
+        return
     
     n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
     scoreVec = []
@@ -379,13 +397,8 @@ def calculate_auc(test_model, dataset, options, calc_all = False):
             scores = test_model(x, t, lengths)
         else:
             x, lengths = padMatrixWithoutTime(batchX, options)
-            print x.shape
-            print lengths.shape
-            # scores = test_model(x, lengths)
-            scores = test_model(x)
-            for x in scores:
-                print x.shape
-            break
+            scores = test_model(x, lengths)
+            
         scoreVec.extend(list(scores))
     
 
@@ -516,31 +529,32 @@ def train_RETAIN(
         get_cost = theano.function(inputs=[x, y, t, lengths], outputs=cost_noreg, name='get_cost')
     elif not useTime and embFineTune:
         print 'not using time information, fine-tuning code representations'
-        alpha, x, lengths = build_model(tparams, options)
-        get_alpha = theano.function(inputs = [x], outputs = alpha, name = 'get_alpha')
-        # use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
-        # if solver=='adadelta':
-        #     grads = T.grad(cost, wrt=tparams.values())
-        #     f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
-        # elif solver=='adam':
-        #     updates = adam(cost, tparams)
-        #     update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
-        # get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
-        # get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
+        if options['calc_attention']:
+            alpha, bate, x = build_model(tparams, options)
+            
+        use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
+        if solver=='adadelta':
+            grads = T.grad(cost, wrt=tparams.values())
+            f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
+        elif solver=='adam':
+            updates = adam(cost, tparams)
+            update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
+        get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
+        get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
     elif not useTime and not embFineTune:
         print 'not using time information, not fine-tuning code representations'
         W_emb = theano.shared(params['W_emb'], name='W_emb')
-        alpha, x, lengths = build_model(tparams, options, W_emb)
+        use_noise, x, y, t, lengths, cost_noreg, cost, y_hat = build_model(tparams, options, W_emb)
         get_alpha = theano.function(inputs = [x, lengths], outputs = alpha, name = 'get_alpha')
-        # use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options, W_emb)
-        # if solver=='adadelta':
-        #     grads = T.grad(cost, wrt=tparams.values())
-        #     f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
-        # elif solver=='adam':
-        #     updates = adam(cost, tparams)
-        #     update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
-        # get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
-        # get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
+        use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options, W_emb)
+        if solver=='adadelta':
+            grads = T.grad(cost, wrt=tparams.values())
+            f_grad_shared, f_update = adadelta(tparams, grads, x, y, lengths, cost, options)
+        elif solver=='adam':
+            updates = adam(cost, tparams)
+            update_model = theano.function(inputs=[x, y, lengths], outputs=cost, updates=updates, name='update_model')
+        get_prediction = theano.function(inputs=[x, lengths], outputs=y_hat, name='get_prediction')
+        get_cost = theano.function(inputs=[x, y, lengths], outputs=cost_noreg, name='get_cost')
 
     print 'Loading data ... ',
     trainSet, validSet, testSet = load_data(seqFile, labelFile, timeFile)

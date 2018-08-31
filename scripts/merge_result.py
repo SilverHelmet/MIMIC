@@ -7,6 +7,9 @@ def decom(p):
     arc, merged_arc = p[2].split("/")
     return (acc, auc, arc, merged_acc, merged_auc, merged_arc)
 
+def new_decom(p):
+    return map(float, p)
+
 def merge(p1, p2):
     res = []
     if len(p1) < len(p2):
@@ -28,6 +31,17 @@ def merge(p1, p2):
         merged_res.append(res[i] + "/" + res[i+bias])
     return merged_res
 
+def new_merge(p1, p2):
+    res = []
+    for t1, t2, in zip(p1, p2):
+        t1 = float(t1)
+        t2 = float(t2)
+        t = (t1 + t2) / 2.0
+        delta = round(abs(t1 - t), 4)
+        t = round(t, 4)
+        res.append(str(t) + "(" + str(delta) + ")")
+
+    return res
 
 # out = file("tmp.txt", "w")
 while True:
@@ -35,11 +49,15 @@ while True:
     res2 = raw_input('log2:')
     p1 = res1.strip().split("\t")
     if len(p1) == 3:
-        p1 = decom(p1)
+        p1 = new_decom(p1)
     else:
         p1 = parse_result(res1)
-    p2 = parse_result(res2)
-    res = merge(p1, p2)
+    p2 = res2.strip().split('\t')
+    if len(p2) == 3:
+        p2 = new_decom(p2)
+    else:
+        p2 = parse_result(res2)
+    res = new_merge(p1, p2)
     print "\t".join(res)
     # out.write("\t".join(res) + "\n")
     # out.flush()
