@@ -391,7 +391,7 @@ def default_setting():
         'sample_generator': True,
         'eventxtime': False,
 
-        'time_gate_type': 'phase'
+        'time_gate_type': 'phase',
         'use_merged_event': False,
     }
     return setting
