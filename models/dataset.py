@@ -40,7 +40,7 @@ class Dataset:
         self.size = len(self.labels)
 
         if setting['use_merged_event']:
-            merged_f = h5py.File(self.dataset.replace('.h5', '_merged.h5'), 'r')
+            merged_f = h5py.File(self.dataset_file.replace('.h5', '_merged.h5'), 'r')
             self.events = merged_f[:]
             merged_f.close()
         else:
