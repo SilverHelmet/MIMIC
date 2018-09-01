@@ -647,6 +647,8 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 inputs.append(static_feature_mat)
             if len(inputs) == 1:
                 inputs = inputs[0]
+            for x in inputs:
+                Print(x.shape)
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:
