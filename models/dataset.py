@@ -567,10 +567,10 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
             seged_event = event
             if event_set is not None:
                 info['total'] += (seged_event > 0).sum()
-                for i, event_seq in enumerate(seged_event):
-                    for j, eid in enumerate(event_seq):
+                for i1, event_seq in enumerate(seged_event):
+                    for i2, eid in enumerate(event_seq):
                         if eid > 0 and eid not in event_set:
-                            event[i, j] = 0
+                            event[i1, i2] = 0
                             info['mask'] += 1
             if setting['eventxtime']:
                 mask_idx = seged_event == 0
