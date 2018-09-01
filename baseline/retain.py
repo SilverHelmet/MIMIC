@@ -577,7 +577,7 @@ def train_RETAIN(
 
     if options['calc_attention']:
         print 'calc attention'
-        calculate_auc(get_attention, testSet, options, dataset = 'death')
+        calculate_auc(get_attention, testSet, options, dataset_name = 'death')
         return
 
     bestValidAuc = 0.0
