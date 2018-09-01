@@ -580,9 +580,6 @@ def train_RETAIN(
         calculate_auc(get_attention, testSet, options, dataset = 'death')
         return
 
-    if options['event_filter']:
-
-
     bestValidAuc = 0.0
     bestTestAuc = 0.0
     bestValidEpoch = 0
