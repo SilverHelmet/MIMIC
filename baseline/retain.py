@@ -374,6 +374,7 @@ def load_event_rank(dataset_name):
 
 
 
+
 def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death'):
     batchSize = options['batchSize']
     useTime = options['useTime']
@@ -579,7 +580,7 @@ def train_RETAIN(
 
     if options['calc_attention']:
         print 'calc attention'
-        calculate_auc(get_attention, testSet, options, dataset_name = 'death')
+        calculate_auc(get_attention, trainSet, options, dataset_name = 'death')
         return
 
     bestValidAuc = 0.0
