@@ -176,13 +176,31 @@ def sorted_idx_by_view(view):
     sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
     return sorted_idx
 
-def test_event_filter():
+def test_event_filter(setting, method):
     view = np.load('result/death_view.npy')
+    event_set = set(range(setting['event_dim']))
     sorted_idx = sorted_idx_by_view(view)
-    print view.mean(1)[sorted_idx][:100]
 
+    data = Dataset('death_exper/death_test_1000.h5')
+    data.load(True, False, True, None, setting)
 
+    model_path = os.path.join('RNNmodels', 'death_t23.model.round5')
+    model = define_simple_seg_rnn(setting, False)
+    model.load_weights(model_path, by_name=True)
 
+    ratios = np.arange(1, 0, -0.05)
+    Print("filter method = %s" %method)
+    Print('ratio is %s' %ratios)
+    for ratio in ratios:
+        info = {}
+        size = int(ratio * setting['event_dim'])
+        if method == "random":
+            event_set = set(np.random.permutation(setting['event_dim'])[:size])
+        else:
+            event_set = set(sorted_idx[:size])
+        test_eval = data.eval(model, setting, event_set, info, verbose = True)
+        Print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
+        print_eval('ratio = %.2f, ' %ratio, test_eval)
 
 if __name__ == "__main__":
     args = 'x settings/catAtt_lstm.txt settings/helstm.txt settings/time_feature/time_feature_sum.txt settings/period/period_v14.txt @num_gate_head=8|model_out=RNNmodels/death_t23.model'.split(' ')
@@ -196,4 +214,5 @@ if __name__ == "__main__":
         get_death_view(setting, 'train')
         get_death_view(setting, 'test')
     elif mode == 'event_filter':
-        test_event_filter()
+        method = sys.argv[2]
+        test_event_filter(setting , method)

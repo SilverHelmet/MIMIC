@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score, roc_curve, auc, precision_recall_curve
 from gcn.graph import build_time_graph_2, get_seg_time, time_funcs, get_seg_time, time_funcs
 import glob
+from collections import defaultdict
 
 class Dataset:
     
@@ -533,6 +534,9 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     if time_feature_flag or setting['eventxtime']:
         mul = setting.get('time_mul', 3.0)
         time_hours = (times * mul).astype(int)
+
+    if info is None:
+        info = defaultdict(int)
     
     while  True:
         i = 0
@@ -562,6 +566,13 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
             #                 info['mask'] += 1
 
             seged_event = event
+            if event_set is not None:
+                info['total'] += (seged_event > 0).sum()
+                for i, event_seq in enumerate(seged_event):
+                    for j, eid in enumerate(event_seq):
+                        if eid > 0 and eid not in event_set:
+                            event[i, j] = 0
+                            info['mask'] += 1
             if setting['eventxtime']:
                 mask_idx = seged_event == 0
                 time_hour = time_hours[batch_indices]

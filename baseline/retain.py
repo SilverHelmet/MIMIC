@@ -364,6 +364,14 @@ def load_data(seqFile, labelFile, timeFile):
 
     return train_set, valid_set, test_set
 
+def load_event_rank(dataset_name):
+    outpath = 'retainData/retain_{}'.format(dataset_name)
+    alpha = np.load(outpath + '_alpha.npy')
+    beta = np.load(outpath + '_beta.npy')
+    for event
+
+
+
 def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death'):
     batchSize = options['batchSize']
     useTime = options['useTime']
@@ -386,6 +394,9 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
         np.save(outpath + '_alpha.npy', alpha)
         np.save(outpath + '_beta.npy', beta)
         return
+    
+    if options['event_filter']:
+        load_event_rank(dataset_name)
     
     n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
     scoreVec = []
@@ -567,6 +578,9 @@ def train_RETAIN(
         calculate_auc(get_attention, testSet, options, dataset = 'death')
         return
 
+    if options['event_filter']:
+
+
     bestValidAuc = 0.0
     bestTestAuc = 0.0
     bestValidEpoch = 0
@@ -648,6 +662,7 @@ def parse_arguments(parser):
     parser.add_argument('--solver', type=str, default='adadelta', choices=['adadelta','adam'], help='Select which solver to train RETAIN: adadelta, or adam. (default: adadelta)')
     parser.add_argument('--verbose', action='store_true', help='Print output after every 100 mini-batches (default false)')
     parser.add_argument('--calc_attention', type = bool, default = False)
+    parser.add_argument('--event_filter', type = bool, default = False)
     args = parser.parse_args()
     return args
 
