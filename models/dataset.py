@@ -545,7 +545,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 Print('generate at %d/%d' %(i, nb_sample))
 
             
-                
+            Print("st-ed:%d - %d" %(st, ed))
             st = i
             ed = min(i + batch_size, nb_sample)
             # Print("%s\t%s" %(st, ed))
