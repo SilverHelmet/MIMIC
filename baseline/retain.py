@@ -157,7 +157,10 @@ def build_model(tparams, options, W_emb=None):
         preAlpha = preAlpha.reshape((preAlpha.shape[0], preAlpha.shape[1])) #(att_timesteps, batch)
         alpha = (T.nnet.softmax(preAlpha.T)).T
         beta = T.tanh(T.dot(reverse_h_b, tparams['W_beta']) + tparams['b_beta'])  #(att_timesteps, batch, emd_size)
-        return alpha, beta
+
+        alpha = alpha.reshape(alpha.shape[1], alpha.shape[0])
+        beta = alpha.reshape((beta.shape[1], beta.shape[1], beta.shape[2]))
+        return alpha.T, beta
 
     counts = T.arange(n_timesteps) + 1
 
