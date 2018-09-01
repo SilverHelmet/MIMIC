@@ -387,6 +387,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
             batchX = dataset[0][index*batchSize:(index+1)*batchSize]
             x, lengths = padMatrixWithoutTime(batchX, options)
             batch_alpha, batch_beta = test_model(x)
+            print batch_alpha.shape, batch_beta.shape
             alphas.append(batch_alpha)
             betas.append(batch_beta)
         alpha = np.concatenate(alphas)
