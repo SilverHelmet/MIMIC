@@ -368,7 +368,6 @@ def load_event_rank(dataset_name):
     outpath = 'retainData/retain_{}'.format(dataset_name)
     alpha = np.load(outpath + '_alpha.npy')
     beta = np.load(outpath + '_beta.npy')
-    for event
 
 
 
