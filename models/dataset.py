@@ -257,7 +257,7 @@ class Dataset:
 
     def eval(self, model, setting, event_set = None, info = None, verbose = False):
         if setting['sample_generator']:
-            prediction = model.predict_generator(sample_generator(self, setting, False, event_set = event_set, info = info, verbose = verbose), val_samples = self.size)
+            prediction = model.predict_generator(sample_generator(self, setting = setting, shuffle = False, event_set = event_set, info = info, verbose = verbose), val_samples = self.size)
         else:
             prediction = model.predict(self.inputs)
         calc_merged_score = 'sample_id' in self.feature_set
