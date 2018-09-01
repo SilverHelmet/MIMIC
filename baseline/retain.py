@@ -543,7 +543,7 @@ def train_RETAIN(
     elif not useTime and embFineTune:
         print 'not using time information, fine-tuning code representations'
         if options['calc_attention']:
-            alpha, bate, x = build_model(tparams, options)
+            alpha, bata, x = build_model(tparams, options)
             get_attention = theano.function(inputs = [x], outputs = [alpha, bata], name = 'get_attention')
         else:
             use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
