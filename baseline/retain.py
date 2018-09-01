@@ -160,7 +160,7 @@ def build_model(tparams, options, W_emb=None):
 
         alpha = alpha.reshape((alpha.shape[1], alpha.shape[0]))
         beta = beta.reshape((beta.shape[1], beta.shape[0], beta.shape[2]))
-        return alpha.T, beta
+        return alpha, beta
 
     counts = T.arange(n_timesteps) + 1
 
