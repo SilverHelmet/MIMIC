@@ -8,6 +8,7 @@ import numpy as np
 import cPickle as pickle
 from collections import OrderedDict
 import argparse
+import os
 
 import theano
 import theano.tensor as T
@@ -17,6 +18,8 @@ from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 from sklearn.metrics import roc_auc_score, average_precision_score
 import baseline_util
 from util import merge_label, merge_prob, Print
+from tqdm import tqdm
+from collections import defaultdict
 
 
 def unzip(zipped):
@@ -170,7 +173,6 @@ def build_model(tparams, options, W_emb=None):
         return alpha, beta, x
 
     c_t, updates = theano.scan(fn=attentionStep, sequences=[counts], outputs_info=None, name='attention_layer', n_steps=n_timesteps)
-    return c_t, x, lengths
     c_t = dropout_layer(c_t, use_noise, trng, doRate_context)
 
     preY = T.nnet.sigmoid(T.dot(c_t, tparams['w_output']) + tparams['b_output'])
@@ -375,19 +377,24 @@ def load_event_rank(dataset_name):
         return np.load(attn_path)
     alpha = np.load(outpath + '_alpha.npy')
     beta = np.load(outpath + '_beta.npy')
-    beta = np.max(beta).max(2)
+    event = np.load(outpath + "_event.npy")
+    beta = np.abs(beta).max(2)
     attn = alpha * beta
     scores = []
-    for eidx in range(3418):
+    for eidx in tqdm(range(3418), total = 3418):
         idx = np.any(event == eidx, axis = -1)
-        score = attn[idx].mean()
+        a = attn[idx]
+        if a.size == 0:
+            score = .0
+        else:
+            score = a.mean()
         scores.append(score)
     scores = np.array(scores)
     np.save(attn_path, scores)
     return scores
 
 def get_event_num(X):
-    X = np.array(dataset[0])
+    X = np.array(X)
     return (X > 0).sum()
 
 def filter_event(X, event_set):
@@ -397,10 +404,10 @@ def filter_event(X, event_set):
             for k, eidx in enumerate(seq):
                 if eidx > 0 and eidx not in event_set:
                     X[i][j][k] = 0
-                    nb_mask += 0
+                    nb_mask += 1
     return nb_mask
 
-def test_event_filter(test_model, dataset, options, calc_all = False, dataset_name = 'death')
+def test_event_filter(test_model, dataset, options, calc_all = False, dataset_name = 'death'):
     scores = load_event_rank(dataset_name)
     sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
     ratios = np.arange(1, 0, -0.05)
@@ -413,8 +420,8 @@ def test_event_filter(test_model, dataset, options, calc_all = False, dataset_na
         event_set = set(sorted_idx[:size])
         Print("event set size = %d" %len(event_set))
         info['mask'] += filter_event(X, event_set)
-        acc, auROC, auPRC = calculate_auc(test_model. dataset, options, calc_all = True, dataset_name = 'death', return_all = True)
         Print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
+        acc, auROC, auPRC = calculate_auc(test_model, dataset, options, calc_all = True, dataset_name = 'death', return_all = True)
         Print('ratio = %.2f, acc = %.4f, auROC = %.4f, auPRC = %.4f' %(ratio, acc, auROC, auPRC))
 
 def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death', return_all = False):
@@ -442,7 +449,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
 
     n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
     scoreVec = []
-    for index in xrange(n_batches):
+    for index in tqdm(xrange(n_batches), total = n_batches):
         batchX = dataset[0][index*batchSize:(index+1)*batchSize]
         if useTime:
             batchT = dataset[2][index*batchSize:(index+1)*batchSize]
@@ -602,8 +609,6 @@ def train_RETAIN(
     elif not useTime and not embFineTune:
         print 'not using time information, not fine-tuning code representations'
         W_emb = theano.shared(params['W_emb'], name='W_emb')
-        use_noise, x, y, t, lengths, cost_noreg, cost, y_hat = build_model(tparams, options, W_emb)
-        
         use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options, W_emb)
         if solver=='adadelta':
             grads = T.grad(cost, wrt=tparams.values())
