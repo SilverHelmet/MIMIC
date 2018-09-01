@@ -191,7 +191,7 @@ def test_event_filter(setting, method):
     Print("filter method = %s" %method)
     Print('ratio is %s' %ratios)
     for ratio in ratios:
-        defaultdict(int)
+        info = defaultdict(int)
         size = int(ratio * setting['event_dim'])
         if method == "random":
             event_set = set(np.random.permutation(setting['event_dim'])[:size])
