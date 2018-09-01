@@ -158,7 +158,7 @@ def build_model(tparams, options, W_emb=None):
         alpha = (T.nnet.softmax(preAlpha.T)).T
         beta = T.tanh(T.dot(reverse_h_b, tparams['W_beta']) + tparams['b_beta'])  #(att_timesteps, batch, emd_size)
 
-        alpha = alpha.reshape(alpha.shape[1], alpha.shape[0])
+        alpha = alpha.reshape((alpha.shape[1], alpha.shape[0]))
         beta = alpha.reshape((beta.shape[1], beta.shape[1], beta.shape[2]))
         return alpha.T, beta
 
