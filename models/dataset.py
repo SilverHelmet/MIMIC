@@ -541,6 +541,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     while  True:
         i = 0
         while i < nb_sample:
+            Print('i = %d' %i)
             if verbose and ((i / batch_size) % 1 == 0):
                 Print('generate at %d/%d' %(i, nb_sample))
 
