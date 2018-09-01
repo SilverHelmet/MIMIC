@@ -16,7 +16,8 @@ from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 from sklearn.metrics import roc_auc_score, average_precision_score
 import baseline_util
-from util import merge_label, merge_prob
+from util import merge_label, merge_prob, Print
+
 
 def unzip(zipped):
     new_params = OrderedDict()
@@ -369,13 +370,54 @@ def load_data(seqFile, labelFile, timeFile):
 
 def load_event_rank(dataset_name):
     outpath = 'retainData/retain_{}'.format(dataset_name)
+    attn_path = outpath + "_attn.npy"
+    if os.path.exists(attn_path):
+        return np.load(attn_path)
     alpha = np.load(outpath + '_alpha.npy')
     beta = np.load(outpath + '_beta.npy')
+    beta = np.max(beta).max(2)
+    attn = alpha * beta
+    scores = []
+    for eidx in range(3418):
+        idx = np.any(event == eidx, axis = -1)
+        score = attn[idx].mean()
+        scores.append(score)
+    scores = np.array(scores)
+    np.save(attn_path, scores)
+    return scores
 
+def get_event_num(X):
+    X = np.array(dataset[0])
+    return (X > 0).sum()
 
+def filter_event(X, event_set):
+    nb_mask = 0
+    for i, mat in enumerate(X):
+        for j, seq in enumerate(mat):
+            for k, eidx in enumerate(seq):
+                if eidx > 0 and eidx not in event_set:
+                    X[i][j][k] = 0
+                    nb_mask += 0
+    return nb_mask
 
+def test_event_filter(test_model, dataset, options, calc_all = False, dataset_name = 'death')
+    scores = load_event_rank(dataset_name)
+    sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
+    ratios = np.arange(1, 0, -0.05)
+    Print('ratio is %s' %ratios)
+    info = defaultdict(int)
+    X = dataset[0]
+    info['total'] = get_event_num(X)
+    for ratio in ratios:
+        size = int(options['inputDimSize'] * ratio)
+        event_set = set(sorted_idx[:size])
+        Print("event set size = %d" %len(event_set))
+        info['mask'] += filter_event(X, event_set)
+        acc, auROC, auPRC = calculate_auc(test_model. dataset, options, calc_all = True, dataset_name = 'death', return_all = True)
+        Print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
+        Print('ratio = %.2f, acc = %.4f, auROC = %.4f, auPRC = %.4f' %(ratio, acc, auROC, auPRC))
 
-def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death'):
+def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name = 'death', return_all = False):
     batchSize = options['batchSize']
     useTime = options['useTime']
 
@@ -397,10 +439,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
         np.save(outpath + '_alpha.npy', alpha)
         np.save(outpath + '_beta.npy', beta)
         return
-    
-    if options['event_filter']:
-        load_event_rank(dataset_name)
-    
+
     n_batches = int(np.ceil(float(len(dataset[0])) / float(batchSize)))
     scoreVec = []
     for index in xrange(n_batches):
@@ -419,28 +458,30 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
     if calc_all:
         labels = dataset[1]
         ids = dataset[3]
-        merged_labels = merge_label(labels, ids)
+        # merged_labels = merge_label(labels, ids)
         score = np.array(scoreVec)
-        merged_score = merge_prob(score, ids, max)
+        # merged_score = merge_prob(score, ids, max)
 
         auROC = roc_auc_score(labels, score)
-        merged_auROC = roc_auc_score(merged_labels, merged_score)
+        # merged_auROC = roc_auc_score(merged_labels, merged_score)
 
         auPRC = average_precision_score(labels, score)
-        merged_auPRC = average_precision_score(merged_labels, merged_score)
+        # merged_auPRC = average_precision_score(merged_labels, merged_score)
 
         score[score >= 0.5] = 1
         score[score < 0.5] = 0
-        merged_score[merged_score >= 0.5] = 1
-        merged_score[merged_score < 0.5] = 0
+        # merged_score[merged_score >= 0.5] = 1
+        # merged_score[merged_score < 0.5] = 0
         acc = np.mean(labels == score)
-        merged_acc = np.mean(merged_labels == merged_score)
-
-        out = ["best Test target, ", acc, auROC, auPRC, merged_acc, merged_auROC, merged_auPRC]
-        print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
+        # merged_acc = np.mean(merged_labels == merged_score)
+        if return_all:
+            return acc, auROC, auPRC
+        out = ["best Test target, ", acc, auROC, auPRC]
+        Print('print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f' %(tuple(out)) )
+        # print "%s acc = %.4f, auROC = %.4f, auPRC =%.4f, merged_acc = %.4f, merged_auROC = %.4f, merged_auPRC = %.4f" %(tuple(out))
     else:
         labels = dataset[1]
-        merged_auc = roc_auc_score(list(labels), list(scoreVec))
+        auROC = roc_auc_score(list(labels), list(scoreVec))
         # ids = dataset[3]
         # merged_labels = merge_label(labels, ids)
         # merged_score = merge_prob(scoreVec, ids, max)
@@ -450,7 +491,7 @@ def calculate_auc(test_model, dataset, options, calc_all = False, dataset_name =
     
     
 
-    return merged_auROC
+    return auROC
 
 def calculate_cost(test_model, dataset, options):
     batchSize = options['batchSize']
@@ -581,6 +622,11 @@ def train_RETAIN(
     if options['calc_attention']:
         print 'calc attention'
         calculate_auc(get_attention, trainSet, options, dataset_name = 'death')
+        return
+    
+    if options['event_filter']:
+        Print('event filter')
+        test_event_filter(get_prediction, testSet, options, dataset_name = 'death')
         return
 
     bestValidAuc = 0.0
