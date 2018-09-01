@@ -544,7 +544,7 @@ def train_RETAIN(
         print 'not using time information, fine-tuning code representations'
         if options['calc_attention']:
             alpha, bate, x = build_model(tparams, options)
-            get_attention = theano.function(inputs = [x, lengths], outputs = [alpha, bata], name = 'get_attention')
+            get_attention = theano.function(inputs = [x], outputs = [alpha, bata], name = 'get_attention')
         else:
             use_noise, x, y, lengths, cost_noreg, cost, y_hat =  build_model(tparams, options)
             if solver=='adadelta':
