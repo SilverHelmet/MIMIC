@@ -541,8 +541,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     while  True:
         i = 0
         while i < nb_sample:
-            Print('i = %d' %i)
-            if verbose and ((i / batch_size) % 1 == 0):
+            if verbose and ((i / batch_size) % 50 == 0):
                 Print('generate at %d/%d' %(i, nb_sample))
 
             
@@ -648,9 +647,6 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 inputs.append(static_feature_mat)
             if len(inputs) == 1:
                 inputs = inputs[0]
-            for x in inputs:
-                Print(x.shape)
-            Print('st = %d, ed = %d, nb_sample = %d' %(i, i + batch_size, nb_sample))
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:
