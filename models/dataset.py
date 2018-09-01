@@ -545,10 +545,8 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 Print('generate at %d/%d' %(i, nb_sample))
 
             
-            Print("st-ed:%d - %d" %(st, ed))
             st = i
             ed = min(i + batch_size, nb_sample)
-            # Print("%s\t%s" %(st, ed))
             batch_indices = train_index[st:ed]
 
             label = labels[batch_indices]
@@ -649,9 +647,6 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 inputs.append(static_feature_mat)
             if len(inputs) == 1:
                 inputs = inputs[0]
-            print info
-            for x in inputs:
-                print x.shape
             yield (inputs, label)
             i += batch_size 
             if i >= nb_sample:
