@@ -651,6 +651,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
                 Print(x.shape)
             yield (inputs, label)
             i += batch_size 
+            Print(i, nb_sample)
             if i >= nb_sample:
                 i = 0
                 # break
