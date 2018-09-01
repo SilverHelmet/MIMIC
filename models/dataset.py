@@ -488,7 +488,7 @@ def parse_sparse_static_feature(static_feature, size):
 
 
 def sample_generator(dataset, setting, shuffle = False, train_index = None, event_set = None, info = None, verbose = False):
-    Print("start generate samplesX")
+    # Print("start generate samples")
     if train_index is None:
         if shuffle:
             train_index = np.random.permutation(dataset.size)
@@ -541,7 +541,7 @@ def sample_generator(dataset, setting, shuffle = False, train_index = None, even
     while  True:
         i = 0
         while i < nb_sample:
-            if verbose and (i / batch_size % 1 == 0):
+            if verbose and ((i / batch_size) % 1 == 0):
                 Print('generate at %d/%d' %(i, nb_sample))
 
             
