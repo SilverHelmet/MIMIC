@@ -501,7 +501,9 @@ def train_RETAIN(
     dropoutRateContext=0.5,
     logEps=1e-8,
     solver='adadelta',
-    verbose=False
+    verbose=False,
+    calc_attention = "",
+    event_filter = False,
 ):
     options = locals().copy()
 
@@ -694,6 +696,7 @@ if __name__ == '__main__':
         dropoutRateContext=args.dropout_context, 
         logEps=args.log_eps, 
         solver=args.solver,
-        verbose=args.verbose
-        calc_attention = args.calc_attention
+        verbose=args.verbose,
+        calc_attention = args.calc_attention,
+        event_filter = args.event_filter
     )
