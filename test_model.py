@@ -205,6 +205,8 @@ def test_event_filter(setting, method):
             event_set = set(sorted_idx_mean[:size])
         elif method == 'max':
             event_set = set(sorted_idx_max[:size])
+        else:
+            assert False
         Print("event set size = %d" %len(event_set))
         # event_set = None
         # info = None
