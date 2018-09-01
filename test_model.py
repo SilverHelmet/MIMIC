@@ -4,7 +4,6 @@ from models.models import np_sigmoid
 from models.dataset import Dataset, print_eval, sample_generator
 import sys
 import numpy as np
-
 from collections import defaultdict
 from tqdm import tqdm
 import os
@@ -192,7 +191,7 @@ def test_event_filter(setting, method):
     Print("filter method = %s" %method)
     Print('ratio is %s' %ratios)
     for ratio in ratios:
-        info = {}
+        defaultdict(int)
         size = int(ratio * setting['event_dim'])
         if method == "random":
             event_set = set(np.random.permutation(setting['event_dim'])[:size])
