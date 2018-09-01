@@ -198,6 +198,7 @@ def test_event_filter(setting, method):
             event_set = set(np.random.permutation(setting['event_dim'])[:size])
         else:
             event_set = set(sorted_idx[:size])
+        Print("event set size = %d" %len(event_set))
         test_eval = data.eval(model, setting, event_set, info, verbose = True)
         Print('#masked event = %d/%.4f%%' %(info['mask'], info['mask'] * 100.0 / info['total']) )
         print_eval('ratio = %.2f, ' %ratio, test_eval)
