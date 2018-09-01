@@ -177,7 +177,7 @@ def sorted_idx_by_view(view):
     return sorted_idx
 
 def test_event_filter(setting, method):
-    view = np.load('result/death_view.npy')
+    view = np.load('result/death_train_view.npy')
     event_set = set(range(setting['event_dim']))
     sorted_idx = sorted_idx_by_view(view)
 
