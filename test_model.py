@@ -170,15 +170,21 @@ def get_death_view(ssetting, data):
         print 'view: {}'.format(topk)
         print ""
 
-def sorted_idx_by_view(view):
+def sorted_idx_by_mean_view(view):
     scores = view.mean(1)
+    sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
+    return sorted_idx
+
+def sorted_idx_by_max_view(view):
+    scores = view.max(1)
     sorted_idx = sorted(range(len(scores)), key = lambda x:scores[x],reverse = True)
     return sorted_idx
 
 def test_event_filter(setting, method):
     view = np.load('result/death_train_view.npy')
     event_set = set(range(setting['event_dim']))
-    sorted_idx = sorted_idx_by_view(view)
+    sorted_idx_mean = sorted_idx_by_mean_view(view)
+    sorted_idx_max = sorted_idx_by_max_view(view)
 
     data = Dataset('death_exper/death_test_1000.h5')
     data.load(True, False, True, None, setting)
@@ -195,8 +201,10 @@ def test_event_filter(setting, method):
         size = int(ratio * setting['event_dim'])
         if method == "random":
             event_set = set(np.random.permutation(setting['event_dim'])[:size])
-        else:
-            event_set = set(sorted_idx[:size])
+        elif method == 'mean':
+            event_set = set(sorted_idx_mean[:size])
+        elif method == 'max':
+            event_set = set(sorted_idx_max[:size])
         Print("event set size = %d" %len(event_set))
         # event_set = None
         # info = None
