@@ -23,8 +23,6 @@ if __name__ == "__main__":
     while True:
         line = raw_input("")
         p = parse_result(line)
-        p[1] += 0.0017
-        p[2] += 0.01
         output(p)
     # max_auc = 0
     # filename = None
