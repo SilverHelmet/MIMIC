@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from stat_value_dis import FValueStat
 import numpy as np
 import math
+from collections import defaultdict
 
 def calc_value_distance(fv):
     pos_values = fv.value_dis(1)
@@ -297,15 +298,36 @@ def plot_total_effect():
     eidxs = [253, 2018, 2842, 2527]
     for eidx in eidxs:
         plot_one_event_effect_dis(eidx, effect_path)
+    # plt.show()
 
-    
-    
-    # plt.show() 
+def plot_multi_model()
+
+def plot_event_filter():
+    result_path = 'result/death_event_filter.tsv'
+    models = ['MPHELSTM', 'MPHELSTM random', 'RETAIN']
+    ratios = []
+    aucs = defaultdict(list)
+    aps = defaultdict(list)
+    for line in file(result_path):
+        p = line.rstrip('\n').split('\t')
+        assert len(p) == 10
+        ratio = float(p[0][:-1])
+        ratios.append(ratio)
+        base = 1
+        for idx, model in enumerate(models):
+            auc = float(p[base + idx * 3 + 1])
+            ap = float(p[base + idx * 3 + 2])
+            aucs[model].append(auc)
+            aps[model].append(ap)
+
+
+
 
 
 if __name__ == "__main__":
     plt.style.use('ggplot')
-    plot_total_effect()
+    plot_event_filter()
+    # plot_total_effect()
     # plot_label_event()
     # plot_time_event()
 
