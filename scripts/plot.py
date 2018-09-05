@@ -27,7 +27,7 @@ def calc_event_distance(fv):
     neg_dis = neg_values / (neg_values.sum() + .0)
     return KLD(pos_dis, neg_dis)
 
-def plot_one_value_dis(eidx, fidx, path, ax):
+def plot_one_value_dis(eidx, fidx, path, ax, des):
     filename = os.path.basename(path)
     if 'death' in filename:
         dataset = 'death'
@@ -48,7 +48,7 @@ def plot_one_value_dis(eidx, fidx, path, ax):
         ax.legend()
         ax.set_xlabel('hour')
         ax.set_ylabel('mean value')
-        ax.set_title('distribution of attributes')
+        ax.set_title('mean value of event %s' %des)
         # outpath = os.path.join(result_dir, 'graph/' + "valueDist_data=%s_eid=%d_fid=%d_dis=%.3f.png" %(dataset, eidx, fidx, dis))
         # plt.savefig(outpath)
         # plt.close('all')
@@ -95,7 +95,7 @@ def plot_value_dis(path, ax):
     # plt.close('all')
 
 
-def plot_one_event_dis(eidx, path, ax):
+def plot_one_event_dis(eidx, path, ax, des):
     filename = os.path.basename(path)
     if 'death' in filename:
         dataset = 'death'
@@ -116,8 +116,13 @@ def plot_one_event_dis(eidx, path, ax):
         ax.plot(x, neg_cnts, 'b', label = 'negtive samples')
         ax.legend()
         ax.set_xlabel('hour')
+<<<<<<< Updated upstream
         ax.set_ylabel('occurrence frequency')
         ax.set_title('distrbution of event')
+=======
+        ax.set_ylabel('occur probability')
+        ax.set_title('distrbution of event %s' %des)
+>>>>>>> Stashed changes
         # outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
         # plt.savefig(outpath)
         # plt.close('all')
@@ -202,7 +207,7 @@ def plot_time_event_effect_dis(fv, diff):
     plt.savefig('result/graph/effectDist_data=death_eid={}_dis={}.png'.format(fv.eidx, diff))
     plt.close('all')   
 
-def plot_one_event_effect_dis(eidx, path):
+def plot_one_event_effect_dis(eidx, path, des):
     for line in file(path):
         fv = FValueStat.load_from_line_onlye(line)
         if fv.eidx != eidx:
@@ -215,8 +220,8 @@ def plot_one_event_effect_dis(eidx, path):
         ax.plot(x, neg_value, 'b', label ='without time feature')
         ax.legend()
         ax.set_xlabel('hour')
-        ax.set_ylabel('effect')
-        ax.set_title('mean effect of event {}'.format(eidx))
+        ax.set_ylabel('mean effect')
+        ax.set_title('mean effect of event {}'.format(des))
         plt.savefig('result/graph/effect_eid={}'.format(eidx))
         plt.close('all')
 
@@ -270,9 +275,9 @@ def plot_time_event():
     death_stat_path = 'result/death_event_time_effect.json'
     plot_event_effect_dis(death_stat_path)
 
-def plot_one_event(eidx, fidx, death_stat_path):
-    plot_one_event_dis(eidx, death_stat_path, plt.subplot(1 ,2, 1))
-    plot_one_value_dis(eidx, fidx, death_stat_path, plt.subplot(1, 2, 2))
+def plot_one_event(eidx, fidx, death_stat_path, descriptions):
+    plot_one_event_dis(eidx, death_stat_path, plt.subplot(1 ,2, 1), descriptions)
+    plot_one_value_dis(eidx, fidx, death_stat_path, plt.subplot(1, 2, 2), descriptions)
     plt.savefig('result/graph/event_dis_eid=%d,fidx=%d.png' %(eidx, fidx))
     plt.close('all')
 
@@ -287,8 +292,10 @@ def plot_total_effect():
     plt.close('all')
 
     ef_pairs = [(71, 28), (1514, 199), (43, 15), (1500, 189), (1756, 247)]
-    for eidx, fdix in ef_pairs:
-        plot_one_event(eidx, fdix,death_stat_path)
+    ef_pairs = [(71, 28), (1514, 199)]
+    descriptions = ['eosinophils(blood)', 'triglycerides(blood)']
+    for (eidx, fdix), des in zip(ef_pairs, descriptions):
+        plot_one_event(eidx, fdix,death_stat_path, des)
 
     effect_path = 'result/death_event_time_effect.json'
     plot_event_effect_dis(effect_path, plt.subplot(1,1,1))
@@ -296,29 +303,47 @@ def plot_total_effect():
     plt.close('all')
 
     eidxs = [253, 2018, 2842, 2527]
-    for eidx in eidxs:
-        plot_one_event_effect_dis(eidx, effect_path)
+    eidxs = [2018]
+    descriptions = ['electrocardiogram']
+    for eidx, des in zip(eidxs, descriptions):
+        plot_one_event_effect_dis(eidx, effect_path, des)
     # plt.show()
 
-def plot_multi_model()
+def plot_multi_model(models, ratios, values_map, yname, ax):
+    colors = ['r', 'b', 'y']
+    for model, color in zip(models, colors):
+        y = values_map[model]
+        ax.plot(ratios, y, color, label = model)
+    ax.legend(loc = 'center right')
+    ax.set_xlabel('event percentage')
+    ax.set_ylabel(yname)
+    
 
 def plot_event_filter():
     result_path = 'result/death_event_filter.tsv'
-    models = ['MPHELSTM', 'MPHELSTM random', 'RETAIN']
+    models = ['MPLSTM Gate', 'MPLSTM Random', 'RETAIN']
     ratios = []
     aucs = defaultdict(list)
     aps = defaultdict(list)
     for line in file(result_path):
         p = line.rstrip('\n').split('\t')
         assert len(p) == 10
-        ratio = float(p[0][:-1])
+        ratio = int(p[0][:-1])
         ratios.append(ratio)
         base = 1
-        for idx, model in enumerate(models):
+        for idx, model in enumerate(models): 
             auc = float(p[base + idx * 3 + 1])
             ap = float(p[base + idx * 3 + 2])
             aucs[model].append(auc)
             aps[model].append(ap)
+    plot_models = models[:2]
+    ax1 = plt.subplot(1, 2, 1)
+    plot_multi_model(plot_models, ratios, aucs, 'AUC', ax1)
+
+    ax2 = plt.subplot(1, 2, 2)
+    plot_multi_model(plot_models, ratios, aps, 'AP', ax2)
+
+    plt.show()
 
 
 
@@ -326,8 +351,8 @@ def plot_event_filter():
 
 if __name__ == "__main__":
     plt.style.use('ggplot')
-    plot_event_filter()
-    # plot_total_effect()
+    # plot_event_filter()
+    plot_total_effect()
     # plot_label_event()
     # plot_time_event()
 
