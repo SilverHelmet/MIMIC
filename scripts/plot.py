@@ -116,13 +116,8 @@ def plot_one_event_dis(eidx, path, ax, des):
         ax.plot(x, neg_cnts, 'b', label = 'negtive samples')
         ax.legend()
         ax.set_xlabel('hour')
-<<<<<<< Updated upstream
         ax.set_ylabel('occurrence frequency')
-        ax.set_title('distrbution of event')
-=======
-        ax.set_ylabel('occur probability')
         ax.set_title('distrbution of event %s' %des)
->>>>>>> Stashed changes
         # outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
         # plt.savefig(outpath)
         # plt.close('all')
