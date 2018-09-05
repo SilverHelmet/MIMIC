@@ -85,8 +85,8 @@ def plot_value_dis(path, ax):
     if ax is None:
         ax = plt.subplot(1, 1, 1)
     ax.hist(x, bins = bins, normed=True)
-    ax.set_xlabel('MSE')
-    ax.set_title('distribution of MSE of attributes')
+    ax.set_xlabel('discrimination')
+    ax.set_title('distribution of discrimination of clinical features')
     # plt.show()
     # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.value_dis.png')
     # if not os.path.exists(result_dir + '/graph'):
@@ -116,7 +116,7 @@ def plot_one_event_dis(eidx, path, ax):
         ax.plot(x, neg_cnts, 'b', label = 'negtive samples')
         ax.legend()
         ax.set_xlabel('hour')
-        ax.set_ylabel('occur prob')
+        ax.set_ylabel('occurrence frequency')
         ax.set_title('distrbution of event')
         # outpath = os.path.join(result_dir, 'graph/' + "eventDist_data=%s_eid=%d_dis=%.3f.png" %(dataset, eidx, dis))
         # plt.savefig(outpath)
@@ -157,8 +157,8 @@ def plot_event_dis(path, ax = None):
     if ax is None:
         ax = plt.subplot(1, 1, 1)
     ax.hist(x, bins = bins, normed=True)
-    ax.set_xlabel('KL-distance')
-    ax.set_title('distribution of KL-distance of events')
+    ax.set_xlabel('discrimination')
+    ax.set_title('distribution of discrimination of clinical event types')
     # graph_outpath = os.path.join(result_dir, 'graph/' + os.path.basename(path) + '.event_dis.png')
     # if not os.path.exists(result_dir + '/graph'):
     #     os.mkdir(result_dir + '/graph')
