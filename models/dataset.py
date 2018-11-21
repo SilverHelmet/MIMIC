@@ -8,7 +8,6 @@ import glob
 from collections import defaultdict
 
 class Dataset:
-    
     def __init__(self, file, seg = None):
         self.dataset_file = file
         self.seg_file = seg
@@ -68,21 +67,6 @@ class Dataset:
                 features = f['feature']
             self.feature_idxs = features[:, :, [0,2,4]]
             self.feature_values = features[:, :, [1,3,5]]
-        # if 'feature' in f or "normed_feature" in f:
-        #     if load_normed_feature:
-        #         if 'normed_feature' in f:
-        #             print 'load normed_feature from h5py'
-        #             self.features = f['normed_feature'][:]
-        #         else:
-        #             nf_path = os.path.dirname(self.dataset_file) + "/normed_" + os.path.basename(self.dataset_file)
-        #             print 'load normed feature from [%s]' %nf_path
-        #             nf = h5py.File(nf_path, 'r')
-        #             self.features = nf['feature'][:]
-        #             nf.close()
-        #     else:
-        #         self.features = f['feature'][:]
-        # else:
-        #     self.features = np.zeros((1,1))
         if 'sample_id' in f:
             self.ids = f['sample_id'][:]
             self.merged_labels = merge_label(self.labels, self.ids)
@@ -96,9 +80,9 @@ class Dataset:
                 print 'load time diff / %.1f' %time_off
                 print 'user time base: %s' %time_base
                 if time_base == 'first_event':
-                    time_path = self.dataset_file.replace('.h5', '_time.npy')
+                    time_path = self.dataset_file.replace('.h5', '_time.npy').replace('normed_', "")
                 else:
-                    time_path = self.dataset_file.replace('.h5', '_abstime.npy')
+                    time_path = self.dataset_file.replace('.h5', '_abstime.npy').replace('normed_', "")
                 if not os.path.exists(time_path):
                     Print('%s tranfer time format' % self.dataset_file)
                     self.times = f[time_key][:]
@@ -486,6 +470,27 @@ def parse_sparse_static_feature(static_feature, size):
         i += 2
     return vec
 
+def sample_generator_tf(dataset, setting):
+    batch_size = setting['batch_size']
+    size = dataset.size
+    idxs = np.random.permutation(size)
+    events = dataset.events
+    labels = dataset.labels
+    feature_idxs = dataset.feature_idxs
+    feature_values = dataset.feature_values
+
+    st = 0
+    while True:
+        ed = st + batch_size
+        batch_idxs = idxs[st: ed]
+        event = events[batch_idxs]
+        feature_idx = feature_idxs[batch_idxs]
+        feature_value = feature_values[batch_idxs]
+        label = labels[batch_idxs]
+        yield event, feature_idx, feature_value, label
+        st = ed
+        if st > size:
+            st = 0
 
 def sample_generator(dataset, setting, shuffle = False, train_index = None, event_set = None, info = None, verbose = False):
     # Print("start generate samples")

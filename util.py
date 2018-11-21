@@ -8,9 +8,10 @@ import commands
 try:
     from pg import DB
 except ImportError:
-    sys.stderr.write('can\'t imprt module pg\n')
+    pass
+    # sys.stderr.write('can\'t imprt module pg\n')
 import argparse
-
+from sklearn.metrics import roc_auc_score, auc, precision_recall_curve
 
 def connect():
     parser = argparse.ArgumentParser()
@@ -192,7 +193,7 @@ def merge_event_map(filepath):
     for line in file(filepath):
         line = line.strip()
         if line == "":
-            conitnue
+            continue
         parts = line.split(" ")
         old_idx = int(parts[0])
         rtype = parts[1]
@@ -250,6 +251,70 @@ def load_setting(filepath, default_setting):
                 print "load arg %s = %s" %(key, value)
     return setting
 
+def default_setting():
+    '''
+        return the setting consisting of defualt args
+    '''
+    setting = {
+        'seg_mode': None,
+        "batch_size": 32,
+        'attention': False, 
+        'disturbance': False,   # add feature disturbance
+        'segment_flag': True,  # split event seq to event segment
+        'aggregation': 'sum',    # only useful when segment_flag is True
+        'static_feature': False,
+
+        'embedding_dim': 128, 
+        'hidden_dim': 128,
+        'event_len': 1000,
+        'att_hidden_dim': 128, 
+
+        'l2_reg_cof': 0.0001,
+        'lr':0.001,
+        
+        'rnn': 'lstm',
+        'nb_epoch': 100,
+        'cnn_drop_rate': 0.5,
+
+        'GCN': False,
+        'gcn_hidden_dim': 64,
+        'gcn_num_head':1,
+        'GCN_Seg': False,
+        'gcn_numeric_feature': False,
+        'numeric_feature_num': 3,
+        'numeric_feature_type': "HELSTM",
+        "normed_feature": True,
+        'gcn_numeric_width': 1,
+        'gcn_time_width': 0.5,
+        'gcn_mode': -1,
+
+        "post_model": "LSTM",
+
+        "load_time": True,
+
+        'time_feature': False,
+        "time_feature_type": 'concat',
+        "time_feature_dim": 8,
+
+        "emd_post_fc": False,
+        "emd_post_fc_fc": False,
+        "emd_post_fc_hidden_dim": 128,
+
+        'sample_generator': True,
+        'eventxtime': False,
+
+        'time_gate_type': 'phase',
+        'use_merged_event': False,
+    }
+    return setting
+
+def load_argv(argv):
+    setting = default_setting()
+    if len(argv) >= 2:
+        for arg in argv[1:]:
+            setting = load_setting(arg, setting)
+    return setting
+
 def get_nb_lines(filepath):
     output = commands.getoutput('wc -l %s' %filepath)
     p = int(output.split(" ")[0])
@@ -267,6 +332,15 @@ def add_to_cnt_dict(d, key, value = 1):
     if not key in d:
         d[key] = 0
     d[key] += value
+
+def calc_AUC(logits, labels):
+    auROC = roc_auc_score(labels, logits)
+    return auROC
+
+def calc_APC(logits, labels):
+    precision, recall, thresholds = precision_recall_curve(labels, logits)
+    auPRC = auc(recall, precision)
+    return auPRC
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = os.path.join(script_dir, 'data')

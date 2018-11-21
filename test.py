@@ -4,7 +4,7 @@ from keras.layers.core import Layer, Reshape
 from keras.models import Model
 import numpy as np
 
-class BatchBatchDot(Layer):
+class BatchBatchDot(Layer): 
     def __init__(self, shape1, shape2, dot_axe = 2, **kwargs):
         super(BatchBatchDot, self).__init__(**kwargs)
         assert shape1[0] == shape2[0]
@@ -12,8 +12,6 @@ class BatchBatchDot(Layer):
         self.shape2 = tuple(shape2)
         self.dot_axe = dot_axe
         self.batch_output_shape = self.get_output_shape_for([(-1,) + shape1, (-1,) + shape2])
-        
-
 
     def get_output_shape_for(self, input_shape):
         input_shapes = input_shape

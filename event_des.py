@@ -81,6 +81,7 @@ def load_event_featureidx_map():
 def get_feature(feature, idx):
     return feature[idx]
 
+
 class EventDescription:
     def __init__(self):
         self.column_map = column_name_map()

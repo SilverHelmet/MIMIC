@@ -1,0 +1,20 @@
+# model
+time_base=abs
+
+#model args
+model_dim=128
+event_size=3418
+feature_size=649
+
+# model training 
+batch_size=32
+nb_train_steps=40000
+l2_reg_cof=0.0001
+lr=0.001
+
+# dataset
+train_dataset=death_exper/death_train_1000.h5
+valid_dataset=death_exper/death_valid_1000.h5
+test_dataset=death_exper/death_test_1000.h5
+
+

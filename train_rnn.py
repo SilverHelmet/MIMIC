@@ -245,67 +245,6 @@ def define_simple_seg_rnn(setting, return_sequences = False):
                  setting = setting, off_slope = 1e-3)(event_with_time)
     else:
         assert False
-    # elif rnn_model == "dlstm":
-    #     embedding = Embedding(input_dim = event_dim, output_dim = embedding_dim, mask_zero = True, name = "embedding")(event_input)
-    #     rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-    #         input_length = None, return_sequences = False, name = 'rnn')(embedding)
-    # elif rnn_model == "cnn":
-    #     masked = Masking(mask_value=0.)(event_input)
-    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-    #         bias = False), name = "event_embedding")(masked)
-    #     cnn = make_CNN1D(filter_lengths = (2,3,4,5,6,7,8), feature_maps = (100, 100, 100, 100, 100, 100, 100), 
-    #                     emd = embedding, max_segs = setting['max_segs'], l2_reg_cof = l2_cof, drop_rate = setting['cnn_drop_rate'])
-    #     # lazy 
-    #     rnn = cnn
-    # elif rnn_model == 'gru':
-    #     masked = Masking(mask_value=0)(event_input)
-    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-    #         bias = False), name = "event_embedding")(masked)
-    #     if disturbance:
-    #         feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-    #         feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
-    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-    #         inputs = [event_input, feature_input]
-    #     rnn = GRU(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation = 'sigmoid', consume_less = 'gpu',
-    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-    # elif rnn_model == "lstm":
-    #     masked = Masking(mask_value=0)(event_input)
-    #     embedding = TimeDistributed(Dense(embedding_dim, activation='linear', name = 'embedding', 
-    #     bias = False), name = "event_embedding")(masked)
-    #     if disturbance:
-    #         feature_input = Input(shape = (max_segs, feature_dim), name = 'feature input')
-    #         feature_layer = TimeDistributedDense(output_dim = embedding_dim, name = 'feature_embedding')(feature_input)
-    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-    #         inputs = [event_input, feature_input]
-    #     rnn = LSTM(output_dim = hidden_dim, inner_activation = 'hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-    # elif rnn_model == "attgru":
-    #     embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
-    #     if disturbance:
-            
-    #         feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-    #         feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
-    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-    #         inputs = [event_input, feature_input]
-    #     rnn = EventAttentionGRU(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-        
-    # elif rnn_model == "attlstm":
-    #     embedding = SegMaskEmbedding(mask_value = 0, input_dim = event_dim, output_dim = embedding_dim, name = "embedding")(event_input)
-    #     if disturbance:
-    #         max_seg_length = setting['max_seg_length']
-    #         feature_input = Input(shape = (max_segs, max_seg_length, feature_dim), name = 'feature input')
-    #         feature_layer = TimeDistributed(TimeDistributedDense(output_dim = embedding_dim), name = 'feature_embedding')(feature_input)
-    #         embedding = merge(inputs = [embedding, feature_layer], mode = 'sum', name = 'embedding with feature')
-    #         inputs = [event_input, feature_input]
-    #     rnn = EventAttentionLSTM(att_hidden_dim = att_hidden_dim, output_dim = hidden_dim, inner_activation='hard_sigmoid', activation='sigmoid', consume_less = 'gpu',
-    #         W_regularizer = w_reg, U_regularizer = u_reg, b_regularizer = b_reg, 
-    #         input_length = None, return_sequences = attention, name = 'rnn')(embedding)
-
     if attention:
         print "add attention"
         rnn = SimpleAttentionRNN(rnn)
@@ -338,64 +277,6 @@ def define_simple_seg_rnn(setting, return_sequences = False):
     model.summary()
     return model
 
-
-def default_setting():
-    '''
-        return the setting consisting of defualt args
-    '''
-    setting = {
-        'seg_mode': None,
-        "batch_size": 32,
-        'attention': False, 
-        'disturbance': False,   # add feature disturbance
-        'segment_flag': True,  # split event seq to event segment
-        'aggregation': 'sum',    # only useful when segment_flag is True
-        'static_feature': False,
-
-        'embedding_dim': 128, 
-        'hidden_dim': 128,
-        'event_len': 1000,
-        'att_hidden_dim': 128, 
-
-        'l2_reg_cof': 0.0001,
-        'lr':0.001,
-        
-        'rnn': 'lstm',
-        'nb_epoch': 100,
-        'cnn_drop_rate': 0.5,
-
-        'GCN': False,
-        'gcn_hidden_dim': 64,
-        'gcn_num_head':1,
-        'GCN_Seg': False,
-        'gcn_numeric_feature': False,
-        'numeric_feature_num': 3,
-        'numeric_feature_type': "HELSTM",
-        "normed_feature": True,
-        'gcn_numeric_width': 1,
-        'gcn_time_width': 0.5,
-        'gcn_mode': -1,
-
-        "post_model": "LSTM",
-
-        "load_time": True,
-
-        'time_feature': False,
-        "time_feature_type": 'concat',
-        "time_feature_dim": 8,
-
-        "emd_post_fc": False,
-        "emd_post_fc_fc": False,
-        "emd_post_fc_hidden_dim": 128,
-
-        'sample_generator': True,
-        'eventxtime': False,
-
-        'time_gate_type': 'phase',
-        'use_merged_event': False,
-    }
-    return setting
-
 def split_batch_index(size, nb_split):
     idxs = np.random.permutation(size)
     step = size / nb_split
@@ -408,13 +289,6 @@ def split_batch_index(size, nb_split):
     st_ed_pair.append((st, size))
     for st, ed  in st_ed_pair:
         yield idxs[st:ed]
-
-def load_argv(argv):
-    setting = default_setting()
-    if len(argv) >= 2:
-        for arg in argv[1:]:
-            setting = load_setting(arg, setting)
-    return setting
 
 if __name__ == '__main__':
     setting = load_argv(sys.argv)
@@ -526,6 +400,6 @@ if __name__ == '__main__':
                     print_eval("round %d batch %d" %(epoch_round+1, batch_idx), test_eval)
                 else:
                     print_eval("round-%d batch %d" %(epoch_round+1, batch_idx), test_eval)
-                
+
     print "end trainning"
 
