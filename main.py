@@ -172,7 +172,7 @@ def train(ops, inputs, setting, datasets):
     feature_idx_input = inputs['feature_idx']
     feature_value_input = inputs['feature_value']
     Y = inputs['Y']
-    eval_step = 500
+    eval_step = 2000
     cost_time = .0
     for step, batch_sample in enumerate(generator):
         t0 = time.time()
