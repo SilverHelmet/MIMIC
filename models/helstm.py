@@ -270,7 +270,7 @@ class HELSTM(LSTM):
             a_hidden = K.tanh(K.dot(a_emd, self.a_hid_w) + self.a_hid_b)
             attn = K.sigmoid(K.dot(a_hidden, self.a_out_w) + self.a_out_b)
             if self.view_size != 1:
-                attn = K.repeat(attn, self.view_size, -1)
+                attn = K.repeat_elements(attn, self.view_size, -1)
         else:
             event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
             event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
