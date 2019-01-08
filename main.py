@@ -44,6 +44,14 @@ def make_event_embedding(event_i, time_i, feature_idx_i, feature_value_i, settin
     merged_emd = e_emded + tf.reduce_sum(dist_feature_embed, 2)
     return merged_emd
 
+def graph_conv_layer(input, head, model_dim):
+    attn_dim = model_dim / head
+    for head_i in range(head):
+        qw = make_weight(shape = (model_dim, attn_dim))
+    graph_conv_layer
+    
+
+
 def define_model(setting):
     event_len = setting['event_len']
     event_size = setting['event_dim']

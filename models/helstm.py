@@ -110,7 +110,7 @@ class HELSTM(LSTM):
         self.setting = setting
 
     def build(self, input_shape):
-        if self.setting['time_gate_type'] != 'nn':
+        if self.setting['time_gate_type'] not in  ['nn', 'event_time_nn']:
             x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim)
         else:
             x_input_shape = (input_shape[0], input_shape[1], input_shape[2] - 1 - self.event_emd_dim * 2)
@@ -201,6 +201,27 @@ class HELSTM(LSTM):
                                     initializer='zero',
                                     name='{}_time_out_b'.format(self.name),
                                     regularizer=self.b_regularizer)
+        elif time_gate_type == 'event_time_nn':
+            self.a_hidden_dim = self.event_hidden_dim
+            self.a_hid_w = self.add_weight((self.event_emd_dim * 2, self.a_hidden_dim),
+                                        initializer=self.init,
+                                        name='{}_a_hid_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
+
+            self.a_hid_b = self.add_weight((self.a_hidden_dim,),
+                                            initializer='zero',
+                                            name='{}_a_hid_b'.format(self.name),
+                                            regularizer=self.b_regularizer)
+
+            self.a_out_w = self.add_weight((self.a_hidden_dim, num_head),
+                                        initializer=self.init,
+                                        name='{}_a_out_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
+
+            self.a_out_b = self.add_weight((num_head, ),
+                                    initializer='zero',
+                                    name='{}_a_out_b'.format(self.name),
+                                    regularizer=self.b_regularizer)
         else:
             assert False
 
@@ -232,7 +253,7 @@ class HELSTM(LSTM):
         # event_emd = input_x[:, :self.event_emd_dim]
         event_emd = x[:, :self.event_emd_dim]
         base = self.event_emd_dim
-        if self.time_gate_type == 'nn':
+        if self.time_gate_type in ['nn', 'event_time_nn']:
             hour_emd = x[:, base: base + self.event_emd_dim]
             base += self.event_emd_dim
         input_x = x[:, base: base + self.input_dim]
@@ -244,31 +265,39 @@ class HELSTM(LSTM):
 
         c = new_states[1]
 
-        event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
-        event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
-
-        if self.time_gate_type == 'phase':
-            sleep_wake_mask = self.calc_time_gate(time_input_n)
-        elif self.time_gate_type == 'ones':
-            pass
-        elif self.time_gate_type == 'nn':
-            time_hidden = K.tanh(K.dot(hour_emd, self.time_hid_w) + self.time_hid_b)
-            sleep_wake_mask = K.sigmoid(K.dot(time_hidden, self.time_out_w) + self.time_out_b)
+        if self.time_gate_type == 'event_time_nn':
+            a_emd = K.concatenate([event_emd, hour_emd])
+            a_hidden = K.tanh(K.dot(a_emd, self.a_hid_w) + self.a_hid_b)
+            attn = K.sigmoid(K.dot(a_hidden, self.a_out_w) + self.a_out_b)
+            if self.view_size != 1:
+                attn = K.repeat(attn, self.view_size, -1)
         else:
-            assert False
+            event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
+            event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
 
-        if self.view_size != 1:
-            _sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
-            _event_attn = K.repeat_elements(event_attn, self.view_size, -1)
-            if self.time_gate_type == 'ones':
-                attn = _event_attn
+
+            if self.time_gate_type == 'phase':
+                sleep_wake_mask = self.calc_time_gate(time_input_n)
+            elif self.time_gate_type == 'ones':
+                pass
+            elif self.time_gate_type == 'nn':
+                time_hidden = K.tanh(K.dot(hour_emd, self.time_hid_w) + self.time_hid_b)
+                sleep_wake_mask = K.sigmoid(K.dot(time_hidden, self.time_out_w) + self.time_out_b)
             else:
-                attn = _sleep_wake_mask * _event_attn
-        else:
-            if self.time_gate_type == 'ones':
-                attn = event_attn
+                assert False
+
+            if self.view_size != 1:
+                _sleep_wake_mask = K.repeat_elements(sleep_wake_mask, self.view_size, -1)
+                _event_attn = K.repeat_elements(event_attn, self.view_size, -1)
+                if self.time_gate_type == 'ones':
+                    attn = _event_attn
+                else:
+                    attn = _sleep_wake_mask * _event_attn
             else:
-                attn = sleep_wake_mask * event_attn
+                if self.time_gate_type == 'ones':
+                    attn = event_attn
+                else:
+                    attn = sleep_wake_mask * event_attn
 
         cell = attn*c + (1.-attn)*prev_c
         hid = attn*h + (1.-attn)*prev_h

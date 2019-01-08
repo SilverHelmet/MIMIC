@@ -233,7 +233,7 @@ def define_simple_seg_rnn(setting, return_sequences = False):
         elif post_model == "HELSTM":
             time_input = Input(shape = (event_len, 1), name = 'time input')
             inputs.append(time_input)
-            if setting['time_gate_type'] == 'nn':
+            if setting['time_gate_type'] in ['nn', 'event_time_nn']:
                 event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, time_emd, gcn, time_input])
             else:
                 event_with_time = Merge(mode = 'concat', concat_axis = 2, name = 'embedding & time')([e_embedding, gcn, time_input])
