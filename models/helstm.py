@@ -119,32 +119,35 @@ class HELSTM(LSTM):
         if self.event_hidden_dim is None:
             self.event_hidden_dim = self.event_emd_dim
 
-
-        self.event_hid_w = self.add_weight((self.event_emd_dim, self.event_hidden_dim),
-                                       initializer=self.init,
-                                       name='{}_event_hid_w'.format(self.name),
-                                       regularizer=self.W_regularizer)
-
-        self.event_hid_b = self.add_weight((self.event_hidden_dim,),
-                                        initializer='zero',
-                                        name='{}_event_hid_b'.format(self.name),
-                                        regularizer=self.b_regularizer)
-        
+                
         num_head = self.setting.get('num_gate_head', self.output_dim)
+        time_gate_type = self.setting.get('time_gate_type', 'phase') # phase, ones, nn
+        self.time_gate_type = time_gate_type
         
         assert self.output_dim % num_head == 0
         self.view_size = self.output_dim / num_head
         print 'num_head = %d, view_size = %d' %(num_head, self.view_size)
 
-        self.event_out_w = self.add_weight((self.event_hidden_dim, num_head),
-                                       initializer=self.init,
-                                       name='{}_event_out_w'.format(self.name),
-                                       regularizer=self.W_regularizer)
+        if self.time_gate_type != 'event_time_nn':
+            self.event_hid_w = self.add_weight((self.event_emd_dim, self.event_hidden_dim),
+                                        initializer=self.init,
+                                        name='{}_event_hid_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
 
-        self.event_out_b = self.add_weight((num_head, ),
-                                initializer='zero',
-                                name='{}_event_out_b'.format(self.name),
-                                regularizer=self.b_regularizer)
+            self.event_hid_b = self.add_weight((self.event_hidden_dim,),
+                                            initializer='zero',
+                                            name='{}_event_hid_b'.format(self.name),
+                                            regularizer=self.b_regularizer)
+
+            self.event_out_w = self.add_weight((self.event_hidden_dim, num_head),
+                                        initializer=self.init,
+                                        name='{}_event_out_w'.format(self.name),
+                                        regularizer=self.W_regularizer)
+
+            self.event_out_b = self.add_weight((num_head, ),
+                                    initializer='zero',
+                                    name='{}_event_out_b'.format(self.name),
+                                    regularizer=self.b_regularizer)
 
         def period_init(shape, lows, highs, name = None):
             x = []
@@ -159,8 +162,6 @@ class HELSTM(LSTM):
         def onend_init(shape, name = None):
             return K.variable([0.05] * shape[0], name=name)
         
-        time_gate_type = self.setting.get('time_gate_type', 'phase') # phase, ones, nn
-        self.time_gate_type = time_gate_type
         if time_gate_type == 'phase':
             print 'using time gate phase'
             lows, highs = period_variable_sampling(self.setting, num_head)
@@ -266,11 +267,13 @@ class HELSTM(LSTM):
         c = new_states[1]
 
         if self.time_gate_type == 'event_time_nn':
-            a_emd = K.concatenate([event_emd, hour_emd])
+            a_emd = K.concatenate([event_emd, hour_emd], axis = 1)
             a_hidden = K.tanh(K.dot(a_emd, self.a_hid_w) + self.a_hid_b)
-            attn = K.sigmoid(K.dot(a_hidden, self.a_out_w) + self.a_out_b)
+            _attn = K.sigmoid(K.dot(a_hidden, self.a_out_w) + self.a_out_b)
             if self.view_size != 1:
-                attn = K.repeat_elements(attn, self.view_size, -1)
+                attn = K.repeat_elements(_attn, self.view_size, 1)
+            else:
+                attn = _attn
         else:
             event_hidden = K.tanh(K.dot(event_emd, self.event_hid_w) + self.event_hid_b)
             event_attn = K.sigmoid(K.dot(event_hidden, self.event_out_w) + self.event_out_b)
