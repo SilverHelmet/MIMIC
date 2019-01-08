@@ -256,7 +256,7 @@ def default_setting():
         return the setting consisting of defualt args
     '''
     setting = {
-        'seg_mode': None,
+        'seg_mode': "custom",
         "batch_size": 32,
         'attention': False, 
         'disturbance': False,   # add feature disturbance

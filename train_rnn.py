@@ -304,7 +304,6 @@ if __name__ == '__main__':
     print "valid dataset = %s" %valid_file
     print "test dataset = %s" %test_file
     seg_mode = setting['seg_mode']
-    assert seg_mode is not None
     if seg_mode is not None:
         print "seg_mode =", seg_mode
         if seg_mode == 'custom':
