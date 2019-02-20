@@ -7,6 +7,8 @@ from util import eiCU_data_dir, Print
 from collections import defaultdict
 import glob
 
+nb_diagnosis_subset = 0
+nb_not_diagnosis_subset = 0
 class DiagnosisList:
     def __init__(self):
         self.diags = list()
@@ -42,17 +44,18 @@ class ICUDiagSetting:
         return obj
 
     def check_diagnosis(self):
+        global nb_diagnosis_subset, nb_not_diagnosis_subset
         subset = set()
         for offset in sorted(self.diags_for_offset.keys()):
             diags = set(self.diags_for_offset[offset].diags)
             if subset.issubset(diags):
-                pass
+                nb_diagnosis_subset += 1
             else:
                 print '---', subset
                 print '----', diags
+                nb_not_diagnosis_subset += 1
+            subset = diags
 
-
-    
     @staticmethod
     def load_from_obj(obj):
         icu_diag_setting = ICUDiagSetting()
@@ -83,10 +86,8 @@ class DiagSettingMap:
     def load_from_obj(obj):
         diag_map = DiagSettingMap()
         for puid in obj:
-            diag_map[int(puid)] = ICUDiagSetting.load_from_obj(obj[puid])
+            diag_map.icu_diag_setting_map[int(puid)] = ICUDiagSetting.load_from_obj(obj[puid])
         return diag_map
-
-
 
 def collect_puid(puid_path):
     if os.path.exists(puid_path):
@@ -159,11 +160,14 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
             json.dump(obj, wf, indent=2, sort_keys=True)
 
 def check_diagnosis(diag_set_path):
+    global nb_not_diagnosis_subset, nb_diagnosis_subset
+    Print('---- check diagnosis start ----')
     with file(diag_set_path, 'r') as rf:
         obj = json.load(rf)
         icu_diag_setting_map = DiagSettingMap.load_from_obj(obj)
         icu_diag_setting_map.check_diagnosis()
-
+    Print('#subset = {}, #not_subset = {}'.format(nb_diagnosis_subset, nb_not_diagnosis_subset))
+    Print('---- check diagnosis end ----')
 
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
@@ -176,6 +180,5 @@ if __name__ == "__main__":
     gen_diagnosis_set(puid_path, diagnosis_map_path, diagnosis_set_path)
 
     check_diagnosis(diagnosis_set_path)
-
 
     
