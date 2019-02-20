@@ -108,7 +108,7 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
             puid = row['puid']
             offset = row['eventoffset']
             event_code = row['event_code']
-            if code not in d_map:
+            if event_code not in d_map:
                 continue
             diag_idx = d_map[code]['index']
             icu_diag_setting_map[puid].add(offset, diag_idx)
