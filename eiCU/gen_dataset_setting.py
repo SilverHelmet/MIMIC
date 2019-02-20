@@ -40,6 +40,18 @@ class ICUDiagSetting:
         for offset in self.diags_for_offset:
             obj[offset] = self.diags_for_offset[offset].to_obj()
         return obj
+
+    def check_diagnosis(self):
+        subset = set()
+        for offset in sorted(self.diags_for_offset.keys()):
+            diags = set(self.diags_for_offset[offset].diags)
+            if subset.issubset(diags):
+                pass
+            else:
+                print '---', subset
+                print '----', diags
+
+
     
     @staticmethod
     def load_from_obj(obj):
@@ -48,6 +60,33 @@ class ICUDiagSetting:
             icu_diag_setting.diags_for_offset[int(offset)] = \
                 DiagnosisList.load_from_obj(obj[offset])
         return icu_diag_setting
+
+class DiagSettingMap:
+    def __init__(self):
+        self.icu_diag_setting_map = defaultdict(ICUDiagSetting)
+    
+    def add(self, puid, offset, diag_idx):
+        self.icu_diag_setting_map[puid].add(offset, diag_idx)
+    
+    def to_obj(self):
+        obj = {}
+        for puid in self.icu_diag_setting_map:
+            obj[int(puid)] = self.icu_diag_setting_map[puid].to_obj()
+        return obj
+
+    def check_diagnosis(self):
+        for puid in self.icu_diag_setting_map:
+            icu_diag_setting = self.icu_diag_setting_map[puid]
+            icu_diag_setting.check_diagnosis()
+
+    @staticmethod
+    def load_from_obj(obj):
+        diag_map = DiagSettingMap()
+        for puid in obj:
+            diag_map[int(puid)] = ICUDiagSetting.load_from_obj(obj[puid])
+        return diag_map
+
+
 
 def collect_puid(puid_path):
     if os.path.exists(puid_path):
@@ -119,6 +158,13 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
         with file(d_set_path, 'w') as wf:
             json.dump(obj, wf, indent=2, sort_keys=True)
 
+def check_diagnosis(diag_set_path):
+    with file(diag_set_path, 'r') as rf:
+        obj = json.load(rf)
+        icu_diag_setting_map = DiagSettingMap.load_from_obj(obj)
+        icu_diag_setting_map.check_diagnosis()
+
+
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
 
@@ -128,6 +174,8 @@ if __name__ == "__main__":
     diagnosis_map_path = os.path.join(result_dir, 'diagnosis_map.json')
     diagnosis_set_path = os.path.join(result_dir, 'diagnosis_set.json')
     gen_diagnosis_set(puid_path, diagnosis_map_path, diagnosis_set_path)
+
+    check_diagnosis(diagnosis_set_path)
 
 
     
