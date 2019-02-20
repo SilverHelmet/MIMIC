@@ -49,7 +49,7 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
                 if code == 'nan':
                     continue
                 obj[code] = {
-                    'index': idx
+                    'index': idx,
                     'rate': rate
                 }
                 idx += 1
