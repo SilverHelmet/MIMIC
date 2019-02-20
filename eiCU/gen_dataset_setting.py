@@ -106,7 +106,7 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
         t = pandas.read_csv(raw_data_path)
         for idx, row in t.iterrows():
             puid = row['puid']
-            offset = row['offset']
+            offset = row['eventoffset']
             event_code = row['event_code']
             if code not in d_map:
                 continue
