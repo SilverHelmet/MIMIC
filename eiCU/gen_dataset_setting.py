@@ -48,7 +48,7 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
                     'rate': rate
                 }
                 idx += 1
-            json.dump(wf, indent = 3)
+            json.dump(obj, wf, indent = 3)
 
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
