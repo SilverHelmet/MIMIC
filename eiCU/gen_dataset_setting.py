@@ -43,6 +43,8 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
             obj = {}
             idx = 0
             for code, rate in code_rate:
+                if code == 'nan':
+                    continue
                 obj[int(idx)] = {
                     'code': code,
                     'rate': rate
