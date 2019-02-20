@@ -33,7 +33,7 @@ class ICUDiagSetting:
         offset = int(offset)
         if not offset in self.diags_for_offset:
             self.diags_for_offset[offset] = DiagnosisList()
-        self.diags_for_offset[offset].add(index)
+        self.diags_for_offset[offset].add(diag_idx)
     
     def to_obj(self):
         obj = {}
@@ -104,20 +104,20 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
         icu_diag_setting_map = defaultdict(ICUDiagSetting)
         raw_data_path = os.path.join(eiCU_data_dir, 'raw_event/diagnosis_event.csv')
         t = pandas.read_csv(raw_data_path)
-        for idx, row in t.iterrows():
+        for idx, row in tqdm(t.iterrows(), total=len(t)):
             puid = row['puid']
             offset = row['eventoffset']
             event_code = row['event_code']
             if event_code not in d_map:
                 continue
-            diag_idx = d_map[code]['index']
+            diag_idx = d_map[event_code]['index']
             icu_diag_setting_map[puid].add(offset, diag_idx)
 
         obj = {}
         for puid in sorted(icu_diag_setting_map.keys()):
             obj[puid] = icu_diag_setting_map[puid].to_obj()
-        with file(d_set_path) as wf:
-            json.dump(obj, wf, indent=3)
+        with file(d_set_path, 'w') as wf:
+            json.dump(obj, wf, indent=2, sort_keys=True)
 
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     collect_puid(puid_path)
 
     diagnosis_map_path = os.path.join(result_dir, 'diagnosis_map.json')
-    diagnosis_set_path = os.path.join(result_dir, 'diagnosis_set.csv')
+    diagnosis_set_path = os.path.join(result_dir, 'diagnosis_set.json')
     gen_diagnosis_set(puid_path, diagnosis_map_path, diagnosis_set_path)
 
 
