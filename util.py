@@ -363,6 +363,7 @@ lab_exper_dir = os.path.join(script_dir, 'lab_exper')
 event_seq_stat_dir = os.path.join(script_dir, "event_seq_stat")
 graph_dir = os.path.join(script_dir, 'graph')
 time_dis_graph_dir = os.path.join(graph_dir, "time_dis")
+eiCU_data_dir = os.path.join(script_dir, 'data/eiCU')
 
 
 if __name__ == "__main__":
