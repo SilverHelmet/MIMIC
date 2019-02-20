@@ -16,8 +16,8 @@ def collect_puid(puid_path):
         Print('\tcollect puid from [%s]' %table_name)
         t = pandas.read_csv(filepath)
         table_puids = set(t['puid'])
-        puids.union(table_puids)
-        break
+
+        puids.update(table_puids)
     Print('---- write to [%s] ----' %puid_path)
     with file(puid_path, 'w') as wf:
         for puid in sorted(puids):
