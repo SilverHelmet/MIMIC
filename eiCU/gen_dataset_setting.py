@@ -39,8 +39,15 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
             code_rate.append((code, rate))
         code_rate.sort(key = lambda x: x[1], reverse = True)
         with file(d_map_path, 'w') as wf:
+            obj = {}
+            idx = 0
             for code, rate in code_rate:
-                wf.write(str(code) + '\n')
+                obj[idx] = {
+                    'code': code,
+                    'rate': rate
+                }
+                idx += 1
+            json.dump(wf, indent = 3)
 
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
