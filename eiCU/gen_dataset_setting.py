@@ -102,7 +102,7 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
     if not os.path.exists(d_set_path):
         Print('generate diagnosis set to [%s]' %d_set_path)
         icu_diag_setting_map = defaultdict(ICUDiagSetting)
-        raw_data_path = os.path.join(icu_diag_setting_map, 'raw_event/diagnosis_event.csv')
+        raw_data_path = os.path.join(eiCU_data_dir, 'raw_event/diagnosis_event.csv')
         t = pandas.read_csv(raw_data_path)
         for idx, row in t.iterrows():
             puid = row['puid']
