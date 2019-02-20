@@ -23,11 +23,34 @@ def collect_puid(puid_path):
         for puid in sorted(puids):
             wf.write(str(puid) + '\n')
 
+def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
+    if os.path.exists(d_map_path) and os.path.exists(d_set_path):
+        return 
+    data_path = os.path.join(eiCU_data_dir, 'raw_event/diagnosis_event.csv')
+
+    if not os.path.exists(d_map_path):
+        Print('generate diagnosis map to [%s]' %d_map_path)
+        stat_path = os.path.join(eiCU_data_dir, 'statistic/diagnosis_event_statistic.txt')
+        code_rate = []
+        for line in file(stat_path):
+            p = line.split('$')
+            code = p[0]
+            rate = float(p[-1])
+            code_rate.append((code, rate))
+        code_rate.sort(key = lambda x: x[1], reverse = True)
+        with file(d_map_path, 'w') as wf:
+            for code, rate in code_rate:
+                wf.write(str(code) + '\n')
+
 if __name__ == "__main__":
     result_dir = os.path.join(eiCU_data_dir, 'result')
+
     puid_path = os.path.join(result_dir, 'puids.txt')
-    
     collect_puid(puid_path)
+
+    diagnosis_map_path = os.path.join(result_dir, 'diagnosis_map.json')
+    diagnosis_set_path = os.path.join(result_dir, 'diagnosis_set.csv')
+    gen_diagnosis_set(puid_path, diagnosis_map_path, diagnosis_set_path)
 
 
     
