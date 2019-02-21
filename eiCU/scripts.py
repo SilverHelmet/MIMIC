@@ -13,6 +13,7 @@ def load_decode_info(filepath_pattern):
         t_info = json.load(f)
         f.close()
         for key in t_info:
+            print t_info[key]
             event_code, text_fea = t_info[key]
             key = int(key)
             info[key] = [table, event_code, text_fea]
