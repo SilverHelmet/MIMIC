@@ -13,9 +13,9 @@ def load_decode_info(filepath_pattern):
         t_info = json.load(f)
         f.close()
         for key in t_info:
-            info = t_info[key]
+            l = t_info[key]
             key = int(key)
-            info[key] = [table] + info
+            info[key] = [table] + l
     return info
 
 def merge_index_info():
