@@ -56,7 +56,7 @@ def _gen_event_list(puid_set):
     event_dir = os.path.join(eiCU_data_dir, 'coded_event')
     for filepath in glob.glob(event_dir + '/*csv'):
         Print('load event from [%s]' %os.path.basename(filepath))
-        for line in tqdm(file(filepath), total = get_nb_lines(filepath)):
+        for line in tqdm(file(filepath)):
             if line.startswith(','):
                 continue
             puid, event = Event.parse_line(line)
