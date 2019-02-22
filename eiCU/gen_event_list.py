@@ -6,33 +6,7 @@ import numpy as np
 from tqdm import tqdm
 from util import eiCU_data_dir, Print, get_nb_lines
 from collections import defaultdict
-
-class Event:
-    def __init__(self, offset, code, fea_idxs, fea_values):
-        self.offset = offset
-        self.code = code
-        self.fea_idxs = fea_idxs
-        self.fea_values = fea_values
-
-    @staticmethod
-    def parse_line(line):
-        p = line.rstrip().split(',')
-        _, offset, puid, num_fea_str, code = p
-        puid = int(puid)
-        fea_str_list = num_fea_str.split('$')
-        fea_idxs = []
-        fea_values = []
-        for idx_value in fea_str_list:
-            idx, value = idx_value.split(":")
-            if value == 'nan':
-                continue
-            fea_idxs.append(int(idx))
-            fea_values.append(float(value))
-        event = Event(offset, code, fea_idxs, fea_values)
-        return puid, event
-    
-    def __str__(self):
-        return ",".join(map(str, [self.offset, self.code] + self.fea_idxs  + self.fea_values))
+from .dataset import Event
 
 def gen_event_list():
     result_dir = os.path.join(eiCU_data_dir, 'result')

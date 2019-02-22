@@ -55,6 +55,12 @@ class ICUDiagSetting:
                 print '----', diags
                 nb_not_diagnosis_subset += 1
             subset = diags
+    
+    def get_offset_list(self):
+        return sorted(self.diags_for_offset.keys())
+    
+    def get_diags_for_offset(self, offset):
+        return self.diags_for_offset[offset].diags
 
     @staticmethod
     def load_from_obj(obj):
@@ -81,6 +87,18 @@ class DiagSettingMap:
         for puid in self.icu_diag_setting_map:
             icu_diag_setting = self.icu_diag_setting_map[puid]
             icu_diag_setting.check_diagnosis()
+
+    def get_puid_offset_list(self):
+        puid_offset_list = []
+        for puid in self.icu_diag_setting_map:
+            icu_diag_setting = self.icu_diag_setting_map[puid]
+            offset_list = icu_diag_setting.get_offset_list()
+            for offset in offset_list:
+                puid_offset_list.append((puid, offset))
+        return puid_offset_list
+    
+    def get_diags_for_puid(self, puid):
+        return self.icu_diag_setting_map[puid]
 
     @staticmethod
     def load_from_obj(obj):
@@ -158,6 +176,11 @@ def gen_diagnosis_set(puid_path, d_map_path, d_set_path):
             obj[puid] = icu_diag_setting_map[puid].to_obj()
         with file(d_set_path, 'w') as wf:
             json.dump(obj, wf, indent=2, sort_keys=True)
+
+def load_diag_setting(filepath):
+    with file(filepath, 'r') as rf:
+        obj = json.load(rf)
+        return DiagSettingMap.load_from_obj(obj)
 
 def check_diagnosis(diag_set_path):
     global nb_not_diagnosis_subset, nb_diagnosis_subset
