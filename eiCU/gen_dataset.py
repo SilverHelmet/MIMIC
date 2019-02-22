@@ -64,7 +64,6 @@ def gen_dataset(diag_setting_path, event_list_path, out_dir):
     total = get_nb_lines(event_list_path)
     # total = 200304
     for line in tqdm(file(event_list_path), total=total):
-        xx += 1
         gen_samples_for_puid(line, diag_setting_map, dataset)
     
     sub_datasets = dataset.split([0.7, 0.1, 0.2])
