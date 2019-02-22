@@ -1,5 +1,6 @@
 import numpy as np
 import h5py
+import math
 
 class Event:
     MAX_FEA_LEN = 4
@@ -41,10 +42,10 @@ class Event:
     @staticmethod
     def load_from_str(s):
         p = s.split(',')
-        offset, code = s[:2]
+        offset, code = map(int, p[:2])
         n_fea = (len(p) - 2) / 2
-        fea_idxs = s[2: 2+n_fea]
-        fea_values = s[2+n_fea:]
+        fea_idxs = p[2: 2+n_fea]
+        fea_values = p[2+n_fea:]
         assert len(fea_idxs) == len(fea_values)
         return Event(offset, code, fea_idxs, fea_values)
     
@@ -119,17 +120,23 @@ class Dataset:
         self.time.append(s_time)
     
     def split(self, ratios):
-        self.event = np.array(self.event, type = int)
-        self.feature_idx = np.array(self.feature_idx)
+        self.event = np.array(self.event, dtype = 'int32')
+        self.time = np.array(self.time, dtype = 'float32')
+        self.feature_idx = np.array(self.feature_idx, dtype = 'int32')
+        self.feature_value = np.array(self.feature_value, dtype = 'float32')
+        self.ori_len = np.array(self.ori_len, dtype = 'int32')
+        self.offset = np.array(self.offset, dtype = 'int32')
+        self.puid = np.array(self.puid, dtype = 'int32')
+        self.label = np.array(self.label)
+        
 
         size = len(self.event)
         shuffle_idxs = np.random.permutation(size)
         new_datasets = []
         st = 0
         for ratio in ratios:
-            ed = int(size * ratio) + st
+            ed = int(math.ceil(size * ratio) + st)
             ed = min(size, ed)
-
             slice_idxs = shuffle_idxs[st:ed]
             d = Dataset()
             d.event = self.event[slice_idxs]
@@ -142,8 +149,8 @@ class Dataset:
             d.ori_len = self.ori_len[slice_idxs]
 
             new_datasets.append(d)
-
             st = ed
+
         assert st == size
         return new_datasets
     
@@ -155,7 +162,7 @@ class Dataset:
         f['time'] = self.time
         f['puid'] = self.puid
         f['offset'] = self.offset
-        f['label'] = self.label
+        # f['label'] = self.label
         f['ori_len'] = self.ori_len
         f.close()
 

@@ -61,17 +61,18 @@ def gen_dataset(diag_setting_path, event_list_path, out_dir):
 
     Print('---- generate dataset from [%s] ----' %event_list_path)
     dataset = Dataset()
-    xx = 0
-    for line in tqdm(file(event_list_path), total = get_nb_lines(event_list_path)):
+    total = get_nb_lines(event_list_path)
+    # total = 200304
+    for line in tqdm(file(event_list_path), total=total):
         xx += 1
         gen_samples_for_puid(line, diag_setting_map, dataset)
-        if xx > 10:
-            break
     
     sub_datasets = dataset.split([0.7, 0.1, 0.2])
     names = ['train', 'valid', 'test']
     for name, d in zip(names, sub_datasets):
         outpath = os.path.join(out_dir, "eiCU_diagnosis_{}.h5".format(name))
+        size = len(d.event)
+        Print('save {} samples to {}'.format(size, outpath))
         d.save(outpath)
 
 
