@@ -1,6 +1,7 @@
 import numpy as np
 import h5py
 import math
+from .gen_dataset_setting import load_diag_setting
 
 class Event:
     MAX_FEA_LEN = 4
@@ -92,7 +93,7 @@ class Sample:
 
 
 class Dataset:
-    def __init__(self, outpath = None):
+    def __init__(self):
         self.event = []
         self.time = []
         self.feature_idx = []
@@ -101,7 +102,6 @@ class Dataset:
         self.ori_len = []
         self.offset = []
         self.puid = []
-        self.outpath = outpath
     
     def add_sample(self, sample, event_list):
         ed = sample.find_end(event_list)
@@ -165,5 +165,30 @@ class Dataset:
         # f['label'] = self.label
         f['ori_len'] = self.ori_len
         f.close()
+    
+    @staticmethod
+    def load(inpath, diag_setting_path):
+        f = h5py.File(inpath, 'r')
+        d = Dataset()
+        d.event = f['event'][:]
+        d.feature_idx = f['feature_idx'][:]
+        d.feature_value = f['feature_value'][:]
+        d.time = f['time'][:]
+        d.puid = f['puid'][:]
+        d.offset = f['offset'][:]
+        d.ori_len = f['ori_len'][:]
+        f.close()
+
+        diag_setting_map = load_diag_setting(diag_setting_path)
+        label = []
+        for puid, offset in zip(d.puid, d.offset):
+            diags = diag_setting_map.get_diags_for_puid(puid).get_diags_for_offset(offset)
+            label.append(diags)
+        d.label = np.array(label)
+
+        return d
+            
+
+
 
 

@@ -122,8 +122,10 @@ class HELSTM(LSTM):
                 
         num_head = self.setting.get('num_gate_head', self.output_dim)
         time_gate_type = self.setting.get('time_gate_type', 'phase') # phase, ones, nn
+        concept_gate_input = self.setting.get('concept_gate_input', 'event_time') # event, time, event_time
         self.time_gate_type = time_gate_type
-        
+        self.concept_gate_input = concept_gate_input
+
         assert self.output_dim % num_head == 0
         self.view_size = self.output_dim / num_head
         print 'num_head = %d, view_size = %d' %(num_head, self.view_size)
@@ -204,7 +206,11 @@ class HELSTM(LSTM):
                                     regularizer=self.b_regularizer)
         elif time_gate_type == 'event_time_nn':
             self.a_hidden_dim = self.event_hidden_dim
-            self.a_hid_w = self.add_weight((self.event_emd_dim * 2, self.a_hidden_dim),
+            if concept_gate_input in ['event', 'time']:
+                a_input_dim = self.event_emd_dim
+            else:
+                a_input_dim = self.event_emd_dim * 2
+            self.a_hid_w = self.add_weight((a_input_dim, self.a_hidden_dim),
                                         initializer=self.init,
                                         name='{}_a_hid_w'.format(self.name),
                                         regularizer=self.W_regularizer)
@@ -267,8 +273,13 @@ class HELSTM(LSTM):
         c = new_states[1]
 
         if self.time_gate_type == 'event_time_nn':
-            a_emd = K.concatenate([event_emd, hour_emd], axis = 1)
-            a_hidden = K.tanh(K.dot(a_emd, self.a_hid_w) + self.a_hid_b)
+            if self.concept_gate_input == 'event_time':
+                input_a = K.concatenate([event_emd, hour_emd], axis = 1)
+            elif self.concept_gate_input == 'event':
+                input_a = event_emd
+            else:
+                input_a = hour_emd
+            a_hidden = K.tanh(K.dot(input_a, self.a_hid_w) + self.a_hid_b)
             _attn = K.sigmoid(K.dot(a_hidden, self.a_out_w) + self.a_out_b)
             if self.view_size != 1:
                 attn = K.repeat_elements(_attn, self.view_size, 1)

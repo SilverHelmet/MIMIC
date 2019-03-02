@@ -18,7 +18,7 @@ def split_dataset(diag_setting_map, ratios, datasets):
     st = 0
     sample2dataset = {}
 
-    for ratio, dataset in zip(ratios, name):
+    for ratio, dataset in zip(ratios, datasets):
         ed = st + int(size * ratio)
         ed = min(ed, size)
 
